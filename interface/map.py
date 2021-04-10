@@ -86,7 +86,7 @@ class Map:
         folium_static(self.map, 1750, 500)
         password = st.text_input(label="Enter Password", type='password')
         if st.button("Apply Changes To The Mission!"):
-            if password == "hello":
+            if password == "plebs":
                 me = MissionEditor()
                 me.edit_waypoints(self.waypoints)
                 st.balloons()
