@@ -2,13 +2,12 @@ from slpp import slpp as lua
 import hashlib
 import zipfile
 import math
-import yaml
-import json
+import numpy as np
 
 
 class MissionEditor:
-    def __init__(self):
-        self.path = self.get_path()
+    def __init__(self, path):
+        self.path = path  # self.get_path()
         self.mission, self.buffer_list = self.get_data('mission')
         self.dictionary, _ = self.get_data('l10n/DEFAULT/dictionary')
         self.key2wp = {}
@@ -68,20 +67,20 @@ class MissionEditor:
         point = self.point_template()
         wpid = hashlib.sha256(wp.__repr__().encode()).hexdigest()[-4:]
         x, y = self.convert_waypoint(wp.lat, wp.lon)
-        point.update({'alt': wp.altitude/0.3048})
+        point.update({'alt': wp.altitude / 0.3048})
         point.update({'alt_type': wp.alt_type})
         point.update({'x': x})
         point.update({'y': y})
-        point.update({'name': 'DictKey_WptName_'+wpid})
-        self.key2wp.update({'DictKey_WptName_'+wpid: wp.name})
-        group_dict['route']['points'].update({i+2: point})
+        point.update({'name': 'DictKey_WptName_' + wpid})
+        self.key2wp.update({'DictKey_WptName_' + wpid: wp.name})
+        group_dict['route']['points'].update({i + 2: point})
         return group_dict
 
     def convert_waypoint(self, lat, lon):
-        lon_diff = lon-self.map_center['lon']
-        lat_diff = lat-self.map_center['lat']
-        y_diff = (lon_diff * math.cos(math.pi * self.map_center['lat'] / 180)) * (40075000 / 360)
-        x_diff = lat_diff * (40075000 / 360)
+        lon_diff = lon - self.map_center['lon']
+        lat_diff = lat - self.map_center['lat']
+        y_diff = lon_diff * 91744
+        x_diff = lat_diff * 110489
         return x_diff, y_diff
 
     @staticmethod
@@ -91,13 +90,6 @@ class MissionEditor:
             if (wp.aircraft == unit_type or wp.aircraft == "Everyone") and not wp.viz:
                 output.append(wp)
         return output
-
-    @staticmethod
-    def get_path():
-        with open('mission_editing/config.yml', 'r') as file:
-            config = yaml.load(file, Loader=yaml.FullLoader)
-        path = config["DCS_MISSION_PATH"]
-        return path
 
     @staticmethod
     def point_template():

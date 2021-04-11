@@ -1,3 +1,5 @@
 venv/
 test.json
 .idea/
+*.miz
+*.pyc

@@ -3,16 +3,20 @@ from interface.waypoint import WayPoint
 from mission_editing.edit_mission import MissionEditor
 import streamlit as st
 import folium
+import base64
+import yaml
+import os
 import re
-st.set_page_config(page_title="Tony's balls", layout='wide', page_icon='icon.png')
 
 
 class Map:
     def __init__(self):
+        st.set_page_config(page_title="Tony's balls", layout='wide', page_icon='icon.png')
         self.waypoints = []
         self.current_wp = 0
         self.start_location = [34.6513, 36.7822]
         self.start_zoom = 7
+        self.selected_mission = ""
         self.map = self._get_map()
 
     def _get_map(self):
@@ -39,7 +43,15 @@ class Map:
                 open_edges.update({wp.aircraft: wp})
 
     def _add_point(self):
-        point = self._get_point()
+        c1, c2 = st.beta_columns(2)
+        point = self._get_point(c1)
+        missions, dir_path = self.get_missions()
+        # self.selected_mission = os.path.join(dir_path, c2.selectbox("Select Mission", missions))
+        mission = c2.file_uploader("Drop Mission Here", type=['miz'])
+        if mission:
+            self.selected_mission = mission.name
+            with open("temp.miz", 'wb') as file:
+                file.write(mission.read())
         wp_options = self._get_wp_options()
         marker_colors = self._get_marker_colors()
 
@@ -84,14 +96,13 @@ class Map:
     def render(self):
         self._add_point()
         folium_static(self.map, 1750, 500)
-        password = st.text_input(label="Enter Password", type='password')
         if st.button("Apply Changes To The Mission!"):
-            if password == "plebs":
-                me = MissionEditor()
-                me.edit_waypoints(self.waypoints)
-                st.balloons()
-            else:
-                st.error("Wrong Password You Salad!")
+            me = MissionEditor("temp.miz")
+            me.edit_waypoints(self.waypoints)
+            st.balloons()
+            with open('temp.miz', 'rb') as file:
+                href = self.get_binary_file_downloader_html('temp.miz', file_label=self.selected_mission)
+                st.markdown(href, unsafe_allow_html=True)
 
     def _get_waypoint_data(self, c1, c2, wp_options, marker_colors):
         wp_name = c1.text_input(label="Waypoint Name", value=f"WP{self.current_wp + 1}")
@@ -100,6 +111,15 @@ class Map:
         wp_type = c2.selectbox('Select Waypoint Type', list(wp_options.keys()))
         marker_color = c2.selectbox('Select Waypoint Aircraft', list(marker_colors.keys()))
         return wp_name, wp_altitude, wp_type, marker_color
+
+    @staticmethod
+    def get_binary_file_downloader_html(bin_file, file_label='File'):
+        with open(bin_file, 'rb') as f:
+            data = f.read()
+        bin_str = base64.b64encode(data).decode()
+        href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{file_label}">Download {file_label}</a>'
+        return href
+
 
     @staticmethod
     def _get_columns():
@@ -111,8 +131,8 @@ class Map:
         return c1, c2, c3, c4
 
     @staticmethod
-    def _get_point():
-        raw_point = st.text_input(label='Point')
+    def _get_point(c1):
+        raw_point = c1.text_input(label='Point')
         point = [float(number) for number in re.findall(r'\d+\.\d+', raw_point)]
         return point
 
@@ -136,6 +156,14 @@ class Map:
         names = {"Hornet": "FA-18C_hornet", "Mirage": "M-2000C", "Viper": "F-16C_50", "Tomcat": "F-14",
                  "Harrier": "AV8BNA", "Everyone": "Everyone"}
         return names[name]
+
+    @staticmethod
+    def get_missions():
+        with open('mission_editing/config.yml', 'r') as file:
+            config = yaml.load(file, Loader=yaml.FullLoader)
+        path = config["DCS_MISSION_PATH"]
+        missions = [mission for mission in os.listdir(path) if mission.endswith(".miz")]
+        return missions, path
 
 
 m = Map()
