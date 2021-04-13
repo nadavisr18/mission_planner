@@ -6,8 +6,8 @@ import numpy as np
 
 
 class MissionEditor:
-    def __init__(self, path):
-        self.path = path  # self.get_path()
+    def __init__(self, path: str):
+        self.path = path
         self.mission, self.buffer_list = self.get_data('mission')
         self.dictionary, _ = self.get_data('l10n/DEFAULT/dictionary')
         self.key2wp = {}

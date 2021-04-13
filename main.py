@@ -1,11 +1,14 @@
-from interface.map import get_map
+from interface.interface import get_interface
+
+
+# TODO: add kneeboards: https://forums.eagle.ru/topic/266375-fa-18c-kneeboard-suite-by-dimon/ | https://www.airgoons.com/w/Kneeboards
+# TODO: modify radio presets
+# TODO: randomize weather
 
 
 def main():
-    m = get_map()
-    m.render()
-
-
+    i = get_interface()
+    i.render()
 
 
 if __name__ == '__main__':
