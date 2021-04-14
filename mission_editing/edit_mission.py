@@ -1,4 +1,4 @@
-from interface.waypoint import WayPoint
+from backend_interface.waypoint import WayPoint
 from typing import List, Tuple
 from slpp import slpp as lua
 import hashlib
@@ -41,7 +41,7 @@ class MissionEditor:
         for key in self.key2wp:
             self.dictionary.update({key: self.key2wp[key]})
 
-    def edit_waypoints(self, waypoints):
+    def edit_waypoints(self, waypoints: List[WayPoint]):
         for country in self.mission['coalition']['blue']['country']:
             country_dict = self.mission['coalition']['blue']['country'][country]
             for group in country_dict['plane']['group']:

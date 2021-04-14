@@ -1,7 +1,7 @@
 from streamlit.delta_generator import DeltaGenerator as Column
-from interface.customLatLngPopup import CustomLatLngPopup
+from backend_interface.customLatLngPopup import CustomLatLngPopup
 from mission_editing.edit_mission import MissionEditor
-from interface.waypoint import WayPoint
+from backend_interface.waypoint import WayPoint
 from typing import List, Tuple
 from folium import Map
 
@@ -23,7 +23,7 @@ class Interface:
         self.start_zoom = 7
         self.selected_mission = ""
         self.map = self._get_map()
-        self.config = self._get_config("interface/config.yml")
+        self.config = self._get_config("backend_interface/config.yml")
 
     def _get_map(self) -> Map:
         map_ = folium.Map(location=self.start_location, zoom_start=self.start_zoom, tiles="Stamen Terrain")
