@@ -3,6 +3,7 @@ from mission_editing.edit_mission import MissionEditor
 from interface.waypoint import WayPoint
 from typing import List, Tuple
 from folium import Map
+from interface.customLatLngPopup import CustomLatLngPopup
 
 from streamlit_folium import folium_static
 import streamlit as st
@@ -11,7 +12,6 @@ import base64
 import yaml
 import os
 import re
-
 
 class Interface:
     def __init__(self):
@@ -26,7 +26,7 @@ class Interface:
 
     def _get_map(self) -> Map:
         map_ = folium.Map(location=self.start_location, zoom_start=self.start_zoom, tiles="Stamen Terrain")
-        map_.add_child(folium.LatLngPopup())
+        map_.add_child(CustomLatLngPopup())
         return map_
 
     def _add_lines(self, waypoints: List[WayPoint]):
@@ -58,12 +58,13 @@ class Interface:
         wp_options = self.config['WayPointOptionToIcon']
         marker_colors = self.config['PlaneToColor']
 
-        c1, c2, c3, c4 = self._get_columns()
+        c1, c2, c3, c4, c5 = self._get_columns()
         viz = c3.checkbox("Visual Only")
+        c3.markdown("<div style='height:57px'></div>", unsafe_allow_html = True)    # Vertical spacing for button alignment
         agl = c4.checkbox("AGL")
         wp_name, wp_altitude, wp_type, aircraft_type = self._get_waypoint_data(c1, c2, wp_options, marker_colors)
         plane_name = self.config['DisplayToBackendName'][aircraft_type]
-        if c3.button("Apply"):
+        if c5.button("Apply"):
             marker_icon = folium.Icon(color=marker_colors[aircraft_type], icon=wp_options[wp_type], prefix='fa')
             marker = folium.Marker(point, draggable=False, popup=wp_name, icon=marker_icon).add_to(self.map)
             new_point = WayPoint(marker, point[0], point[1], wp_altitude, plane_name,
@@ -77,8 +78,10 @@ class Interface:
             self.map = self._get_map()
             self.current_wp = -1
 
+        c4.markdown("<div style='height:57px'></div>", unsafe_allow_html = True)    # Vertical spacing for button alignment
         self._undo(c4)
-        self._redo(c4)
+        c5.markdown("<div style='height:46px'></div>", unsafe_allow_html = True)    # Vertical spacing for button alignment
+        self._redo(c5)
 
     def _undo(self, c4: Column):
         if c4.button("Undo"):
@@ -99,6 +102,10 @@ class Interface:
     def render(self):
         self._add_point()
         folium_static(self.map, 1750, 500)
+
+        # Some custom CSS have all buttons the same width
+        st.markdown("<style>.stButton>button {width: 7.6em;} </style>", unsafe_allow_html = True)
+
         if st.button("Apply Changes To The Mission!"):
             me = MissionEditor("temp.miz")
             me.edit_waypoints(self.waypoints)
@@ -125,16 +132,15 @@ class Interface:
 
     @staticmethod
     def _get_columns() -> Tuple[Column, Column, Column, Column]:
-        c1, c2, c3, c4 = st.beta_columns((3, 3, 2, 1))
+        c1, c2, c3, c4, c5 = st.beta_columns((5, 5, 1, 1, 1))
         # Blank spaces to line up the columns in the UI
-        c3.text('')
-        c3.text('')
-        c4.text('')
-        c4.text('')
-        return c1, c2, c3, c4
+        c3.markdown("<div style='height:29px'></div>", unsafe_allow_html = True)
+        c4.markdown("<div style='height:29px'></div>", unsafe_allow_html = True)
+        c5.markdown("<div style='height:29px'></div>", unsafe_allow_html = True)
+        return c1, c2, c3, c4, c5
 
     @staticmethod
-    def _get_point(c1: Column) -> List[float, float]:
+    def _get_point(c1: Column):
         raw_point = c1.text_input(label='Point')
         point = [float(number) for number in re.findall(r'\d+\.\d+', raw_point)]
         return point
