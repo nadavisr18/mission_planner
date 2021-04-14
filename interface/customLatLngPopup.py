@@ -2,6 +2,7 @@ from folium import MacroElement
 from jinja2 import Template
 import folium
 
+
 # Custom LatLngPopup with copy to clipboard button
 class CustomLatLngPopup(MacroElement):
     """
