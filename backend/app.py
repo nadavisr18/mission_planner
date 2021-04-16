@@ -58,6 +58,26 @@ def add_waypoint(waypoint: WayPoint, session_id: str):
             return "Session ID doesn't exist"
 
 
+@app.delete("/waypoint/{session_id}/{waypoint_id}")
+def delete_waypoint(session_id: str, waypoint_id: str):
+    data = get_dictionary()
+    with open(f"temp_files\\dictionary.json", 'w') as file:
+        if session_id in data.keys():
+            existing_waypoints = data[session_id]['waypoints']
+            for i, wp in enumerate(existing_waypoints):
+                if wp['wp_id'] == waypoint_id:
+                    existing_waypoints.remove(wp)
+                    break
+            else:
+                json.dump(data, file)
+                return "No Such Waypoint"
+            data[session_id].update({'waypoints': existing_waypoints})
+            json.dump(data, file)
+        else:
+            json.dump(data, file)
+            return "Session ID doesn't exist"
+
+
 @app.post("/waypoint/{session_id}/{waypoint_id}")
 def update_waypoint(waypoint: WayPoint, session_id: str, waypoint_id: str):
     data = get_dictionary()
