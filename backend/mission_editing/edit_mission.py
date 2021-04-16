@@ -1,4 +1,4 @@
-from backend_interface.waypoint import WayPoint
+from backend.waypoint import WayPoint
 from typing import List, Tuple
 from slpp import slpp as lua
 import hashlib

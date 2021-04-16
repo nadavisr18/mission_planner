@@ -1,9 +1,8 @@
-from dataclasses import dataclass
 from folium import Marker
+from pydantic import BaseModel
 
 
-@dataclass
-class WayPoint:
+class WayPoint(BaseModel):
     marker: Marker = None
     lat: float = None
     lon: float = None
@@ -13,3 +12,4 @@ class WayPoint:
     name: str = None
     viz: bool = None
     alt_type: str = None
+    run_id: str = None
