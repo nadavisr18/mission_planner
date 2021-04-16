@@ -1,0 +1,87 @@
+body {
+    background-color: #2d3e50;
+    height: 100%;
+}
+
+#rootTable {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    border: none;
+}
+
+#rootTable_right {
+    width: 80%;
+}
+
+#mapid { 
+    height: 100%; 
+}
+
+#controlsTable {
+    height: 100%;
+    width: 100%;
+}
+
+.st-td {
+    height: 30px
+}
+
+.st {
+    font-family: 'Helvetica';
+    color: lightblue;
+    text-transform: uppercase;
+    border-top: 1px solid #add8e655;
+    padding-top: 3px;
+}
+
+.vf {
+    height: 100%;
+}
+
+.cc-tb .cc-tr .cc-td {
+    width: 100%;
+}
+
+.cc-tr {
+    height: 37px;
+}
+
+.inp {
+    color: lightgray;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    background-color: #212d3c;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.sym {
+    font-family: FontAwesome;
+}
+
+.btn {
+    background-color: #212d3c; /* Green */
+    border: none;
+    color: lightgray;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+  }

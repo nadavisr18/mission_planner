@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="select.css">
+        <link rel="stylesheet" href="switch.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+        <script src="https://kit.fontawesome.com/3899ccc5e3.js" crossorigin="anonymous"></script>
+        <script src="jquery.js"></script>
+        <script src="config.js"></script>
+        <script src="select.js" type="text/javascript"></script>
+        <script src="index.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <table id="rootTable">
+            <tr>
+                <td id="rootTable_left">
+                    <table id="controlsTable">
+                        <tr class="st-tr">
+                            <td class="st-td"><div class="st">Files management</div></td>
+                        </tr>
+                        <tr class="sc-td">
+                            <td class="sc-td">
+                                <button class="btn" style="width: 100%;">Upload mission file</button>
+                            </td>
+                        </tr>
+                        <tr class="st-tr">
+                            <td class="st-td"><div class="st">Waypoints</div></td>
+                        </tr>
+                        <tr class="sc-td">
+                            <td class="sc-td">
+                                <table class="cc-tb">
+                                    <tr class="cc-tr">
+                                        <td class="cc-td"><div class="sel-lbl">Name</div></td>
+                                        <td>
+                                            <input class="inp" type="number" id="waypoint-name">
+                                        </td>
+                                    </tr>
+                                    <tr class="cc-tr">
+                                        <td class="cc-td"><div class="sel-lbl">Altitude</div></td>
+                                        <td>
+                                            <input class="inp" type="number" id="waypoint-altitude">
+                                        </td>
+                                    </tr>
+                                    <tr class="cc-tr">
+                                        <td class="cc-td"><div class="sel-lbl"></div></td>
+                                        <td>
+                                            <label class="switch" style="position: relative; left: 60%;">
+                                                <input type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr class="cc-tr">
+                                        <td class="cc-td"><div class="sel-lbl">Type</div></td>
+                                        <td>
+                                            <div class="sel-div" style="width: 100%">
+                                                <select class="sel" id="waypoint-type"></select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="cc-tr">
+                                        <td class="cc-td"><div class="sel-lbl">Aircraft</div></td>
+                                        <td>
+                                            <div class="sel-div" style="width: 100%">
+                                                <select class="sel" id="waypoint-aircraft"></select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="st-tr">
+                            <td class="st-td"><div class="st">Radios</div></td>
+                        </tr>
+                        <tr class="sc-td">
+                            <td class="sc-td"></td>
+                        </tr>
+                        <tr class="st-tr">
+                            <td class="st-td"><div class="st">Weather</div></td>
+                        </tr>
+                        <tr class="sc-td">
+                            <td class="sc-td"></td>
+                        </tr>
+                        <tr class="st-tr">
+                            <td class="st-td"><div class="st">Kneeboard</div></td>
+                        </tr>
+                        <tr class="sc-td">
+                            <td class="sc-td"></td>
+                        </tr>
+                        <tr class="vf">
+                            <td class="vf"></td>
+                        </tr>
+                    </table>
+                </td>
+                <td id="rootTable_right">
+                    <div id="mapid"></div>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
