@@ -94,7 +94,7 @@ class MissionEditor:
     def _get_unit_path(unit_type: str, waypoints: List[WayPoint]) -> List[WayPoint]:
         output = []
         for wp in waypoints:
-            if (wp.aircraft == unit_type or wp.aircraft == "Everyone") and not wp.viz:
+            if wp.aircraft == unit_type or wp.aircraft == "Everyone":
                 output.append(wp)
         return output
 

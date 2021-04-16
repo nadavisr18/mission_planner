@@ -78,5 +78,21 @@ def update_waypoint(waypoint: WayPoint, session_id: str, waypoint_id: str):
             return "Session ID doesn't exist"
 
 
+@app.get("/process_mission/{session_id}")
+def process_mission(session_id: str):
+    data = get_dictionary()
+    if session_id in data.keys():
+        me = MissionEditor(f"temp_files\\missions\\{session_id}.miz")
+        waypoints = []
+        for waypoint in data[session_id]['waypoints']:
+            waypoints.append(WayPoint.parse_obj(waypoint))
+        me.edit_waypoints(waypoints)
+        with open(f"temp_files\\missions\\{session_id}.miz", 'r') as file:
+            output = Mission(data=file.read(), name=data[session_id]['mission_name'], session_id=session_id)
+            return output.dict()
+    else:
+        return "Session ID doesn't exist"
+
+
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=5000, log_level="info")
