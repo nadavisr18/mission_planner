@@ -2,6 +2,7 @@ from backend.mission_editing.edit_mission import MissionEditor
 from backend.data_types import Mission, WayPoint
 from backend.utils import *
 
+from typing import Union, List
 from fastapi import FastAPI
 import uvicorn
 import json
@@ -45,13 +46,18 @@ def delete_mission(session_id: str):
 
 
 @app.post("/waypoint/{session_id}")
-def add_waypoint(waypoint: WayPoint, session_id: str):
+def add_waypoint(waypoints: Union[List[WayPoint], WayPoint], session_id: str):
     data = get_dictionary()
+    waypoints = [waypoints] if type(waypoints) == WayPoint else waypoints
     with open(f"temp_files\\dictionary.json", 'w') as file:
         if session_id in data.keys():
             existing_waypoints = data[session_id]['waypoints']
-            existing_waypoints.append(waypoint.dict())
-            data[session_id].update({'waypoints': existing_waypoints})
+            for waypoint in waypoints:
+                if any([wp['wp_id']==waypoint.wp_id for wp in existing_waypoints]):
+                    json.dump(data, file)
+                    return "Cannot add an existing waypoint"
+                existing_waypoints.append(waypoint.dict())
+                data[session_id].update({'waypoints': existing_waypoints})
             json.dump(data, file)
         else:
             json.dump(data, file)
