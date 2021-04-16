@@ -1,9 +1,8 @@
-from backend.waypoint import WayPoint
+from backend.data_types.waypoint import WayPoint
 from typing import List, Tuple
 from slpp import slpp as lua
 import hashlib
 import zipfile
-import math
 
 
 class MissionEditor:
@@ -118,4 +117,4 @@ class MissionEditor:
 
 
 if __name__ == '__main__':
-    me = MissionEditor()
+    me = MissionEditor("backend\\temp_files\\missions\\temp.miz")

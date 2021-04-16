@@ -1,7 +1,7 @@
 from streamlit.delta_generator import DeltaGenerator as Column
-from backend_interface.customLatLngPopup import CustomLatLngPopup
-from mission_editing.edit_mission import MissionEditor
-from backend_interface.waypoint import WayPoint
+from backend.interface.customLatLngPopup import CustomLatLngPopup
+from backend.mission_editing.edit_mission import MissionEditor
+from backend.data_types.waypoint import WayPoint
 from typing import List, Tuple
 from folium import Map
 
@@ -23,7 +23,7 @@ class Interface:
         self.start_zoom = 7
         self.selected_mission = ""
         self.map = self._get_map()
-        self.config = self._get_config("backend_interface/config.yml")
+        self.config = self._get_config("backend/config.yml")
 
     def _get_map(self) -> Map:
         map_ = folium.Map(location=self.start_location, zoom_start=self.start_zoom, tiles="Stamen Terrain")
@@ -116,7 +116,7 @@ class Interface:
         st.markdown("<style>.stButton>button {width: 7.6em;} </style>", unsafe_allow_html=True)
 
         if st.button("Apply Changes To The Mission!"):
-            me = MissionEditor("temp.miz")
+            me = MissionEditor("backend\\temp.miz")
             me.edit_waypoints(self.waypoints)
             st.balloons()
             href = self._get_binary_file_downloader_html('temp.miz', file_label=self.selected_mission)

@@ -12,4 +12,4 @@ class WayPoint(BaseModel):
     name: str = None
     viz: bool = None
     alt_type: str = None
-    run_id: str = None
+    wp_id: str = None

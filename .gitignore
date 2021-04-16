@@ -3,3 +3,4 @@ test.json
 .idea/
 *.miz
 *.pyc
+*.json

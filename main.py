@@ -1,4 +1,4 @@
-from backend_interface.interface import get_interface
+from backend.interface.interface import get_interface
 
 
 # TODO: add kneeboards: https://forums.eagle.ru/topic/266375-fa-18c-kneeboard-suite-by-dimon/ | https://www.airgoons.com/w/Kneeboards
