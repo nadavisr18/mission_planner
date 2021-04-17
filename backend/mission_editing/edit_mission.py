@@ -7,6 +7,7 @@ class MissionEditor:
     def __init__(self, path: str):
         self.path = path
         self.buffer_list = self._get_buffer()
+        self.mission = self._get_data('mission')
 
     def _get_data(self, local_path: str) -> dict:
         with zipfile.ZipFile(self.path, mode='r') as archive:

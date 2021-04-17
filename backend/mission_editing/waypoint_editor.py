@@ -10,7 +10,6 @@ class WayPointEditor(MissionEditor):
         super().__init__(path)
         self.key2wp = {}
         self.map_center = {"y": 96596.571428573, 'x': 29807.0, 'lat': 35.021298, 'lon': 35.899957}
-        self.mission = self._get_data('mission')
         self.dictionary = self._get_data('l10n/DEFAULT/dictionary')
 
     def _update_dictionary(self):
@@ -30,7 +29,6 @@ class WayPointEditor(MissionEditor):
                         country_dict['plane']['group'][group] = group_dict
                         break
             self.mission['coalition']['blue']['country'][country] = country_dict
-        self._update_dictionary()
         self._save_lua_data({'mission': self.mission, 'l10n/DEFAULT/dictionary': self.dictionary})
 
     def _change_group_wp(self, group_data: dict, unit_type: str, waypoints: List[WayPoint]) -> dict:
@@ -42,14 +40,12 @@ class WayPointEditor(MissionEditor):
 
     def _add_waypoint(self, group_data: dict, wp: WayPoint, i: int):
         point = self.point_template()
-        wp_id = hashlib.sha256(wp.__repr__().encode()).hexdigest()[-4:]
         x, y = self._convert_waypoint(wp.lat, wp.lon)
         point.update({'alt': wp.altitude / 0.3048})  # altitude in mission file is meters
         point.update({'alt_type': wp.alt_type})
         point.update({'x': x})
         point.update({'y': y})
-        point.update({'name': 'DictKey_WptName_' + wp_id})
-        self.key2wp.update({'DictKey_WptName_' + wp_id: wp.name})
+        point.update({'name': wp.name})
         # waypoints start from 1 and we don't touch the first waypoint (spawn place), hence i + 2
         group_data['route']['points'].update({i + 2: point})
         return group_data

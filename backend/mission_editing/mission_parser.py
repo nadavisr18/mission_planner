@@ -4,7 +4,6 @@ from .edit_mission import MissionEditor
 class MissionParser(MissionEditor):
     def __init__(self, path: str):
         super().__init__(path)
-        self.mission = self._get_data('mission')
 
     def get_client_aircraft_types(self) -> list:
         types = []

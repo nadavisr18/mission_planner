@@ -1,4 +1,4 @@
-from backend.mission_editing import MissionParser
+from backend.mission_editing import MissionParser, RadiosEditor
 from backend.data_types import Mission
 from backend.utils import *
 
@@ -84,5 +84,36 @@ def get_aircraft_types(session_id: str):
         return "Session ID doesn't exist"
 
 
+@app.post("/radios/{session_id}")
+def set_radio_presets(presets: dict, session_id: str):
+    # presets is expected to look like
+    # {
+    #     "FA-18C": {
+    #         "1": {
+    #             "12": 260
+    #         }
+    #     }
+    # }
+    data = get_dictionary()
+    if session_id in data.keys():
+        path = f"backend\\temp_files\\missions\\{session_id}.miz"
+        re = RadiosEditor(path)
+        re.set_radios(presets)
+    else:
+        return "Session ID doesn't exist"
+
+
 if __name__ == "__main__":
+    # Syria map coords
+    # top left N37,21,56 E29,38,16 (37.365556, 29.637778)
+    # bottom right N32,09,11 E42,07,53 (32.153056, 42.131389)
+    # import numpy as np
+    # wps = []
+    # for i in range(1000):
+    #     lat = np.random.uniform(32.153056, 37.365556)
+    #     lon = np.random.uniform(29.637778, 42.131389)
+    #     wp = WayPoint(lat=lat, lon=lon, altitude=0, aircraft="F-16C_50", name=f"WP{i}", alt_type="RADIO", wp_id=str(i))
+    #     wps.append(wp.dict())
+    # with open("test.json", 'w') as file:
+    #     json.dump(wps, file)
     uvicorn.run("app:app", host="127.0.0.1", port=5000, log_level="info")
