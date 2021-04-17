@@ -1,3 +1,4 @@
+from backend.mission_editing import MissionParser
 from backend.data_types import Mission
 from backend.utils import *
 
@@ -60,13 +61,25 @@ def add_waypoints(waypoints: List[WayPoint], session_id: str):
 
 @app.get("/process_mission/{session_id}")
 def process_mission(session_id: str):
-    path = f"temp_files\\missions\\{session_id}.miz"
+    path = f"backend\\temp_files\\missions\\{session_id}.miz"
     data = get_dictionary()
     if session_id in data.keys():
         edit_waypoints(data, session_id, path)
         with open(path, 'rb') as file:
             output = Mission(data=file.read(), name=data[session_id]['mission_name'], session_id=session_id)
             return output.dict()
+    else:
+        return "Session ID doesn't exist"
+
+
+@app.get("/mission_details/aircraft_types/{session_id}")
+def get_aircraft_types(session_id: str):
+    path = f"backend\\temp_files\\missions\\{session_id}.miz"
+    data = get_dictionary()
+    if session_id in data.keys():
+        mp = MissionParser(path)
+        types = mp.get_client_aircraft_types()
+        return types
     else:
         return "Session ID doesn't exist"
 

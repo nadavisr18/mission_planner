@@ -10,8 +10,8 @@ class WayPointEditor(MissionEditor):
         super().__init__(path)
         self.key2wp = {}
         self.map_center = {"y": 96596.571428573, 'x': 29807.0, 'lat': 35.021298, 'lon': 35.899957}
-        self.mission, self.buffer_list = self._get_data('mission')
-        self.dictionary, _ = self._get_data('l10n/DEFAULT/dictionary')
+        self.mission = self._get_data('mission')
+        self.dictionary = self._get_data('l10n/DEFAULT/dictionary')
 
     def _update_dictionary(self):
         for key in self.key2wp:
@@ -31,7 +31,7 @@ class WayPointEditor(MissionEditor):
                         break
             self.mission['coalition']['blue']['country'][country] = country_dict
         self._update_dictionary()
-        self._save_data({'mission': self.mission, 'l10n/DEFAULT/dictionary': self.dictionary})
+        self._save_lua_data({'mission': self.mission, 'l10n/DEFAULT/dictionary': self.dictionary})
 
     def _change_group_wp(self, group_data: dict, unit_type: str, waypoints: List[WayPoint]) -> dict:
         unit_waypoints = self._get_unit_path(unit_type, waypoints)
