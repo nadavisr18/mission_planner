@@ -20,9 +20,9 @@
 }
 
 @keyframes error-color {
-    0% {background-color: #212d3c;}
-    50% {background-color: darkred;}
-    100% {background-color: #212d3c;}
+    0% {border: 1px solid transparent;}
+    50% {border: 1px solid darkred;}
+    100% {border: 1px solid transparent;}
 }
 
 /* Style the arrow inside the select element: */
