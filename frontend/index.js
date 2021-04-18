@@ -37,7 +37,6 @@ function setupPage(){
 
     /* Setup the multiselection objects */
     setupSelections();
-    
 }
 
 var mymap;

@@ -84,8 +84,7 @@ input[type=number] {
 }
 
 .btn {
-    background-color: #212d3c; /* Green */
-    border: none;
+    background-color: #212d3c;
     color: lightgray;
     padding: 10px 15px;
     text-align: center;
@@ -94,4 +93,32 @@ input[type=number] {
     font-size: 12px;
     text-transform: uppercase;
     font-family: 'Helvetica';
-  }
+    box-sizing: border-box;
+    cursor: pointer;
+    border: 1px solid #00000000;
+}
+
+.file {
+    background-color: #212d3c;
+    color: lightgray;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+}
+
+.success {
+    animation-name: success-color;
+    animation-duration: 0.5s;
+    animation-iteration-count: 3;
+}
+
+@keyframes success-color {
+    0% {border: 1px solid #00000000;}
+    50% {border: 1px solid green}
+    100% {border: 1px solid #00000000;}
+}
