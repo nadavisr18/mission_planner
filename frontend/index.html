@@ -6,16 +6,12 @@
         <link rel="stylesheet" href="select.css">
         <link rel="stylesheet" href="switch.css">
         <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/wtf-forms.css">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin=""/>
-        <!-- Make sure you put this AFTER Leaflet's CSS -->
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
         <script src="https://kit.fontawesome.com/3899ccc5e3.js" crossorigin="anonymous"></script>
         <script src="jquery.js" type="text/javascript"></script>
         <script src="config.js" type="text/javascript"></script>
+        <script src="icons.js" type="text/javascript"></script>
         <script src="map.js" type="text/javascript"></script>
         <script src="switch.js" type="text/javascript"></script>
         <script src="select.js" type="text/javascript"></script>
@@ -62,8 +58,8 @@
                                                     <td style="padding: 0px; border: 0px;"><input class="inp"  style="border: 0px;" type="number" id="waypoint-altitude" value = "0"></td>
                                                     <td style="padding: 0px; border: 0px; padding-left: 5px;">
                                                         <label class="switch">
-                                                            <input type="checkbox" id="waypoint-baro-radio" onchange="toggleSwitchText('waypoint-baro-radio', 'Radio', 'Baro')">
-                                                            <span class="slider-text round"><div class="slider-text-div" id="waypoint-baro-radio-label">Baro</div></span>
+                                                            <input type="checkbox" id="waypoint-baro-radio" onchange="toggleSwitchText('waypoint-baro-radio', 'AGL', 'ASL')">
+                                                            <span class="slider-text round"><div class="slider-text-div" id="waypoint-baro-radio-label">ASL</div></span>
                                                             <span class="slider round"></span>
                                                         </label>
                                                     </td>
@@ -85,6 +81,12 @@
                                             <div class="sel-div" id="waypoint-aircraft-div" style="width: 100%">
                                                 <select class="sel" id="waypoint-aircraft"></select>
                                             </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="cc-tr">
+                                        <td class="cc-td"><div class="sel-lbl"></div></td>
+                                        <td>
+                                            <span class="btn" id="upload-mission-file" style="width: 100%;" onClick="applyWaypointChange()">Apply</span>
                                         </td>
                                     </tr>
                                 </table>

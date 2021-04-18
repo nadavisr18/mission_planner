@@ -14,24 +14,6 @@ var markers = [];
 var lines = [];
 var selectedWaypoint = null;
 
-const crosshairsIcon = L.divIcon({
-    html: '<i class="fas fa-crosshairs" style="font-size: 24px"></i>',
-    iconSize: [26, 26],
-    className: 'crosshairsIcon'
-});
-
-const waypointIcon = L.divIcon({
-    html: '<i class="fas fa-chevron-circle-down" style="font-size: 24px; color: #212d3c;"></i>',
-    iconSize: [26, 40],
-    className: 'waypointIcon'
-});
-
-const waypointIconSelected = L.divIcon({
-    html: '<i class="fas fa-chevron-circle-down" style="font-size: 24px; color: #2196F3;"></i>',
-    iconSize: [26, 40],
-    className: 'waypointIcon'
-});
-
 function onMapClick(e) 
 {
     var obj;
@@ -140,65 +122,59 @@ function getLineColor(aircraft_type)
 
 function drawMap()
 {
-    var marker, polyline;
+    var marker, polyline, icon;
     for (var i = 0; i < waypoints.length; i++)
     {  
-        if (waypoints[i].type == "Route")
-        {
-            if (waypoints[i] === selectedWaypoint)
-            {
-                marker = L.marker(waypoints[i].latlng, {icon: waypointIconSelected}).on('click', markerClick).addTo(mymap);
-            }
-            else {
-                marker = L.marker(waypoints[i].latlng, {icon: waypointIcon}).on('click', markerClick).addTo(mymap);
-            }
-            markers.push(marker);
-        }
+        if (waypoints[i].type == "Anchor"){if (waypoints[i] === selectedWaypoint){icon = AnchorIconSelected;}else{icon=AnchorIcon;}}
+        if (waypoints[i].type == "Route"){if (waypoints[i] === selectedWaypoint){icon = RouteIconSelected;}else{icon=RouteIcon;}}
+        if (waypoints[i].type == "IP"){if (waypoints[i] === selectedWaypoint){icon = IPIconSelected;}else{icon=IPIcon;}}
+        if (waypoints[i].type == "Target"){if (waypoints[i] === selectedWaypoint){icon = TargetIconSelected;}else{icon=TargetIcon;}}
+        if (waypoints[i].type == "FAC"){if (waypoints[i] === selectedWaypoint){icon = FACIconSelected;}else{icon=FACIcon;}}
+        if (waypoints[i].type == "SAM"){if (waypoints[i] === selectedWaypoint){icon = SAMIconSelected;}else{icon=SAMIcon;}}
+        if (waypoints[i].type == "Home Base"){if (waypoints[i] === selectedWaypoint){icon = HomeBaseIconSelected;}else{icon=HomeBaseIcon;}}
+        if (waypoints[i].type == "Tanker"){if (waypoints[i] === selectedWaypoint){icon = TankerIconSelected;}else{icon=TankerIcon;}}
+        if (waypoints[i].type == "Contested Area"){if (waypoints[i] === selectedWaypoint){icon = ContestedAreaIconSelected;}else{icon=ContestedAreaIcon;}}
+        if (waypoints[i].type == "Bullseye"){if (waypoints[i] === selectedWaypoint){icon = BullseyeIconSelected;}else{icon=BullseyeIcon;}}
+        if (waypoints[i].type == "Airport"){if (waypoints[i] === selectedWaypoint){icon = AirportIconSelected;}else{icon=AirportIcon;}}
+        
+        marker = L.marker(waypoints[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
+        markers.push(marker);
     }
 
     for (var i = 0; i < waypoints.length; i++)
     {  
-        if (waypoints[i].type == "Route")
-        {
-            for (var j = i + 1; j < waypoints.length; j++)
-            {  
-                if (waypoints[j].type == "Route" && waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == "Everyone")
-                {
-                    polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(waypoints[i].aircraft)}).addTo(mymap);
-                    lines.push(polyline);
-                    break;
-                }
-            }    
-        }
+        for (var j = i + 1; j < waypoints.length; j++)
+        {  
+            if (waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == "Everyone")
+            {
+                polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(waypoints[i].aircraft)}).addTo(mymap);
+                lines.push(polyline);
+                break;
+            }
+        }    
     }
 
     for (k = 0; k < selections["waypoint-aircraft"].length - 1; k++)
     {
         for (var i = 0; i < waypoints.length; i++)
         {  
-            if (waypoints[i].type == "Route")
-            {
-                for (var j = i + 1; j < waypoints.length; j++)
-                {  
-                    if (waypoints[j].type == "Route")
-                    {
-                        if (waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == "Everyone") 
-                        {
-                            break;
-                        }
-                        var check1 = waypoints[i].aircraft == selections["waypoint-aircraft"][k] && waypoints[j].aircraft == selections["waypoint-aircraft"][k];
-                        var check2 = waypoints[i].aircraft == selections["waypoint-aircraft"][k] && waypoints[j].aircraft == "Everyone";
-                        var check3 = waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == selections["waypoint-aircraft"][k];
-                        if (check1 || check2 || check3)
-                        {
-                            polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(selections["waypoint-aircraft"][k])}).addTo(mymap);
-                            lines.push(polyline);
-                            i = j - 1; 
-                            break;
-                        }
-                    }
-                }    
-            }
+            for (var j = i + 1; j < waypoints.length; j++)
+            {  
+                if (waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == "Everyone") 
+                {
+                    break;
+                }
+                var check1 = waypoints[i].aircraft == selections["waypoint-aircraft"][k] && waypoints[j].aircraft == selections["waypoint-aircraft"][k];
+                var check2 = waypoints[i].aircraft == selections["waypoint-aircraft"][k] && waypoints[j].aircraft == "Everyone";
+                var check3 = waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == selections["waypoint-aircraft"][k];
+                if (check1 || check2 || check3)
+                {
+                    polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(selections["waypoint-aircraft"][k])}).addTo(mymap);
+                    lines.push(polyline);
+                    i = j - 1; 
+                    break;
+                } 
+            }    
         }
     }
 }
