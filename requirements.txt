@@ -14,7 +14,7 @@ cffi==1.14.5
 chardet==4.0.0
 click==7.1.2
 colorama==0.4.4
-dataclasses==0.8
+dataclasses
 decorator==5.0.6
 defusedxml==0.7.1
 dill==0.3.3
