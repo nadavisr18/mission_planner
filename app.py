@@ -1,5 +1,5 @@
-from backend.mission_editing.edit_mission import MissionEditor
-from backend.data_types import Mission, WayPoint
+from backend.mission_editing import MissionParser, RadiosEditor
+from backend.data_types import Mission
 from backend.utils import *
 
 from typing import Union, List
@@ -96,38 +96,46 @@ def delete_waypoint(session_id: str, waypoint_id: str):
             return "Session ID doesn't exist"
 
 
-@app.post("/waypoint/{session_id}/{waypoint_id}")
-def update_waypoint(waypoint: WayPoint, session_id: str, waypoint_id: str):
-    data = get_dictionary()
-    with open(f"backend\\temp_files\\dictionary.json", 'w') as file:
-        if session_id in data.keys():
-            existing_waypoints = data[session_id]['waypoints']
-            for i, wp in enumerate(existing_waypoints):
-                if wp['wp_id'] == waypoint_id:
-                    existing_waypoints[i] = waypoint.dict()
-                    break
-            else:
-                json.dump(data, file)
-                return "No Such Waypoint"
-            data[session_id].update({'waypoints': existing_waypoints})
-            json.dump(data, file)
-        else:
-            json.dump(data, file)
-            return "Session ID doesn't exist"
-
-
 @app.get("/process_mission/{session_id}")
 def process_mission(session_id: str):
+    path = f"backend\\temp_files\\missions\\{session_id}.miz"
     data = get_dictionary()
     if session_id in data.keys():
-        me = MissionEditor(f"backend\\temp_files\\missions\\{session_id}.miz")
-        waypoints = []
-        for waypoint in data[session_id]['waypoints']:
-            waypoints.append(WayPoint.parse_obj(waypoint))
-        me.edit_waypoints(waypoints)
-        with open(f"backend\\temp_files\\missions\\{session_id}.miz", 'r') as file:
+        edit_waypoints(data, session_id, path)
+        with open(path, 'rb') as file:
             output = Mission(data=file.read(), name=data[session_id]['mission_name'], session_id=session_id)
             return output.dict()
+    else:
+        return "Session ID doesn't exist"
+
+
+@app.get("/mission_details/aircraft_types/{session_id}")
+def get_aircraft_types(session_id: str):
+    path = f"backend\\temp_files\\missions\\{session_id}.miz"
+    data = get_dictionary()
+    if session_id in data.keys():
+        mp = MissionParser(path)
+        types = mp.get_client_aircraft_types()
+        return types
+    else:
+        return "Session ID doesn't exist"
+
+
+@app.post("/radios/{session_id}")
+def set_radio_presets(presets: dict, session_id: str):
+    # presets is expected to look like
+    # {
+    #     "FA-18C": {
+    #         "1": {
+    #             "12": 260
+    #         }
+    #     }
+    # }
+    data = get_dictionary()
+    if session_id in data.keys():
+        path = f"backend\\temp_files\\missions\\{session_id}.miz"
+        re = RadiosEditor(path)
+        re.set_radios(presets)
     else:
         return "Session ID doesn't exist"
 
