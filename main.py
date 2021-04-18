@@ -1,20 +1,13 @@
-from backend.interface.interface import get_interface
 
-
+# -------------------BACKEND-------------------
 # TODO: add kneeboards: https://forums.eagle.ru/topic/266375-fa-18c-kneeboard-suite-by-dimon/ | https://www.airgoons.com/w/Kneeboards
-# TODO: modify radio presets
 # TODO: randomize weather
 # TODO: save waypoint plans
-# TODO: create hashed temp file names
 # TODO: clean temp files every X time
 # TODO: add layers the user can load
-# TODO: add restAPI
 
-
-def main():
-    i = get_interface()
-    i.render()
-
-
-if __name__ == '__main__':
-    main()
+# -------------------FRONTEND-------------------
+# TODO: add radio tab that has a drop down of planes and looks like [channel] : [frequency]
+# TODO: When the user picks a waypoint type that's one of: target, SAM, airport, home base, contested area, have the altitude be 0 and AGL, and the fields will be greyed out
+# TODO: add toolbar with map type selection, undo and redo buttons, clear map button and more if you can think of any
+# TODO: add white background for waypoint symbols
