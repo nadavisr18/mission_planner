@@ -9,6 +9,7 @@ function styleSelections(){
         /* For each element, create a new DIV that will act as the selected item: */
         a = document.createElement("DIV");
         a.setAttribute("class", "select-selected");
+        a.setAttribute("id", x[i].id + "-selected")
         a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
         x[i].appendChild(a);
         /* For each element, create a new DIV that will contain the option list: */

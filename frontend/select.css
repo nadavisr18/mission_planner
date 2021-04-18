@@ -2,7 +2,7 @@
 .sel-div {
     position: relative;
     font-family: 'Helvetica';
-    font-size: 14px;
+    font-size: 12px;
 }
   
 .sel-div select {
@@ -11,6 +11,18 @@
 
 .select-selected {
     background-color: #212d3c;
+}
+
+.select-selected-err {
+    animation-name: error-color;
+    animation-duration: 0.5s;
+    animation-iteration-count: 3;
+}
+
+@keyframes error-color {
+    0% {background-color: #212d3c;}
+    50% {background-color: darkred;}
+    100% {background-color: #212d3c;}
 }
 
 /* Style the arrow inside the select element: */
@@ -61,9 +73,8 @@
 }
 
 .sel-lbl {
-    width: 100%;
     font-family: 'Helvetica';
-    font-size: 14px;
+    font-size: 12px;
     color: lightgray;
     text-transform: uppercase;
 }

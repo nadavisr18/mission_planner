@@ -13,8 +13,10 @@
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
         <script src="https://kit.fontawesome.com/3899ccc5e3.js" crossorigin="anonymous"></script>
-        <script src="jquery.js"></script>
-        <script src="config.js"></script>
+        <script src="jquery.js" type="text/javascript"></script>
+        <script src="config.js" type="text/javascript"></script>
+        <script src="map.js" type="text/javascript"></script>
+        <script src="switch.js" type="text/javascript"></script>
         <script src="select.js" type="text/javascript"></script>
         <script src="index.js" type="text/javascript"></script>
     </head>
@@ -40,28 +42,30 @@
                                     <tr class="cc-tr">
                                         <td class="cc-td"><div class="sel-lbl">Name</div></td>
                                         <td>
-                                            <input class="inp" type="number" id="waypoint-name">
+                                            <input class="inp" type="text" id="waypoint-name" value = "WP1">
                                         </td>
                                     </tr>
                                     <tr class="cc-tr">
-                                        <td class="cc-td"><div class="sel-lbl">Altitude</div></td>
-                                        <td>
-                                            <input class="inp" type="number" id="waypoint-altitude">
-                                        </td>
-                                    </tr>
-                                    <tr class="cc-tr">
-                                        <td class="cc-td"><div class="sel-lbl"></div></td>
-                                        <td>
-                                            <label class="switch" style="position: relative; left: 60%;">
-                                                <input type="checkbox">
-                                                <span class="slider round"></span>
-                                            </label>
+                                        <td class="cc-td"><div class="sel-lbl">Altitude [ft]</div></td>
+                                        <td style="padding: 0px; border: 0px;">
+                                            <table style="padding: 0px; margin: 0px; border: 0px; border-spacing: 1px;">
+                                                <tr style="padding: 0px; border: 0px;">
+                                                    <td style="padding: 0px; border: 0px;"><input class="inp"  style="border: 0px;" type="number" id="waypoint-altitude" value = "0"></td>
+                                                    <td style="padding: 0px; border: 0px; padding-left: 5px;">
+                                                        <label class="switch">
+                                                            <input type="checkbox" id="waypoint-baro-radio" onchange="toggleSwitchText('waypoint-baro-radio', 'Radio', 'Baro')">
+                                                            <span class="slider-text round"><div class="slider-text-div" id="waypoint-baro-radio-label">Baro</div></span>
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </td>
                                     </tr>
                                     <tr class="cc-tr">
                                         <td class="cc-td"><div class="sel-lbl">Type</div></td>
                                         <td>
-                                            <div class="sel-div" style="width: 100%">
+                                            <div class="sel-div" id="waypoint-type-div" style="width: 100%">
                                                 <select class="sel" id="waypoint-type"></select>
                                             </div>
                                         </td>
@@ -69,7 +73,7 @@
                                     <tr class="cc-tr">
                                         <td class="cc-td"><div class="sel-lbl">Aircraft</div></td>
                                         <td>
-                                            <div class="sel-div" style="width: 100%">
+                                            <div class="sel-div" id="waypoint-aircraft-div" style="width: 100%">
                                                 <select class="sel" id="waypoint-aircraft"></select>
                                             </div>
                                         </td>

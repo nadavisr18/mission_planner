@@ -1,2 +1,3 @@
-var selections = {"waypoint-type": ["Anchor", "Target"],
-                  "waypoint-aircraft": ["Viper", "Hornet"]};
+var selections = {"waypoint-type": ["Anchor", "Route", "IP", "Target", "FAC", "SAM", "Home Base", "Tanker", "Contested Area", "Bullseye", "Airport"],
+                  "waypoint-aircraft": ["Tomcat", "Mirage", "Harrier", "Viper", "Hornet", "Everyone"], // "Everyone" MUST be the last
+                  "lines-aircraft-colors": ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FFFF00", "#000000"]};
