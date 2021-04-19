@@ -1,7 +1,7 @@
 function styleSelections(){
     var x, i, j, l, ll, selElmnt, a, b, c;
-    /* Look for any elements with the class "sel-div": */
-    x = document.getElementsByClassName("sel-div");
+    /* Look for any elements with the class "selection-div": */
+    x = document.getElementsByClassName("selection-div");
     l = x.length;
     for (i = 0; i < l; i++) {
         selElmnt = x[i].getElementsByTagName("select")[0];

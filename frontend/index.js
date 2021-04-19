@@ -1,3 +1,4 @@
+/* Create the leaflet map, set the provider, and bind the click callbacks */
 function setupLeafletMap() {
     mymap = L.map('mapid').setView([33.47, 35.13], 7);
     mymap.on('click', onMapClick);
@@ -9,14 +10,15 @@ function setupLeafletMap() {
     }).addTo(mymap);
 }
 
+/* Read the configuration file and set the values of the dropdown selections */
 function setupSelections(){
-    var objs = document.getElementsByClassName("sel");
+    var objs = document.getElementsByClassName("selection");
     for (i = 0; i < objs.length; i++)
     {
         var values = selections[objs[i].id]
         var c;
         c = document.createElement("option");
-        c.text = "...";
+        c.text = "..."; /* The default value, to force the user to make sure he selected the right value */
         objs[i].options.add(c, 0);
         for (j = 0; j < values.length; j++)
         {
@@ -25,12 +27,13 @@ function setupSelections(){
             objs[i].options.add(c, j+1);
         }
     }
-    styleSelections();
+    styleSelections();  /* Set the style of our custom selections */
 }
 
+/* Setup the page */
 function setupPage(){
     /* Set the page of the main content height */
-    document.getElementById("rootTable").style.height = (window.innerHeight-20) + "px";
+    document.getElementById("root-table").style.height = (window.innerHeight-20) + "px";
 
     /* Setup the leaflet map */
     setupLeafletMap();
@@ -39,6 +42,6 @@ function setupPage(){
     setupSelections();
 }
 
-var mymap;
+/* Main loop */
 window.onload = setupPage;
 

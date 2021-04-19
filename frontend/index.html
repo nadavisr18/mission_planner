@@ -1,62 +1,103 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Page Title</title>
+        <title>Mission planner</title>
+        <!------------------- CSS --------------------->
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="select.css">
         <link rel="stylesheet" href="switch.css">
-        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/wtf-forms.css">
+        <!------------------- Leaflet --------------------->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+        <!------------------- Font Awesome --------------------->
         <script src="https://kit.fontawesome.com/3899ccc5e3.js" crossorigin="anonymous"></script>
+        <!------------------- Javascript --------------------->
         <script src="jquery.js" type="text/javascript"></script>
         <script src="config.js" type="text/javascript"></script>
         <script src="icons.js" type="text/javascript"></script>
         <script src="map.js" type="text/javascript"></script>
+        <script src="radio.js" type="text/javascript"></script>
         <script src="switch.js" type="text/javascript"></script>
         <script src="select.js" type="text/javascript"></script>
         <script src="REST.js" type="text/javascript"></script>
         <script src="index.js" type="text/javascript"></script>
     </head>
     <body>
-        <table id="rootTable">
+        <!-- Root table -->
+        <table id="root-table">
+            <tr id="toolbar-row">
+                <td>
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-undo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-redo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-eraser"></i></span></td>
+                            <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
+                            <td class="horizontal-fill"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
             <tr>
-                <td id="rootTable_left">
-                    <table id="controlsTable">
-                        <tr class="st-tr">
-                            <td class="st-td"><div class="st">Files management</div></td>
+                <!-- Left controls column -->
+                <td id="root-table-left">
+                    <table id="controls-table">
+                         <!------------------- Map section --------------------->
+                         <tr class="section-title-tr">
+                            <td class="section-title-td"><div class="section-title">Map data source</div></td>
                         </tr>
 
-                        <tr class="sc-td">
-                            <td class="sc-td">
+                        <tr class="section-content-td">
+                            <td class="section-content-td">
+                                <div class="selection-div" style="width: 100%;" id="map-provider">
+                                    <select class="selection" id="map-provider"></select>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!------------------- Files management section --------------------->
+                        <tr class="section-title-tr">
+                            <td class="section-title-td"><div class="section-title">Files management</div></td>
+                        </tr>
+
+                        <!-- Mission file select -->
+                        <tr class="section-content-td">
+                            <td class="section-content-td">
                                 <input type="file" id="mission-filename" class="file" style="width: 100%">
                             </td>
                         </tr>
                         
-                        <tr class="sc-td">
-                            <td class="sc-td">
-                                <span class="btn" id="upload-mission-file" style="width: 100%;" onClick="uploadMissionFile()">Upload mission file</span>
+                        <!-- Mission file upload -->
+                        <tr class="section-content-td">
+                            <td class="section-content-td">
+                                <span class="button" id="upload-mission-file" style="width: 100%;" onClick="uploadMissionFile()">Upload mission file</span>
                             </td>
                         </tr>
-                        <tr class="st-tr">
-                            <td class="st-td"><div class="st">Waypoints</div></td>
+
+                        <!------------------- Waypoints section --------------------->
+                        <tr class="section-title-tr">
+                            <td class="section-title-td"><div class="section-title">Waypoints</div></td>
                         </tr>
-                        <tr class="sc-td">
-                            <td class="sc-td">
-                                <table class="cc-tb">
-                                    <tr class="cc-tr">
-                                        <td class="cc-td"><div class="sel-lbl">Name</div></td>
-                                        <td>
-                                            <input class="inp" type="text" id="waypoint-name" value = "WP1">
-                                        </td>
+                        <tr class="section-content-tr">
+                            <td class="section-content-td">
+                                <!-- Waypoints insert/edit table -->
+                                <table class="content-table">
+                                    <!-- Waypoint name -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Name</div></td>
+                                        <td><input class="input" type="text" id="waypoint-name" value = "WP1"></td>
                                     </tr>
-                                    <tr class="cc-tr">
-                                        <td class="cc-td"><div class="sel-lbl">Altitude [ft]</div></td>
-                                        <td style="padding: 0px; border: 0px;">
-                                            <table style="padding: 0px; margin: 0px; border: 0px; border-spacing: 1px;">
-                                                <tr style="padding: 0px; border: 0px;">
-                                                    <td style="padding: 0px; border: 0px;"><input class="inp"  style="border: 0px;" type="number" id="waypoint-altitude" value = "0"></td>
-                                                    <td style="padding: 0px; border: 0px; padding-left: 5px;">
+                                    <!-- Waypoint altitude -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Altitude [ft]</div></td>
+                                        <td>
+                                            <!-- Altitude text input + ASL/AGL toggle switch -->
+                                            <table>
+                                                <tr>
+                                                    <td><input class="input" type="number" id="waypoint-altitude" value = "0"></td>
+                                                    <td style="padding-left: 5px;">
                                                         <label class="switch">
                                                             <input type="checkbox" id="waypoint-baro-radio" onchange="toggleSwitchText('waypoint-baro-radio', 'AGL', 'ASL')">
                                                             <span class="slider-text round"><div class="slider-text-div" id="waypoint-baro-radio-label">ASL</div></span>
@@ -67,55 +108,86 @@
                                             </table>
                                         </td>
                                     </tr>
-                                    <tr class="cc-tr">
-                                        <td class="cc-td"><div class="sel-lbl">Type</div></td>
+                                    <!-- Waypoint type -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Type</div></td>
                                         <td>
-                                            <div class="sel-div" id="waypoint-type-div" style="width: 100%">
-                                                <select class="sel" id="waypoint-type"></select>
+                                            <div class="selection-div" id="waypoint-type-div">
+                                                <select class="selection" id="waypoint-type"></select>
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="cc-tr">
-                                        <td class="cc-td"><div class="sel-lbl">Aircraft</div></td>
+                                    <!-- Waypoint aircraft -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Aircraft</div></td>
                                         <td>
-                                            <div class="sel-div" id="waypoint-aircraft-div" style="width: 100%">
-                                                <select class="sel" id="waypoint-aircraft"></select>
+                                            <div class="selection-div" id="waypoint-aircraft-div">
+                                                <select class="selection" id="waypoint-aircraft"></select>
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="cc-tr">
-                                        <td class="cc-td"><div class="sel-lbl"></div></td>
+                                    <!-- Apply/delete button -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label"></div></td>
                                         <td>
-                                            <span class="btn" id="upload-mission-file" style="width: 100%;" onClick="applyWaypointChange()">Apply</span>
+                                            <table>
+                                                <tr>
+                                                    <td><span class="button" style="width: 100%;" onClick="applyWaypointChange()">Apply</span></td>
+                                                    <td><span class="button" style="width: 100%;" onClick="deleteWaypoint()">Delete</span></td>
+                                                </tr>
+                                            </table>
                                         </td>
                                     </tr>
                                 </table>
                             </td>
                         </tr>
-                        <tr class="st-tr">
-                            <td class="st-td"><div class="st">Radios</div></td>
+
+                        <!------------------- Radios section --------------------->
+                        <tr class="section-title-tr">
+                            <td class="section-title-td"><div class="section-title">Radios</div></td>
                         </tr>
-                        <tr class="sc-td">
-                            <td class="sc-td"></td>
+                        <tr class="section-content-td">
+                            <td class="section-content-td">
+                                <table id="radio-table">
+                                    <tr>
+                                        <td><div class="selection-label" style="text-align: center;">Channel</div></td>
+                                        <td><div class="selection-label" style="text-align: center;">Frequency [MHz]</div></td>
+                                    </tr>
+                                    <tr id = "radio-0">
+                                        <td><input class="input" type="number" id="radio-channel-0" value = "0" onfocusout="applyRadioChange()"></td>
+                                        <td><input class="input" type="number" id="radio-frequency-0" value = "0" onfocusout="applyRadioChange()"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="button toolbar-button right-align" onClick="addRadioRow()" ><i class="fas fa-plus"></i></span></td>
+                                        <td><span class="button toolbar-button" onClick="removeRadioRow()"><i class="fas fa-minus"></i></span></td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
-                        <tr class="st-tr">
-                            <td class="st-td"><div class="st">Weather</div></td>
+
+                        <!------------------- Weather section --------------------->
+                        <tr class="section-title-tr">
+                            <td class="section-title-td"><div class="section-title">Weather</div></td>
                         </tr>
-                        <tr class="sc-td">
-                            <td class="sc-td"></td>
+                        <tr class="section-content-td">
+                            <td class="section-content-td"></td>
                         </tr>
-                        <tr class="st-tr">
-                            <td class="st-td"><div class="st">Kneeboard</div></td>
+
+                        <!------------------- Kneeboard section --------------------->
+                        <tr class="section-title-tr">
+                            <td class="section-title-td"><div class="section-title">Kneeboard</div></td>
                         </tr>
-                        <tr class="sc-td">
-                            <td class="sc-td"></td>
+                        <tr class="section-content-td">
+                            <td class="section-content-td"></td>
                         </tr>
-                        <tr class="vf">
-                            <td class="vf"></td>
+                        <tr class="vertical-fill">
+                            <td class="vertical-fill"></td>
                         </tr>
                     </table>
                 </td>
-                <td id="rootTable_right">
+
+                <!------------------- Leaflet map --------------------->
+                <td id="root-table-right">
                     <div id="mapid"></div>
                 </td>
             </tr>

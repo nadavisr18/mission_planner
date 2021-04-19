@@ -1,16 +1,31 @@
+/* Global properties */
 body {
     background-color: #2d3e50;
-    height: 100%;
+    margin-top: 0px; 
 }
 
-#rootTable {
+table {
     width: 100%;
     height: 100%;
+    padding: 0px; 
+    margin: 0px;
+    box-sizing: border-box;
     border-collapse: collapse;
     border: none;
 }
 
-#rootTable_right {
+textarea:focus, input:focus{
+    outline: none;
+    background-color: #33455e;
+}
+
+/* Id specific properties */
+#root-table-left {
+    width: 20%;
+    padding-right: 10px;
+}
+
+#root-table-right {
     width: 80%;
 }
 
@@ -18,16 +33,17 @@ body {
     height: 100%; 
 }
 
-#controlsTable {
+#controls-table {
     height: 100%;
     width: 100%;
 }
 
-.st-td {
-    height: 30px
+#toolbar-row {
+    height: 37px;
 }
 
-.st {
+/* Section title */
+.section-title {
     font-family: 'Helvetica';
     font-size: 14px;
     color: lightblue;
@@ -36,25 +52,19 @@ body {
     padding-top: 3px;
 }
 
-.vf {
-    height: 100%;
+.section-title-td {
+    height: 30px
 }
 
-.cc-tb .cc-tr {
-    padding: 0px;
-    border: 0px;
-}
-
-.cc-td {
+/* Content */
+.content-td {
     width: 120px;
-}
-
-.cc-tr {
     height: 37px;
 }
 
-.inp {
-    color: lightgray;
+/* Text input */
+.input {
+    color: #EEEEEE;
     padding: 8px 16px;
     border: 1px solid transparent;
     border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
@@ -67,26 +77,21 @@ body {
     font-size: 12px;
 }
 
-/* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
 }
 
-.sym {
-    font-family: FontAwesome;
-}
-
-.btn {
+/* Button */
+.button {
     background-color: #212d3c;
-    color: lightgray;
-    padding: 10px 15px;
+    color: #EEEEEE;
+    padding: 7px 15px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -95,12 +100,21 @@ input[type=number] {
     font-family: 'Helvetica';
     box-sizing: border-box;
     cursor: pointer;
-    border: 1px solid #00000000;
+    border: 1px solid transparent;
 }
 
+.button:hover{
+    background-color: #33455e;
+}
+
+.button:active{
+    background-color: #537099;
+}
+
+/* File select */
 .file {
     background-color: #212d3c;
-    color: lightgray;
+    color: #EEEEEE;
     padding: 10px 15px;
     text-align: center;
     text-decoration: none;
@@ -121,4 +135,40 @@ input[type=number] {
     0% {border: 1px solid #00000000;}
     50% {border: 1px solid green}
     100% {border: 1px solid #00000000;}
+}
+
+/* Toolbar */
+
+.toolbar-button {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    padding: 7px 7px;
+}
+
+.toolbar-select {
+    width: 150px;
+    height: 30px;
+    font-size: 14px;
+}
+
+.toolbar-td{
+    border: none;
+}
+
+.toolbar-spacer{
+    width: 20px;
+}
+
+/* Helpers */
+.vertical-fill {
+    height: 100%;
+}
+
+.horizontal-fill {
+    width: 100%;
+}
+
+.right-align {
+    float: right;
 }
