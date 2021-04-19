@@ -26,24 +26,20 @@
         <!-- Root table -->
         <table id="root-table">
             <tr id="toolbar-row">
-                <td>
-                </td>
-                <td>
-                    <table>
-                        <tr>
-                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-undo"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-redo"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-eraser"></i></span></td>
-                            <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
-                            <td class="horizontal-fill"></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
                 <!-- Left controls column -->
-                <td id="root-table-left">
+                <td id="root-table-left" rowspan="2">
                     <table id="controls-table">
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><img src="banner.png" height="75px"></td>
+                                        
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
                          <!------------------- Map section --------------------->
                          <tr class="section-title-tr">
                             <td class="section-title-td"><div class="section-title">Map data source</div></td>
@@ -185,7 +181,19 @@
                         </tr>
                     </table>
                 </td>
-
+                <td>
+                    <table>
+                        <tr>
+                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-undo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-redo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button"><i class="fas fa-eraser"></i></span></td>
+                            <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
+                            <td class="horizontal-fill"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
                 <!------------------- Leaflet map --------------------->
                 <td id="root-table-right">
                     <div id="mapid"></div>

@@ -42,6 +42,16 @@ textarea:focus, input:focus{
     height: 37px;
 }
 
+/* Page title*/
+.title {
+    font-family: 'Helvetica';
+    font-size: 20px;
+    color: lightblue;
+    text-transform: uppercase;
+    padding-top: 3px;
+    font-weight: bold;
+}
+
 /* Section title */
 .section-title {
     font-family: 'Helvetica';
@@ -171,4 +181,12 @@ input[type=number] {
 
 .right-align {
     float: right;
+}
+.icon-background{
+    background-color: #EEEEEE;
+    border-radius: 50%;
+    padding: 3px 3px 3px 3px;
+    height: 23px;
+    width: 23px;
+    border: 1px solid #212d3c;
 }
