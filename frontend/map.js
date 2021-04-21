@@ -1,16 +1,24 @@
 /* Waypoint class */
 class Waypoint {
-    constructor(latlng, type, aircraft, name, altitude, baroRadio) {
-      this.latlng = latlng;
-      this.type = type;
-      this.aircraft = aircraft;
-      this.name = name;
-      this.altitude = altitude;
-      this.baroRadio = baroRadio;
+    constructor(attributes) {
+
+      this.latlng = attributes.latlng;
+      this.type = attributes.type;
+      this.aircraft = attributes.aircraft;
+      this.name = attributes.name;
+      this.altitude = attributes.altitude;
+      this.baroRadio = attributes.baroRadio;
+    }
+
+    getAttributes()
+    {
+        return {latlng: this.latlng, type: this.type, aircraft: this.aircraft, name: this.name, altitude: this.altitude, baroRadio: this.baroRadio}
     }
 }
 
 /* Global variables */
+var waypointsHistory = [[]];
+var activeWaypointHistory = 0;
 var waypoints = [];
 var markers = [];
 var lines = [];
@@ -61,7 +69,8 @@ function onMapClick(e)
         /* If no waypoint is currently selected, add a new waypoint */
         if (selectedWaypoint === null)
         {
-            var waypoint = new Waypoint(e.latlng, waypoint_type, waypoint_aircraft, waypoint_name, waypoint_altitude, waypoint_baroRadio);
+            var attributes = {latlng: e.latlng, type: waypoint_type, aircraft: waypoint_aircraft, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
+            var waypoint = new Waypoint(attributes);
             waypoints.push(waypoint);
         }
         /* If a waypoint is selected, update its properties */
@@ -74,9 +83,8 @@ function onMapClick(e)
             selectedWaypoint.altitude = waypoint_altitude;
             selectedWaypoint.baroRadio = waypoint_baroRadio;
         }
-        /* Clean and redraw the map */
-        cleanMap();
-        drawMap();
+
+        applyMapChanges();
     }
 }
 
@@ -213,3 +221,101 @@ function markerClick(e)
     drawMap();
 }
 
+function mapUndo()
+{
+    if (activeWaypointHistory > 0)
+    { 
+        /* Unselect the selected waypoint */
+        selectedWaypoint = null;
+        activeWaypointHistory--;
+        waypoints = [...waypointsHistory[activeWaypointHistory]];
+        cleanMap();
+        drawMap();
+    }
+}
+
+function mapRedo()
+{
+    if (activeWaypointHistory < waypointsHistory.length - 1)
+    { 
+        /* Unselect the selected waypoint */
+        selectedWaypoint = null;
+        activeWaypointHistory++;
+        waypoints = [...waypointsHistory[activeWaypointHistory]];
+        cleanMap();
+        drawMap();
+    }
+}
+
+function applyWaypointChange()
+{
+    /* If no waypoint is currently selected, do nothing */
+    if (selectedWaypoint === null)
+    {
+        return
+    }
+    /* If a waypoint is selected, update its properties */
+    else 
+    {
+        /* Get the current values of the waypoint control inputs */
+        obj = document.getElementById("waypoint-name");
+        var waypoint_name =  obj.value;
+        obj = document.getElementById("waypoint-altitude");
+        var waypoint_altitude =  obj.value;
+        obj = document.getElementById("waypoint-type");
+        var waypoint_type =  obj.options[obj.selectedIndex].text;
+        obj = document.getElementById("waypoint-aircraft");
+        var waypoint_aircraft =  obj.options[obj.selectedIndex].text;
+        obj = document.getElementById("waypoint-baro-radio");
+        var waypoint_baroRadio =  obj.checked;
+
+        selectedWaypoint.type = waypoint_type;
+        selectedWaypoint.aircraft = waypoint_aircraft;
+        selectedWaypoint.name = waypoint_name;
+        selectedWaypoint.altitude = waypoint_altitude;
+        selectedWaypoint.baroRadio = waypoint_baroRadio;
+    }
+
+    applyMapChanges();
+}
+
+function applyMapChanges()
+{
+    /* Make a deep copy of the waypoints */
+    var newWaypoints = [];
+    for (i = 0; i < waypoints.length; i++)
+    {
+        newWaypoints.push(new Waypoint(waypoints[i].getAttributes()))
+    }
+
+    /* If we have undone some change, the new changes overwrite the old */
+    while (waypointsHistory.length > activeWaypointHistory + 1){
+        waypointsHistory.pop();
+    }        
+
+    waypointsHistory.push(newWaypoints);
+    activeWaypointHistory++;
+
+    /* Clean and redraw the map */
+    cleanMap();
+    drawMap();
+}
+
+function mapClear()
+{
+    waypoints = [];
+    applyMapChanges();
+}
+
+function deleteWaypoint()
+{
+    for (var i = 0; i < waypoints.length; i++)
+    {  
+        if (waypoints[i] === selectedWaypoint){
+            selectedWaypoint = null;
+            waypoints.splice(i, 1);
+            applyMapChanges();
+            return;
+        }
+    }
+}

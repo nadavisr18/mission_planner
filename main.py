@@ -9,12 +9,10 @@
 
 # -------------------FRONTEND-------------------
 # TODO: add radio tab that has a drop down of planes and looks like [channel] : [frequency]
-# TODO: When the user picks a waypoint type that's one of: target, SAM, airport, home base, contested area, have the altitude be 0 and AGL, and the fields will be greyed out
-# TODO: add toolbar with map type selection, undo and redo buttons, clear map button and more if you can think of any
+# TODO: add toolbar with map type selection more if you can think of any
 # TODO: add white background for waypoint symbols
 # TODO: have aircraft dropdown taken from the aircraft types that exist in the uploaded mission
 # TODO: grey out all fields until a mission has been uploaded
-
 
 # -------------------QUESTIONS-------------------
 # TODO: we have split the routes by airplane, but shouldn't we split them by flight? 

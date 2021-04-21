@@ -19,10 +19,30 @@ textarea:focus, input:focus{
     background-color: #33455e;
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+}
+
 /* Id specific properties */
 #root-table-left {
     width: 20%;
-    padding-right: 10px;
+    padding-right: 2px;
 }
 
 #root-table-right {
@@ -36,6 +56,9 @@ textarea:focus, input:focus{
 #controls-table {
     height: 100%;
     width: 100%;
+    display: block;
+    overflow-y: scroll;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
 }
 
 #toolbar-row {
@@ -182,11 +205,25 @@ input[type=number] {
 .right-align {
     float: right;
 }
-.icon-background{
+
+.icon-background {
     background-color: #EEEEEE;
     border-radius: 50%;
     padding: 3px 3px 3px 3px;
     height: 23px;
     width: 23px;
     border: 1px solid #212d3c;
+}
+
+.greyed {
+    background-color: #212d3c;
+    color: gray;
+}
+
+.greyed:hover{
+    background-color: #212d3c;
+}
+
+.greyed:active{
+    background-color: #212d3c;
 }

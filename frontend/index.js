@@ -42,6 +42,44 @@ function setupPage(){
     setupSelections();
 }
 
+/* Resize the table to vertically fill the page */
+function resizePage(){
+    /* Set the page of the main content height */
+    document.getElementById("root-table").style.height = (window.innerHeight-20) + "px";
+}
+
+function selectionCallback(id, i)
+{
+    var obj;
+    if (id == "waypoint-type-div")
+    {
+        obj = document.getElementById("waypoint-type");
+        var waypoint_type = obj.options[obj.selectedIndex].text;
+        if (waypoint_type == "Target" || waypoint_type == "SAM" || waypoint_type == "Airport" || waypoint_type == "Contested Area" || waypoint_type == "Home Base")
+        {
+            var input = document.getElementById("waypoint-altitude")
+            input.classList.add("greyed");
+            input.value = "0";
+            input.disabled = true;
+            document.getElementById("waypoint-baro-radio").checked = false;
+            
+        }
+        else 
+        {
+            var input = document.getElementById("waypoint-altitude")
+            input.classList.remove("greyed");
+            input.disabled = false;
+        }
+    }
+    else if (id == "waypoint-aircraft-div"){
+        obj = document.getElementById("waypoint-aircraft");
+        var waypoint_aircraft =  obj.options[obj.selectedIndex].text;
+        if (waypoint_aircraft != "..." && waypoint_aircraft != "Everyone") activateRadioInputs();
+        else deactivateRadioInputs();
+    }
+}
+
 /* Main loop */
 window.onload = setupPage;
+window.onresize = resizePage;
 
