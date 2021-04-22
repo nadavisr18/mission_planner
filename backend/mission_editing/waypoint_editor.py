@@ -19,6 +19,8 @@ class WayPointEditor(MissionEditor):
     def edit_waypoints(self, waypoints: List[WayPoint]):
         for country in self.mission['coalition']['blue']['country']:
             country_dict = self.mission['coalition']['blue']['country'][country]
+            if 'plane' not in country_dict.keys():
+                continue
             for group in country_dict['plane']['group']:
                 group_dict = country_dict['plane']['group'][group]
                 for unit in group_dict['units']:
