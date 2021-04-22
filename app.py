@@ -109,14 +109,14 @@ def process_mission(session_id: str):
         return "Session ID doesn't exist"
 
 
-@app.get("/mission_details/aircraft_types/{session_id}")
-def get_aircraft_types(session_id: str):
+@app.get("/mission_details/client_aircraft/{session_id}")
+def get_client_aircraft(session_id: str):
     path = f"backend\\temp_files\\missions\\{session_id}.miz"
     data = get_dictionary()
     if session_id in data.keys():
         mp = MissionParser(path)
-        types = mp.get_client_aircraft_types()
-        return types
+        types, names = mp.get_client_aircraft()
+        return [types, names]
     else:
         return "Session ID doesn't exist"
 

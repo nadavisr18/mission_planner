@@ -10,7 +10,6 @@ class WayPointEditor(MissionEditor):
         super().__init__(path)
         self.key2wp = {}
         self.map_center = {"y": 96596.571428573, 'x': 29807.0, 'lat': 35.021298, 'lon': 35.899957}
-        self.dictionary = self._get_data('l10n/DEFAULT/dictionary')
 
     def _update_dictionary(self):
         for key in self.key2wp:
