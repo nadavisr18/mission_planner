@@ -85,6 +85,31 @@ function closeAllSelect(elmnt) {
   }
 }
 
+function unstyleSelections()
+{
+  var x, i, j, l, ll, selElmnt, a, b, c;
+
+  x = document.getElementsByClassName("same-as-selected");
+  l = x.length;
+  while (x.length > 0){
+    x[0].remove();
+  }
+
+  x = document.getElementsByClassName("select-items");
+  l = x.length;
+  while (x.length > 0){
+    x[0].remove();
+  }
+
+  /* Look for any elements with the class "select-selected": */
+  x = document.getElementsByClassName("select-selected");
+  l = x.length;
+  while (x.length > 0){
+    x[0].remove();
+  }
+  
+}
+
 /* If the user clicks anywhere outside the select box,
 then close all select boxes: */
 document.addEventListener("click", closeAllSelect);

@@ -1,0 +1,11 @@
+.greyed {
+    color: gray;
+}
+
+.greyed:hover{
+    background-color: #212d3c;
+}
+
+.greyed:active{
+    background-color: #212d3c;
+}

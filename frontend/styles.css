@@ -214,16 +214,3 @@ input[type=number] {
     width: 23px;
     border: 1px solid #212d3c;
 }
-
-.greyed {
-    background-color: #212d3c;
-    color: gray;
-}
-
-.greyed:hover{
-    background-color: #212d3c;
-}
-
-.greyed:active{
-    background-color: #212d3c;
-}

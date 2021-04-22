@@ -104,6 +104,12 @@ function cleanMap()
 /* Retrieve the color of the line from the configuration file */
 function getLineColor(aircraft_type)
 {
+    obj = document.getElementById("waypoint-aircraft");
+    var waypoint_aircraft =  obj.options[obj.selectedIndex].text;
+    if (aircraft_type == waypoint_aircraft)
+        return "#EEEEEE";
+    return "#212d3c";
+    /*
     if (selections["waypoint-aircraft"].length != selections["lines-aircraft-colors"].length)
     {
         console.log("Number of aircraft types is different from number of line colors.");
@@ -115,7 +121,7 @@ function getLineColor(aircraft_type)
         {
             return selections["lines-aircraft-colors"][i];
         }
-    }
+    }*/
 }
 
 /* Draws the map adding markers, lines and polygons */
@@ -156,8 +162,14 @@ function drawMap()
         }    
     }
 
+    /* Make a list of all the aircraft which have a waypoint */
+    var activeAircraft = [];
+    for (var i = 0; i < waypoints.length; i++){
+        if (activeAircraft.indexOf(waypoints[i].aircraft) == -1) activeAircraft.push(waypoints[i].aircraft)
+    }
+
     /* Draw the aircraft specific lines */
-    for (k = 0; k < selections["waypoint-aircraft"].length - 1; k++)
+    for (k = 0; k < activeAircraft.length; k++)
     {
         /* Cycle on each "start" point */
         for (var i = 0; i < waypoints.length; i++)
@@ -172,13 +184,13 @@ function drawMap()
                 }
 
                 /* Check if we should draw an aircraft specifc line */
-                var check1 = waypoints[i].aircraft == selections["waypoint-aircraft"][k] && waypoints[j].aircraft == selections["waypoint-aircraft"][k];
-                var check2 = waypoints[i].aircraft == selections["waypoint-aircraft"][k] && waypoints[j].aircraft == "Everyone";
-                var check3 = waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == selections["waypoint-aircraft"][k];
+                var check1 = waypoints[i].aircraft == activeAircraft[k] && waypoints[j].aircraft == activeAircraft[k];
+                var check2 = waypoints[i].aircraft == activeAircraft[k] && waypoints[j].aircraft == "Everyone";
+                var check3 = waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == activeAircraft[k];
                 /* Draw the line */
                 if (check1 || check2 || check3)
                 {
-                    polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(selections["waypoint-aircraft"][k])}).addTo(mymap);
+                    polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(activeAircraft[k])}).addTo(mymap);
                     lines.push(polyline);
                     i = j - 1; 
                     break;

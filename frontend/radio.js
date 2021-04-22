@@ -6,7 +6,6 @@ function addRadioRow(){
     var waypoint_aircraft = obj.options[obj.selectedIndex].text;
     if (waypoint_aircraft != "..." && waypoint_aircraft != "Everyone")
     {
-
         activateRadioInputs();
         addNewRow(true);
     }
@@ -54,7 +53,6 @@ function checkFrequencyRanges(i){
 
 function cleanRadioTable()
 {
-    console.log("Cleaning")
     var table = document.getElementById("radio-table");
     var tableLength = table.getElementsByTagName('tr').length;
     var originalLength = tableLength;

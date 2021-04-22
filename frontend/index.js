@@ -15,19 +15,33 @@ function setupSelections(){
     var objs = document.getElementsByClassName("selection");
     for (i = 0; i < objs.length; i++)
     {
-        var values = selections[objs[i].id]
-        var c;
-        c = document.createElement("option");
-        c.text = "..."; /* The default value, to force the user to make sure he selected the right value */
-        objs[i].options.add(c, 0);
+        var values = selections[objs[i].id];
+        setupSelection(objs[i], values);
+    }
+    styleSelections();  /* Set the style of our custom selections */
+}
+
+/* Read the configuration file and set the values of the dropdown selections */
+function setupSelection(obj, values){
+    var c;
+    c = document.createElement("option");
+    c.text = "..."; /* The default value, to force the user to make sure he selected the right value */
+    var length = obj.options.length;
+    if (length > 0)
+    {
+        for (i = length-1; i >= 0; i--) {
+            obj.options[i].remove();
+        }
+    }   
+    obj.options.add(c, 0);
+    if (values){
         for (j = 0; j < values.length; j++)
         {
             c = document.createElement("option");
             c.text = values[j];
-            objs[i].options.add(c, j+1);
+            obj.options.add(c, j+1);
         }
     }
-    styleSelections();  /* Set the style of our custom selections */
 }
 
 /* Setup the page */
@@ -40,12 +54,23 @@ function setupPage(){
 
     /* Setup the multiselection objects */
     setupSelections();
+
+    /* Grey out all the the controls until a valid mission is uploaded */
+    deactivateInputs(['waypoint-name', 'waypoint-altitude', 'waypoint-baro-radio', 'waypoint-baro-radio-label', 'waypoint-aircraft-div-selected', 'waypoint-type-div-selected']);
 }
 
 /* Resize the table to vertically fill the page */
 function resizePage(){
     /* Set the page of the main content height */
     document.getElementById("root-table").style.height = (window.innerHeight-20) + "px";
+}
+
+function deactivateInputs(inputsIds){
+    for (i = 0; i < inputsIds.length; i++)
+    {
+        document.getElementById(inputsIds[i]).classList.add("greyed");
+        document.getElementById(inputsIds[i]).disabled = true;
+    }
 }
 
 function selectionCallback(id, i)
@@ -82,4 +107,3 @@ function selectionCallback(id, i)
 /* Main loop */
 window.onload = setupPage;
 window.onresize = resizePage;
-
