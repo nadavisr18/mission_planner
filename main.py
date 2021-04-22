@@ -5,7 +5,6 @@
 # TODO: save waypoint plans
 # TODO: clean temp files every X time
 # TODO: add layers the user can load
-# TODO: add group name to waypoint planner
 
 # -------------------FRONTEND-------------------
 # TODO: add radio tab that has a drop down of planes and looks like [channel] : [frequency]

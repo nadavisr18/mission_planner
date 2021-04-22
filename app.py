@@ -1,5 +1,5 @@
-from backend.mission_editing import MissionParser, RadiosEditor
-from backend.data_types import Mission
+from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor
+from backend.data_types import Mission, KneeboardPage
 from backend.utils import *
 
 from typing import Union, List
@@ -136,6 +136,17 @@ def set_radio_presets(presets: dict, session_id: str):
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         re = RadiosEditor(path)
         re.set_radios(presets)
+    else:
+        return "Session ID doesn't exist"
+
+
+@app.post('/kneeboard/{session_id}')
+def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
+    data = get_dictionary()
+    if session_id in data.keys():
+        path = f"backend\\temp_files\\missions\\{session_id}.miz"
+        ke = KneeboardEditor(path)
+        ke.add_page(page_data.data, page_data.aircraft)
     else:
         return "Session ID doesn't exist"
 
