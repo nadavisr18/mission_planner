@@ -13,18 +13,6 @@
     background-color: #212d3c;
 }
 
-.select-selected-err {
-    animation-name: error-color;
-    animation-duration: 0.5s;
-    animation-iteration-count: 3;
-}
-
-@keyframes error-color {
-    0% {border: 1px solid transparent;}
-    50% {border: 1px solid darkred;}
-    100% {border: 1px solid transparent;}
-}
-
 /* Style the arrow inside the select element: */
 .select-selected:after {
     position: absolute;

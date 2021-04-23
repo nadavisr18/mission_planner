@@ -49,7 +49,7 @@
 
                         <tr class="section-content-td">
                             <td class="section-content-td">
-                                <div class="selection-div" style="width: 100%;" id="map-provider">
+                                <div class="selection-div" style="width: 100%;" id="map-provider-div">
                                     <select class="selection" id="map-provider"></select>
                                 </div>
                             </td>
@@ -63,17 +63,13 @@
                         <!-- Mission file select -->
                         <tr class="section-content-td">
                             <td class="section-content-td">
-                                <input type="file" id="mission-filename" class="file" style="width: 100%">
+                                <label for="mission-file" id="mission-file-label" class="button" style="width: 100%;">
+                                    Upload mission file
+                                </label>
+                                <input type="file" id="mission-file" oninput="processMissionFile()" hidden>
                             </td>
                         </tr>
                         
-                        <!-- Mission file upload -->
-                        <tr class="section-content-td">
-                            <td class="section-content-td">
-                                <span class="button" id="upload-mission-file" style="width: 100%;" onClick="uploadMissionFile()">Upload mission file</span>
-                            </td>
-                        </tr>
-
                         <!------------------- Waypoints section --------------------->
                         <tr class="section-title-tr">
                             <td class="section-title-td"><div class="section-title">Waypoints</div></td>
@@ -85,7 +81,7 @@
                                     <!-- Waypoint name -->
                                     <tr class="content-tr">
                                         <td class="content-td"><div class="selection-label">Name</div></td>
-                                        <td><input class="input" type="text" id="waypoint-name" value = "WP1"></td>
+                                        <td><input class="input waypoint-input" type="text" id="waypoint-name" value = "WP1"></td>
                                     </tr>
                                     <!-- Waypoint altitude -->
                                     <tr class="content-tr">
@@ -94,11 +90,11 @@
                                             <!-- Altitude text input + ASL/AGL toggle switch -->
                                             <table>
                                                 <tr>
-                                                    <td><input class="input" type="number" id="waypoint-altitude" value = "0"></td>
+                                                    <td><input class="input waypoint-input" type="number" id="waypoint-altitude" value = "0"></td>
                                                     <td style="padding-left: 5px;">
                                                         <label class="switch">
-                                                            <input type="checkbox" id="waypoint-baro-radio" onchange="toggleSwitchText('waypoint-baro-radio', 'AGL', 'ASL')">
-                                                            <span class="slider-text round"><div class="slider-text-div" id="waypoint-baro-radio-label">ASL</div></span>
+                                                            <input type="checkbox" class="waypoint-input" id="waypoint-baro-radio" onchange="toggleSwitchText('waypoint-baro-radio', 'AGL', 'ASL')">
+                                                            <span class="slider-text round"><div class="slider-text-div waypoint-input" id="waypoint-baro-radio-label">ASL</div></span>
                                                             <span class="slider round"></span>
                                                         </label>
                                                     </td>
@@ -110,7 +106,7 @@
                                     <tr class="content-tr">
                                         <td class="content-td"><div class="selection-label">Type</div></td>
                                         <td>
-                                            <div class="selection-div" id="waypoint-type-div">
+                                            <div class="selection-div waypoint-input" id="waypoint-type-div">
                                                 <select class="selection" id="waypoint-type"></select>
                                             </div>
                                         </td>
@@ -119,7 +115,7 @@
                                     <tr class="content-tr">
                                         <td class="content-td"><div class="selection-label">Aircraft</div></td>
                                         <td>
-                                            <div class="selection-div" id="waypoint-aircraft-div">
+                                            <div class="selection-div waypoint-input" id="waypoint-aircraft-div">
                                                 <select class="selection" id="waypoint-aircraft"></select>
                                             </div>
                                         </td>
@@ -130,8 +126,8 @@
                                         <td>
                                             <table>
                                                 <tr>
-                                                    <td><span class="button" style="width: 100%;" onClick="applyWaypointChange()">Apply</span></td>
-                                                    <td><span class="button" style="width: 100%;" onClick="deleteWaypoint()">Delete</span></td>
+                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="applyWaypointChange()">Apply</span></td>
+                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="deleteWaypoint()">Delete</span></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -146,20 +142,72 @@
                         </tr>
                         <tr class="section-content-td">
                             <td class="section-content-td">
-                                <table id="radio-table">
-                                    <tr>
+                                <table id="radio-table-1">
+                                    <!-- Radio aircraft -->
+                                    <tr class="radio-not-row">
+                                        <td colspan="3">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">Aircraft</div></td>
+                                                    <td>
+                                                        <div class="selection-div waypoint-input" id="radio-aircraft-div">
+                                                        <select class="selection" id="radio-aircraft"></select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Radio label -->
+                                    <tr class="radio-not-row">
+                                        <td colspan="3">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">RADIO 1</div></td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="radio-not-row">
                                         <td style="width: 50px;"><div class="selection-label" style="text-align: center;">Chan.</div></td>
                                         <td style="width: 80px;"><div class="selection-label" style="text-align: center;">Freq. [MHz]</div></td>
                                         <td><div class="selection-label" style="text-align: center;">Label</div></td>
                                     </tr>
-                                    <tr id = "radio-0">
-                                        <td><input class="input greyed" type="number" id="radio-channel-0" value="1" oninput="checkChannelRanges(0)" onfocusout="applyRadioChange()" disabled></td>
-                                        <td><input class="input greyed" type="number" id="radio-frequency-0" value="123.50" oninput="checkFrequencyRanges(0)" onfocusout="applyRadioChange()" disabled></td>
-                                        <td><input class="input greyed" type="text" id="radio-label-0" value="No label" onfocusout="applyRadioChange()" disabled></td>
+                                    <tr class="radio-not-row">
+                                        <td colspan="3"><span class="button toolbar-button right-align radio-button" onClick="addRadioRow(1)"><i class="fas fa-plus"></i></span>
+                                        <span class="button toolbar-button right-align radio-button" onClick="removeRadioRow(1)"><i class="fas fa-minus"></i></span></td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="3"><span class="button toolbar-button right-align greyed" onClick="addRadioRow()" id="add-radio-button"><i class="fas fa-plus"></i></span>
-                                        <span class="button toolbar-button right-align greyed" onClick="removeRadioRow()" id="remove-radio-button"><i class="fas fa-minus"></i></span></td>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr class="section-content-td">
+                            <td class="section-content-td">
+                                <table id="radio-table-2">      
+                                    <!-- Radio label -->
+                                    <tr class="radio-not-row">
+                                        <td colspan="3">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">RADIO 2</div></td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>                             
+                                    <tr class="radio-not-row">
+                                        <td style="width: 50px;"><div class="selection-label" style="text-align: center;">Chan.</div></td>
+                                        <td style="width: 80px;"><div class="selection-label" style="text-align: center;">Freq. [MHz]</div></td>
+                                        <td><div class="selection-label" style="text-align: center;">Label</div></td>
+                                    </tr>
+                                    <tr class="radio-not-row">
+                                        <td colspan="3"><span class="button toolbar-button right-align radio-button" onClick="addRadioRow(2)"><i class="fas fa-plus"></i></span>
+                                        <span class="button toolbar-button right-align radio-button" onClick="removeRadioRow(2)"><i class="fas fa-minus"></i></span></td>
                                     </tr>
                                 </table>
                             </td>
@@ -178,7 +226,17 @@
                             <td class="section-title-td"><div class="section-title">Kneeboard</div></td>
                         </tr>
                         <tr class="section-content-td">
-                            <td class="section-content-td"></td>
+                            <td class="section-content-td">
+                                <!-- Kneeboard files select -->
+                                <tr class="section-content-td">
+                                    <td class="section-content-td">
+                                        <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
+                                            Upload kneeboard files
+                                        </label>
+                                        <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" hidden multiple>
+                                    </td>
+                                </tr>
+                            </td>
                         </tr>
                         <tr class="vertical-fill">
                             <td class="vertical-fill"></td>

@@ -6,14 +6,22 @@ function styleSelections(){
     l = x.length;
 
     for (i = 0; i < l; i++) {
+        /* Propagate the input class to the children */
+        var inputClass = "";
+        if (x[i].classList.contains("waypoint-input")) inputClass = "waypoint-input";
+
         selElmnt = x[i].getElementsByTagName("select")[0];
         ll = selElmnt.length;
 
         /* For each element, create a new DIV that will act as the selected item: */
         a = document.createElement("DIV");
-        a.setAttribute("class", "select-selected");
-        a.setAttribute("id", x[i].id + "-selected")
         a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+
+        if (inputClass != ""){
+          a.classList.add(inputClass);
+        }
+        a.classList.add("select-selected");
+        a.setAttribute("id", x[i].id + "-selected")
         x[i].appendChild(a);
 
         /* For each element, create a new DIV that will contain the option list: */
@@ -56,6 +64,7 @@ function styleSelections(){
             /* When the select box is clicked, close any other select boxes,
             and open/close the current select box: */
             e.stopPropagation();
+            if (this.classList.contains("greyed")) return;
             closeAllSelect(this);
             this.nextSibling.classList.toggle("select-hide");
             this.classList.toggle("select-arrow-active");

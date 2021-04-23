@@ -104,6 +104,7 @@ def process_mission(session_id: str):
         edit_waypoints(data, session_id, path)
         with open(path, 'rb') as file:
             output = Mission(data=file.read(), name=data[session_id]['mission_name'], session_id=session_id)
+            output.data = base64.encodebytes(output.data)
             return output.dict()
     else:
         return "Session ID doesn't exist"

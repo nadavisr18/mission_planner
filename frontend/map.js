@@ -14,6 +14,21 @@ class Waypoint {
     {
         return {latlng: this.latlng, type: this.type, aircraft: this.aircraft, name: this.name, altitude: this.altitude, baroRadio: this.baroRadio}
     }
+
+    getJSON()
+    {
+        var string = "";
+        string += '"lat":'+this.latlng.lat; string += ', ';
+        string += '"lng":'+this.latlng.lng; string += ', ';
+        string += '"altitude":'+this.altitude; string += ', ';
+        string += '"aicraft": "'+this.aircraft+'"'; string += ', ';
+        string += '"name":"'+this.name+'"'; string += ', ';
+        if (this.baroRadio == true){ string += '"alt_type":"RADIO"'; string += ', ';}
+        else {string += '"alt_type":"BARO"'; string += ', ';}
+        string += '"wp_id":"'+this.name+'"';
+
+        return '{'+string+'}';
+    }
 }
 
 /* Global variables */
@@ -24,6 +39,34 @@ var markers = [];
 var lines = [];
 var selectedWaypoint = null;
 var mymap;
+var tileLayer = null;
+
+/* Changle the tiles layer provider */
+function setMapProvider(mapProvider)
+{
+    if (tileLayer != null) mymap.removeLayer(tileLayer);
+    if (mapProvider == "OpenTopoMap"){
+        tileLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        });
+    } else if (mapProvider == "OpenStreetMap")
+    {
+        tileLayer =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            });
+    }
+    tileLayer.addTo(mymap);
+}
+
+/* Create the leaflet map, set the provider, and bind the click callbacks */
+function setupLeafletMap() {
+    mymap = L.map('mapid').setView([33.47, 35.13], 7);
+    mymap.on('click', onMapClick);
+    mymap.on('contextmenu', onMapRightClick)
+    setMapProvider("OpenTopoMap");
+}
 
 /* Left click callback */
 function onMapClick(e) 
@@ -45,23 +88,13 @@ function onMapClick(e)
     /* Check if the waypoint type was selected, otherwise play the error animation */
     if (waypoint_type == "...")
     {
-        var el = document.getElementById('waypoint-type-div-selected');
-        el.classList.remove('select-selected-err');
-        el.classList.add('select-selected-err');
-        el.style.animation = 'none';
-        el.offsetHeight; /* trigger reflow */
-        el.style.animation = null;
+        flashError(document.getElementById('waypoint-type-div-selected'));
     }
 
      /* Check if the waypoint aircraft was selected, otherwise play the error animation */
     if (waypoint_aircraft == "...")
     {
-        var el = document.getElementById('waypoint-aircraft-div-selected');
-        el.classList.remove('select-selected-err');
-        el.classList.add('select-selected-err');
-        el.style.animation = 'none';
-        el.offsetHeight; /* trigger reflow */
-        el.style.animation = null;
+        flashError(document.getElementById('waypoint-aircraft-div-selected'));
     }
 
     if (waypoint_type != "..." && waypoint_aircraft != "...")
@@ -107,21 +140,8 @@ function getLineColor(aircraft_type)
     obj = document.getElementById("waypoint-aircraft");
     var waypoint_aircraft =  obj.options[obj.selectedIndex].text;
     if (aircraft_type == waypoint_aircraft)
-        return "#EEEEEE";
+        return "#537099";
     return "#212d3c";
-    /*
-    if (selections["waypoint-aircraft"].length != selections["lines-aircraft-colors"].length)
-    {
-        console.log("Number of aircraft types is different from number of line colors.");
-        return "#FFFFFF";
-    }
-    for (var i = 0; i < selections["waypoint-aircraft"].length; i++)
-    {
-        if (selections["waypoint-aircraft"][i] == aircraft_type)
-        {
-            return selections["lines-aircraft-colors"][i];
-        }
-    }*/
 }
 
 /* Draws the map adding markers, lines and polygons */
@@ -131,18 +151,44 @@ function drawMap()
     for (var i = 0; i < waypoints.length; i++)
     {  
         /* Draw the marker and add the selected/unselected icon */
-        if (waypoints[i].type == "Anchor"){if (waypoints[i] === selectedWaypoint){icon = AnchorIconSelected;} else {icon=AnchorIcon;}}
-        if (waypoints[i].type == "Route"){if (waypoints[i] === selectedWaypoint){icon = RouteIconSelected;} else {icon=RouteIcon;}}
-        if (waypoints[i].type == "IP"){if (waypoints[i] === selectedWaypoint){icon = IPIconSelected;} else {icon=IPIcon;}}
-        if (waypoints[i].type == "Target"){if (waypoints[i] === selectedWaypoint){icon = TargetIconSelected;} else {icon=TargetIcon;}}
-        if (waypoints[i].type == "FAC"){if (waypoints[i] === selectedWaypoint){icon = FACIconSelected;} else {icon=FACIcon;}}
-        if (waypoints[i].type == "SAM"){if (waypoints[i] === selectedWaypoint){icon = SAMIconSelected;} else {icon=SAMIcon;}}
-        if (waypoints[i].type == "Home Base"){if (waypoints[i] === selectedWaypoint){icon = HomeBaseIconSelected;} else {icon=HomeBaseIcon;}}
-        if (waypoints[i].type == "Tanker"){if (waypoints[i] === selectedWaypoint){icon = TankerIconSelected;} else {icon=TankerIcon;}}
-        if (waypoints[i].type == "Contested Area"){if (waypoints[i] === selectedWaypoint){icon = ContestedAreaIconSelected;} else {icon=ContestedAreaIcon;}}
-        if (waypoints[i].type == "Bullseye"){if (waypoints[i] === selectedWaypoint){icon = BullseyeIconSelected;} else {icon=BullseyeIcon;}}
-        if (waypoints[i].type == "Airport"){if (waypoints[i] === selectedWaypoint){icon = AirportIconSelected;} else {icon=AirportIcon;}}
+        var html = `
+        <table>
+            <tr>
+                <td class="icon-text">
+                    $waypoint-type$
+                <td>
+            </tr>
+            <tr>
+                <td class="icon-symbol">
+                    $icon$
+                <td>
+            </tr>
+            <tr>    
+                <td class="icon-text">
+                    $waypoint-name$
+                <td>
+            </tr>
+        </table>
+        `;
+
+        html = html.replace('$waypoint-type$', waypoints[i].aircraft);
+        if (selectedWaypoint == waypoints[i])
+        {
+            html = html.replace('$icon$', iconSelectedHtmls[waypoints[i].type]);
+        } 
+        else 
+        {
+            html = html.replace('$icon$', iconHtmls[waypoints[i].type]);
+        }
         
+        html = html.replace('$waypoint-name$', waypoints[i].name);
+
+        var icon = L.divIcon({
+            html: html,
+            iconSize: [80, 80],
+            className: waypoints[i].type
+        });
+
         /* Add the marker */
         marker = L.marker(waypoints[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
         markers.push(marker);
