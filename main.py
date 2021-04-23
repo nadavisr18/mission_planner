@@ -10,5 +10,7 @@
 # -------------------FRONTEND-------------------
 # TODO: fix size of icons
 # TODO: what are the acceptable image formats for the kneeboard?
+# TODO: add discord link
+# TODO: add list of uploaded kneeboard files
 
 
