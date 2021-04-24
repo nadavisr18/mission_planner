@@ -6,10 +6,18 @@ import base64
 class KneeboardEditor(MissionEditor):
     def __init__(self, path: str):
         super().__init__(path)
-        self.kneeboard_path = "KNEEBOARD\\IMAGES"
 
-    def add_page(self, data: bytes, aircraft: str):
+    def add_page(self, data: bytes, name: str, aircraft: str):
         if aircraft.lower() != "everyone":
-            self.kneeboard_path.replace("\\", f"\\{aircraft}\\")
+            path = f"KNEEBOARD\\IMAGES\\{aircraft}\\{name}"
+        else:
+            path = f"KNEEBOARD\\IMAGES\\{name}"
         binary_data = base64.decodebytes(data)
-        self._save_binary_data({self.kneeboard_path: binary_data})
+        self._save_binary_data({path: binary_data})
+
+    def remove_page(self, name: str, aircraft: str):
+        if aircraft.lower() != "everyone":
+            path = f"KNEEBOARD\\IMAGES\\{aircraft}\\{name}"
+        else:
+            path = f"KNEEBOARD\\IMAGES\\{name}"
+        self._remove_file(path)

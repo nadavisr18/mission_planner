@@ -23,6 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def is_alive():
     return "I'm Alive!"
@@ -65,7 +66,7 @@ def add_waypoint(waypoints: Union[List[WayPoint], WayPoint], session_id: str):
         if session_id in data.keys():
             existing_waypoints = data[session_id]['waypoints']
             for waypoint in waypoints:
-                if any([wp['wp_id']==waypoint.wp_id for wp in existing_waypoints]):
+                if any([wp['wp_id'] == waypoint.wp_id for wp in existing_waypoints]):
                     json.dump(data, file)
                     return "Cannot add an existing waypoint"
                 existing_waypoints.append(waypoint.dict())
@@ -148,6 +149,17 @@ def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         ke = KneeboardEditor(path)
         ke.add_page(page_data.data, page_data.aircraft)
+    else:
+        return "Session ID doesn't exist"
+
+
+@app.delete('/kneeboard/{session_id}')
+def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
+    data = get_dictionary()
+    if session_id in data.keys():
+        path = f"backend\\temp_files\\missions\\{session_id}.miz"
+        ke = KneeboardEditor(path)
+        ke.remove_page(page_data.name, page_data.aircraft)
     else:
         return "Session ID doesn't exist"
 
