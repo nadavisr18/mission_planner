@@ -1,8 +1,8 @@
-from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor
-from backend.data_types import Mission, KneeboardPage
+from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor, WeatherEditor
+from backend.data_types import Mission, KneeboardPage, WeatherData
 from backend.utils import *
 
-from typing import Union, List
+from typing import Union, List, Tuple
 from fastapi import FastAPI
 import uvicorn
 import json
@@ -148,7 +148,7 @@ def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         ke = KneeboardEditor(path)
-        ke.add_page(page_data.data, page_data.aircraft)
+        ke.add_page(page_data.data, page_data.name, page_data.aircraft)
     else:
         return "Session ID doesn't exist"
 
@@ -160,6 +160,18 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         ke = KneeboardEditor(path)
         ke.remove_page(page_data.name, page_data.aircraft)
+    else:
+        return "Session ID doesn't exist"
+
+
+@app.post('/weather/{session_id}')
+def change_weather(weather_data: WeatherData):
+    data = get_dictionary()
+    if weather_data.session_id in data.keys():
+        path = f"backend\\temp_files\\missions\\{weather_data.session_id}.miz"
+        we = WeatherEditor(path)
+        condition, wind_dir, wind_speed = we.change_weather(weather_data.city, weather_data.time)
+        return [condition, wind_dir, wind_speed]
     else:
         return "Session ID doesn't exist"
 

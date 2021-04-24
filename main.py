@@ -5,7 +5,6 @@
 # TODO: save waypoint plans
 # TODO: clean temp files every X time
 # TODO: add layers the user can load
-# TODO: add endpoint to remove a file from the kneeboard
 
 # -------------------FRONTEND-------------------
 # TODO: fix size of icons
