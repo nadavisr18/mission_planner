@@ -2,6 +2,7 @@
 # -------------------BACKEND-------------------
 # TODO: add kneeboards: https://forums.eagle.ru/topic/266375-fa-18c-kneeboard-suite-by-dimon/ | https://www.airgoons.com/w/Kneeboards
 # TODO: randomize weather
+# TODO: add customizable weather options
 # TODO: save waypoint plans
 # TODO: clean temp files every X time
 # TODO: add layers the user can load
@@ -21,4 +22,4 @@
 # TODO: increase outline in waypoint text
 # TODO: add color mappings for each aircraft for DCS
 # TODO: weather!
-
+# TODO: fix - when un-collapsing the waypoint section it does the red error halo
