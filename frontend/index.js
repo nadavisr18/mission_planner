@@ -116,6 +116,16 @@ function selectionCallback(id, i)
         deactivateRadio(2);
         if (radio_aircraft != "...") activateRadio(2);
     }
+    else if (id == "kneeboard-aircraft-div"){
+        obj = document.getElementById("kneeboard-aircraft");
+        var kneeboard_aircraft = obj.options[obj.selectedIndex].text;
+        if (kneeboard_aircraft != "...") 
+        {   
+            activateInputs("kneeboard-input");
+            hideKneeboardFiles();
+            showKneeboardFiles();
+        }
+    }
     else if (id == "map-provider-div"){
         obj = document.getElementById("map-provider");
         var map_provider = obj.options[obj.selectedIndex].text;
@@ -144,6 +154,34 @@ function flashSuccess(el)
     el.style.animation = 'none';
     el.offsetHeight; /* trigger reflow */
     el.style.animation = null;
+}
+
+function expandSection(section)
+{
+    var els = document.getElementsByClassName(section)
+    for (i = 0; i < els.length; i++) 
+    {
+        els[i].style.display = 'table-cell';
+    }
+
+    var arrow = document.getElementById(section+"-arrow");
+    arrow.classList.remove("fa-arrow-circle-down")
+    arrow.classList.add("fa-arrow-circle-up") 
+    arrow.setAttribute("onClick", "collapseSection('"+section+"')");
+}
+
+function collapseSection(section)
+{
+    var els = document.getElementsByClassName(section)
+    for (i = 0; i < els.length; i++) 
+    {
+        els[i].style.display = 'none';
+    }
+
+    var arrow = document.getElementById(section+"-arrow");
+    arrow.classList.remove("fa-arrow-circle-up")
+    arrow.classList.add("fa-arrow-circle-down") 
+    arrow.setAttribute("onClick", "expandSection('"+section+"')");
 }
 
 

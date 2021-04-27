@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Mission planner</title>
+        <link rel="icon" href="patch.png">
         <!------------------- CSS --------------------->
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="select.css">
@@ -18,6 +19,7 @@
         <script src="icons.js" type="text/javascript"></script>
         <script src="map.js" type="text/javascript"></script>
         <script src="radio.js" type="text/javascript"></script>
+        <script src="kneeboard.js" type="text/javascript"></script>
         <script src="switch.js" type="text/javascript"></script>
         <script src="select.js" type="text/javascript"></script>
         <script src="REST.js" type="text/javascript"></script>
@@ -35,8 +37,7 @@
                             <td>
                                 <table>
                                     <tr>
-                                        <td><img src="banner.png" height="75px"></td>
-                                        
+                                        <td><a href="https://discord.gg/q38YbxsDav"><img src="banner.png" height="75px"></a></td>
                                     </tr>
                                 </table>
                             </td>
@@ -44,11 +45,18 @@
 
                          <!------------------- Map section --------------------->
                          <tr class="section-title-tr">
-                            <td class="section-title-td"><div class="section-title">Map data source</div></td>
+                             <td>
+                             <table>
+                                 <tr class="section-title-td section-title">
+                                    <td >Map data source</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='map-provider-section-arrow' onclick="collapseSection('map-provider-section')"></i></td>
+                                 </tr>
+                             </table>
+                            </td>
                         </tr>
 
                         <tr class="section-content-td">
-                            <td class="section-content-td">
+                            <td class="section-content-td map-provider-section">
                                 <div class="selection-div" style="width: 100%;" id="map-provider-div">
                                     <select class="selection" id="map-provider"></select>
                                 </div>
@@ -57,12 +65,19 @@
 
                         <!------------------- Files management section --------------------->
                         <tr class="section-title-tr">
-                            <td class="section-title-td"><div class="section-title">Files management</div></td>
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td >Files management</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='files-management-section-arrow' onclick="collapseSection('files-management-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
 
                         <!-- Mission file select -->
                         <tr class="section-content-td">
-                            <td class="section-content-td">
+                            <td class="section-content-td files-management-section">
                                 <label for="mission-file" id="mission-file-label" class="button" style="width: 100%;">
                                     Upload mission file
                                 </label>
@@ -72,10 +87,17 @@
                         
                         <!------------------- Waypoints section --------------------->
                         <tr class="section-title-tr">
-                            <td class="section-title-td"><div class="section-title">Waypoints</div></td>
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td >Waypoints</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='waypoints-section-arrow' onclick="collapseSection('waypoints-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         <tr class="section-content-tr">
-                            <td class="section-content-td">
+                            <td class="section-content-td waypoints-section">
                                 <!-- Waypoints insert/edit table -->
                                 <table class="content-table">
                                     <!-- Waypoint name -->
@@ -138,10 +160,17 @@
 
                         <!------------------- Radios section --------------------->
                         <tr class="section-title-tr">
-                            <td class="section-title-td"><div class="section-title">Radios</div></td>
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td>Radios</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='radios-section-arrow' onclick="collapseSection('radios-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         <tr class="section-content-td">
-                            <td class="section-content-td">
+                            <td class="section-content-td radios-section">
                                 <table id="radio-table-1">
                                     <!-- Radio aircraft -->
                                     <tr class="radio-not-row">
@@ -186,7 +215,7 @@
                         </tr>
 
                         <tr class="section-content-td">
-                            <td class="section-content-td">
+                            <td class="section-content-td radios-section">
                                 <table id="radio-table-2">      
                                     <!-- Radio label -->
                                     <tr class="radio-not-row">
@@ -215,27 +244,58 @@
 
                         <!------------------- Weather section --------------------->
                         <tr class="section-title-tr">
-                            <td class="section-title-td"><div class="section-title">Weather</div></td>
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td >Weather</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='weather-section-arrow' onclick="collapseSection('weather-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         <tr class="section-content-td">
-                            <td class="section-content-td"></td>
+                            <td class="section-content-td weather-section"></td>
                         </tr>
 
                         <!------------------- Kneeboard section --------------------->
                         <tr class="section-title-tr">
-                            <td class="section-title-td"><div class="section-title">Kneeboard</div></td>
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td>Kneeboard</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='kneeboard-section-arrow' onclick="collapseSection('kneeboard-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         <tr class="section-content-td">
-                            <td class="section-content-td">
+                            <td class="section-content-td kneeboard-section">
                                 <!-- Kneeboard files select -->
-                                <tr class="section-content-td">
-                                    <td class="section-content-td">
-                                        <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
-                                            Upload kneeboard files
-                                        </label>
-                                        <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" hidden multiple>
-                                    </td>
-                                </tr>
+                                <table id="kneeboard-table" style="padding:5px;">
+                                    <!-- Radio aircraft -->
+                                    <tr class="kneeboard-not-row">
+                                        <td colspan="2">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">Aircraft</div></td>
+                                                    <td>
+                                                        <div class="selection-div waypoint-input" id="kneeboard-aircraft-div">
+                                                        <select class="selection" id="kneeboard-aircraft"></select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr class="section-content-td kneeboard-not-row">
+                                        <td class="section-content-td" colspan="2">
+                                            <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
+                                                Upload kneeboard files
+                                            </label>
+                                            <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" accept="image/png, image/jpeg" hidden multiple>
+                                        </td>
+                                    </tr>
+                                </table>
                             </td>
                         </tr>
                         <tr class="vertical-fill">

@@ -8,12 +8,12 @@ function RESTerror()
     if (fileUploaded == true)
     {
         document.getElementById("mission-file-label").innerHTML = "Download mission file";
-        
     } 
     else 
     {
         document.getElementById("mission-file-label").innerHTML = "Upload mission file";
     }
+    document.getElementById("kneeboard-files-label").innerHTML = "Upload kneeboard files";
     alert("An error occurred while performing the requested operation")
 }
 
@@ -134,9 +134,9 @@ function readAircraftList(data, textStatus, jqXHR)
     data = data[0]; // Get the aircraft list
     document.getElementById("mission-file-label").innerHTML = "Download mission file";
     activateInputs('waypoint-input');
-    activateInputs('kneeboard-input');
     setupSelection(document.getElementById("radio-aircraft"), data);
     data.push("Everyone");
+    setupSelection(document.getElementById("kneeboard-aircraft"), data);
     setupSelection(document.getElementById("waypoint-aircraft"), data);
     unstyleSelections();
     styleSelections();
@@ -168,15 +168,19 @@ function processKneeboardFiles()
 
 function uploadKneeboardFiles()
 {
-    file = kneeboardFiles[kneeboardFilesIndex];
-
+    var file = kneeboardFiles[kneeboardFilesIndex];
     var reader = new FileReader();
     
     reader.onload = function () {
         var base64EncodedStr = btoa(reader.result);
+        
+        var obj = document.getElementById("kneeboard-aircraft");
+        var kneeboard_aircraft = obj.options[obj.selectedIndex].text;
+
         var form = new FormData();
-        form.append("aircraft", "test");
         form.append("data", base64EncodedStr);
+        form.append("aircraft", kneeboard_aircraft);
+        form.append("name", file.name);
 
         $.ajax({
             url: serverAddress+"/kneeboard/"+sessionId,
@@ -196,10 +200,41 @@ function uploadKneeboardFiles()
     }
 }
 
+function deleteKneeboardFile(aircraft, filename){
+    var form = new FormData();
+    form.append("data", "");
+    form.append("aircraft", aircraft);
+    form.append("name", filename);
+    document.getElementById("kneeboard-files-label").innerHTML = "Processing file...";
+    $.ajax({
+        url: serverAddress+"/kneeboard/"+sessionId,
+        type: 'DELETE',
+        data: JSON.stringify(Object.fromEntries(form)),
+        processData: false,
+        success: function(result) {successDeleteFile(aircraft, filename);},
+        error: RESTerror,
+        contentType: 'application/json'
+    });
+}
+
 function successUploadFile(){
+    addKneeboardFile(kneeboardFiles[kneeboardFilesIndex].name);
     kneeboardFilesIndex++;
     if (kneeboardFilesIndex < kneeboardFiles.length) uploadKneeboardFiles();
     else {document.getElementById("kneeboard-files-label").innerHTML = "Upload kneeboard files";}
 }
 
+function successDeleteFile(aircraft, name){
+    for (i = 0; i < kneeboardVector[aircraft].length; i++)
+    {
+        if (kneeboardVector[aircraft][i] == name) {
+            console.log("splicing");
+            kneeboardVector[aircraft].splice(i, 1);
+            hideKneeboardFiles();
+            showKneeboardFiles(); 
+            document.getElementById("kneeboard-files-label").innerHTML = "Upload kneeboard files";
+            return;
+        }
+    }
+}
 

@@ -1,4 +1,14 @@
 /* Waypoint class */
+function create_UUID(){
+    var dt = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (dt + Math.random()*16)%16 | 0;
+        dt = Math.floor(dt/16);
+        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
+
 class Waypoint {
     constructor(attributes) {
 
@@ -8,6 +18,7 @@ class Waypoint {
       this.name = attributes.name;
       this.altitude = attributes.altitude;
       this.baroRadio = attributes.baroRadio;
+      this.id = create_UUID();  // Random id
     }
 
     getAttributes()
@@ -25,7 +36,7 @@ class Waypoint {
         string += '"name":"'+this.name+'"'; string += ', ';
         if (this.baroRadio == true){ string += '"alt_type":"RADIO"'; string += ', ';}
         else {string += '"alt_type":"BARO"'; string += ', ';}
-        string += '"wp_id":"'+this.name+'"';
+        string += '"wp_id":"'+this.id+'"';
 
         return '{'+string+'}';
     }
@@ -353,6 +364,10 @@ function applyMapChanges()
 
     waypointsHistory.push(newWaypoints);
     activeWaypointHistory++;
+
+    var string = document.getElementById("waypoint-name").value;
+    var num = string.match(/\d+/);
+    document.getElementById("waypoint-name").value = string.replace(num, parseInt(num)+1);
 
     /* Clean and redraw the map */
     cleanMap();

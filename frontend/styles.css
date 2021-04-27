@@ -89,6 +89,14 @@ textarea:focus, input:focus{
     height: 30px
 }
 
+.section-arrow {
+    cursor: pointer;
+}
+
+.section-arrow:hover {
+    color: #EEEEEE;
+}
+
 /* Content */
 .content-td {
     width: 120px;
@@ -236,6 +244,43 @@ input[type=number] {
     height: 23px;
     width: 23px;
     border: 1px solid #EEEEEE;
+}
+
+/* Kneeboard */
+.kneeboard-row{
+    background-color: #212d3c; 
+    border: 2px solid #2d3e50;
+}
+
+.kneeboard-filename{
+    color: #EEEEEE;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+}
+
+.kneeboard-delete{
+    color: #bb0000;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+    cursor: pointer;
+    padding-right: 10px;
+}
+
+.kneeboard-delete:hover{
+    color: #FF0000;
+}
+
+.kneeboard-delete:active{
+    color: #ff6b6b;
 }
 
 /* Helpers */
