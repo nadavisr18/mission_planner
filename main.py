@@ -15,3 +15,5 @@
 # TODO: popup that asks if you want to overwrite existing radios
 # TODO: add color mappings for each aircraft for DCS
 # TODO: weather!
+# TODO: fix radio channel starts at 0
+# TODO: fix when selecting a new aircraft in the radio tab it doesn't reset the first radio options
