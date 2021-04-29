@@ -53,12 +53,20 @@ function setupPage(){
     /* Grey out all the the controls until a valid mission is uploaded */
     deactivateInputs('waypoint-input');
     deactivateInputs('kneeboard-input');
+    deactivateInputs('mission-download-input');
 
     /* Create and setup the radios */
     setupRadio(1);
     deactivateRadio(1);
     setupRadio(2);
     deactivateRadio(2);
+
+    collapseSection("waypoints-section");
+    collapseSection("radios-section");
+    collapseSection("weather-section");
+    collapseSection("kneeboard-section");
+
+    document.getElementById("wind-direction").style.transform = "rotate(45deg)";
 }
 
 /* Resize the table to vertically fill the page */
@@ -162,6 +170,8 @@ function expandSection(section)
     for (i = 0; i < els.length; i++) 
     {
         els[i].style.display = 'table-cell';
+        var x = els[i].getElementsByClassName("error");
+        while(x.length > 0){ x[0].classList.remove("error"); }
     }
 
     var arrow = document.getElementById(section+"-arrow");
@@ -176,6 +186,8 @@ function collapseSection(section)
     for (i = 0; i < els.length; i++) 
     {
         els[i].style.display = 'none';
+        var x = els[i].getElementsByClassName("error");
+        while(x.length > 0){ x[0].classList.remove("error"); }
     }
 
     var arrow = document.getElementById(section+"-arrow");
@@ -183,7 +195,6 @@ function collapseSection(section)
     arrow.classList.add("fa-arrow-circle-down") 
     arrow.setAttribute("onClick", "expandSection('"+section+"')");
 }
-
 
 /* Main loop */
 window.onload = setupPage;

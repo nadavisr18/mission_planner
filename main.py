@@ -11,15 +11,7 @@
 
 # -------------------FRONTEND-------------------
 # TODO: fix size of icons
-# TODO: what are the acceptable image formats for the kneeboard?
-# TODO: add discord link
-# TODO: add list of uploaded kneeboard files
-# TODO: have discord link open in new tab
-# TODO: have upload new mission button and an apply changes and download button
 # TODO: have everyone option in radios
 # TODO: popup that asks if you want to overwrite existing radios
-# TODO: add placeholder for radio lables
-# TODO: increase outline in waypoint text
 # TODO: add color mappings for each aircraft for DCS
 # TODO: weather!
-# TODO: fix - when un-collapsing the waypoint section it does the red error halo

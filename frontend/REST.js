@@ -28,57 +28,57 @@ function successMissionFile(data, textStatus, jqXHR)
     }
 }
 
-function processMissionFile()
+function uploadMissionFile()
 {
-    if (fileUploaded == false)
-    {
-        var file = document.getElementById("mission-file").files[0];
-        sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        var filename;
+    var file = document.getElementById("mission-file").files[0];
+    sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    var filename;
 
-        var fullPath = document.getElementById("mission-file").value;
-        if (fullPath && file) {
-            var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
-            filename = fullPath.substring(startIndex);
-            if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-                filename = filename.substring(1);
-            }
+    var fullPath = document.getElementById("mission-file").value;
+    if (fullPath && file) {
+        var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+        filename = fullPath.substring(startIndex);
+        if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+            filename = filename.substring(1);
         }
-        else 
-        {
-            // TODO Error
-        }
-
-        document.getElementById("mission-file-label").innerHTML = "Processing file...";
-        
-        var missionName = filename;
-        var reader = new FileReader();
-        
-        reader.onload = function () {
-            var base64EncodedStr = btoa(reader.result);
-            var form = new FormData();
-            form.append("name", missionName);
-            form.append("session_id", sessionId);
-            form.append("data", base64EncodedStr);
-
-            $.ajax({
-                url: serverAddress+"/mission",
-                type: 'POST',
-                data: JSON.stringify(Object.fromEntries(form)),
-                processData: false,
-                success: successMissionFile,
-                error: RESTerror,
-                contentType: 'application/json'
-            });
-        }
-        try {
-            reader.readAsBinaryString(file);
-        }
-        catch {
-            document.getElementById("mission-file-label").innerHTML = "Upload mission file";
-        }
-    } 
+    }
     else 
+    {
+        // TODO Error
+    }
+
+    document.getElementById("mission-file-label").innerHTML = "Processing file...";
+    
+    var missionName = filename;
+    var reader = new FileReader();
+    
+    reader.onload = function () {
+        var base64EncodedStr = btoa(reader.result);
+        var form = new FormData();
+        form.append("name", missionName);
+        form.append("session_id", sessionId);
+        form.append("data", base64EncodedStr);
+
+        $.ajax({
+            url: serverAddress+"/mission",
+            type: 'POST',
+            data: JSON.stringify(Object.fromEntries(form)),
+            processData: false,
+            success: successMissionFile,
+            error: RESTerror,
+            contentType: 'application/json'
+        });
+    }
+    try {
+        reader.readAsBinaryString(file);
+    }
+    catch {
+        document.getElementById("mission-file-label").innerHTML = "Upload mission file";
+    }
+}
+
+function processMissionFile(){
+    if (fileUploaded == true)
     {
         requestMissionProcess();
     }
@@ -97,7 +97,7 @@ function requestAircraftList()
 
 function requestMissionProcess()
 {
-    document.getElementById("mission-file-label").innerHTML = "Processing file...";
+    document.getElementById("mission-file-download-label").innerHTML = "Processing file...";
 
     var waypointsString = "";
     for (i = 0; i < waypoints.length; i++)
@@ -132,18 +132,18 @@ function downloadMissionFile()
 function readAircraftList(data, textStatus, jqXHR)
 {
     data = data[0]; // Get the aircraft list
-    document.getElementById("mission-file-label").innerHTML = "Download mission file";
+    document.getElementById("mission-file-label").innerHTML = "Upload mission file";
+    deactivateInputs("mission-upload-input");
     activateInputs('waypoint-input');
-    setupSelection(document.getElementById("radio-aircraft"), data);
     data.push("Everyone");
+    setupSelection(document.getElementById("radio-aircraft"), data);
     setupSelection(document.getElementById("kneeboard-aircraft"), data);
     setupSelection(document.getElementById("waypoint-aircraft"), data);
     unstyleSelections();
     styleSelections();
 
     fileUploaded = true;
-    document.getElementById("mission-file").disabled = true;
-    document.getElementById("mission-file-label").onclick = processMissionFile;
+    activateInputs('mission-download-input');
 }
 
 function readProcessedMission(data, textStatus, jqXHR)
@@ -152,7 +152,7 @@ function readProcessedMission(data, textStatus, jqXHR)
     a.href = "data:binary/miz;base64," + data.data;
     a.download = data.name;
     a.click(); 
-    document.getElementById("mission-file-label").innerHTML = "Download mission file";
+    document.getElementById("mission-file-download-label").innerHTML = "Apply & download";
 }
 
 function processKneeboardFiles()
@@ -238,3 +238,28 @@ function successDeleteFile(aircraft, name){
     }
 }
 
+function applyWeatherChange()
+{
+    var obj = document.getElementById("weather-location");
+    var location = obj.value;
+
+    var form = new FormData();
+    form.append("city", obj);
+    form.append("time", "0000");
+    form.append("session_id", sessionId);
+
+    $.ajax({
+        url: serverAddress+"/weather/"+sessionId,
+        type: 'POST',
+        data: JSON.stringify(Object.fromEntries(form)),
+        processData: false,
+        success: successWeatherChange,
+        error: RESTerror,
+        contentType: 'application/json'
+    });
+}
+
+function successWeatherChange(data)
+{
+    console.log(data);
+}

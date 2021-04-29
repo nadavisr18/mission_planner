@@ -37,7 +37,7 @@
                             <td>
                                 <table>
                                     <tr>
-                                        <td><a href="https://discord.gg/q38YbxsDav"><img src="banner.png" height="75px"></a></td>
+                                        <td><a href="https://discord.gg/q38YbxsDav" target="_blank" ><img src="banner.png" id="banner"></a></td>
                                     </tr>
                                 </table>
                             </td>
@@ -56,7 +56,7 @@
                         </tr>
 
                         <tr class="section-content-td">
-                            <td class="section-content-td map-provider-section">
+                            <td class="section-content-td map-provider-section section">
                                 <div class="selection-div" style="width: 100%;" id="map-provider-div">
                                     <select class="selection" id="map-provider"></select>
                                 </div>
@@ -77,11 +77,23 @@
 
                         <!-- Mission file select -->
                         <tr class="section-content-td">
-                            <td class="section-content-td files-management-section">
-                                <label for="mission-file" id="mission-file-label" class="button" style="width: 100%;">
-                                    Upload mission file
-                                </label>
-                                <input type="file" id="mission-file" oninput="processMissionFile()" hidden>
+                            <td class="section-content-td files-management-section section">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label for="mission-file" id="mission-file-label" class="button mission-upload-input" style="width: 100%;">
+                                                Upload mission file
+                                            </label>
+                                            <input type="file" id="mission-file" class="mission-upload-input" oninput="uploadMissionFile()" hidden>
+                                        </td>
+                                        <td>
+                                            <label id="mission-file-download-label" class="button mission-download-input" onclick="processMissionFile()" style="width: 100%;">
+                                                Apply & download
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                               
                             </td>
                         </tr>
                         
@@ -97,7 +109,7 @@
                             </td>
                         </tr>
                         <tr class="section-content-tr">
-                            <td class="section-content-td waypoints-section">
+                            <td class="section-content-td waypoints-section section">
                                 <!-- Waypoints insert/edit table -->
                                 <table class="content-table">
                                     <!-- Waypoint name -->
@@ -170,7 +182,7 @@
                             </td>
                         </tr>
                         <tr class="section-content-td">
-                            <td class="section-content-td radios-section">
+                            <td class="section-content-td radios-section section">
                                 <table id="radio-table-1">
                                     <!-- Radio aircraft -->
                                     <tr class="radio-not-row">
@@ -247,14 +259,39 @@
                             <td>
                                 <table>
                                     <tr class="section-title-td section-title">
-                                    <td >Weather</td> 
+                                    <td >Weather and time</td> 
                                     <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='weather-section-arrow' onclick="collapseSection('weather-section')"></i></td>
                                     </tr>
                                 </table>
                             </td>
                         </tr>
                         <tr class="section-content-td">
-                            <td class="section-content-td weather-section"></td>
+                            <td class="section-content-td weather-section section">
+                                <!-- Weather edit table -->
+                                <table class="content-table">
+                                    <!-- Weather location -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Location</div></td>
+                                        <td><input class="input weather-input" type="text" id="weather-location" value = "London"></td>
+                                    </tr>
+                                    <!-- Weather location -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Start time</div></td>
+                                        <td><input class="input weather-input" type="time" id="weather-time"></td>
+                                    </tr>
+                                    <!-- Apply button -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label"></div></td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><span class="button wwather-input" style="width: 100%;" onClick="applyWeatherChange()">Apply</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
 
                         <!------------------- Kneeboard section --------------------->
@@ -269,7 +306,7 @@
                             </td>
                         </tr>
                         <tr class="section-content-td">
-                            <td class="section-content-td kneeboard-section">
+                            <td class="section-content-td kneeboard-section section">
                                 <!-- Kneeboard files select -->
                                 <table id="kneeboard-table" style="padding:5px;">
                                     <!-- Radio aircraft -->
@@ -318,7 +355,9 @@
             <tr>
                 <!------------------- Leaflet map --------------------->
                 <td id="root-table-right">
-                    <div id="mapid"></div>
+                    <div id="mapid">
+                        <div id='weather-map-box'><i id="wind-direction" class="fas fa-long-arrow-alt-up wind-direction"></i></div>
+                    </div>
                 </td>
             </tr>
         </table>

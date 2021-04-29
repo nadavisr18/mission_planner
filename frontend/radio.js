@@ -14,8 +14,7 @@ function addRadioRow(radioNumber){
     if (radio_aircraft != "...")
     {
         var channels = radioVector[radioNumber-1][radio_aircraft];
-        var newChannelNumber = 1;
-        if (channels.length > 0) newChannelNumber = channels[channels.length-1]["Channel"]+1;
+        var newChannelNumber = 0;
         if (channels.length == 20) return;
         radioVector[radioNumber-1][radio_aircraft].push({"Channel": newChannelNumber, "Frequency": 123.50, "Label": "No label"});
         deactivateRadio(radioNumber);
@@ -65,7 +64,6 @@ function checkFrequencyRanges(rowIndex, radioNumber){
     var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
     var cells = radioRows[rowIndex].cells;
     var obj = cells[1].getElementsByTagName("input")[0];
-    console.log(obj.value);
     if (obj.value > 999) {obj.value = 999; flashError(obj);}
     else if (obj.value < 0) {obj.value = 0; flashError(obj);}
 }
@@ -136,7 +134,60 @@ function addNewRow(radioNumber){
     var cell2 = newRow.insertCell(1);
     var cell3 = newRow.insertCell(2);
 
-    cell1.innerHTML = '<input class="input" type="number" value="'+ (radiorowsLength+1) +'" oninput="checkChannelRanges('+radiorowsLength+', '+radioNumber+')" onfocusout="applyRadioChange('+radioNumber+')">';
-    cell2.innerHTML = '<input class="input" type="number" value="123.50" oninput="checkFrequencyRanges('+radiorowsLength+', '+radioNumber+')" onfocusout="applyRadioChange('+radioNumber+')">';
-    cell3.innerHTML = '<input class="input" type="text" value="No label" onfocusout="applyRadioChange('+radioNumber+')">'
+    cell1.innerHTML = '<div class="tooltip"><input class="input" type="number" value=0 oninput="checkChannelRanges('+radiorowsLength+', '+radioNumber+')" onblur="applyRadioChange('+radioNumber+'); checkChannelFree('+radioNumber+', '+radiorowsLength+');"><span class="tooltiptext">Tooltip text</span></div>';
+    cell2.innerHTML = '<input class="input" type="number" value="123.50" oninput="checkFrequencyRanges('+radiorowsLength+', '+radioNumber+')" onblur="applyRadioChange('+radioNumber+')">';
+    cell3.innerHTML = '<input class="input" type="text" value="No label" onfocus="removePlacehoder('+radiorowsLength+', '+radioNumber+')" onblur="setPlacehoder('+radiorowsLength+', '+radioNumber+'); applyRadioChange('+radioNumber+')">'
+}
+
+function removePlacehoder(rowIndex, radioNumber)
+{
+    var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
+    var cells = radioRows[rowIndex].cells;
+    obj = cells[2].getElementsByTagName("input")[0];
+    if (obj.value == "No label") {obj.value = ""}
+}
+
+function setPlacehoder(rowIndex, radioNumber)
+{
+    var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
+    var cells = radioRows[rowIndex].cells;
+    obj = cells[2].getElementsByTagName("input")[0];
+    if (obj.value == "") {obj.value = "No label"}
+}
+
+function checkChannelFree(radioNumber, rowIndex)
+{
+    var obj = document.getElementById("radio-aircraft");
+    var radio_aircraft = obj.options[obj.selectedIndex].text;
+    if (radio_aircraft != "...")
+    {
+        for (j = 0; j < obj.options.length; j++)
+        {
+            var temp_radio_aircraft = obj.options[j].text;
+            if ((temp_radio_aircraft in radioVector[radioNumber-1]))
+            {
+                for (k = 0; k < radioVector[radioNumber-1][temp_radio_aircraft].length; k++){
+                    if (temp_radio_aircraft == radio_aircraft && rowIndex == k) continue;
+                    if (radioVector[radioNumber-1][temp_radio_aircraft][k]["Channel"] == radioVector[radioNumber-1][radio_aircraft][rowIndex]["Channel"] && radioVector[radioNumber-1][radio_aircraft][rowIndex]["Channel"] != 0){
+                        var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
+                        var cells = radioRows[rowIndex].cells;
+                        tooltip = cells[0].getElementsByClassName("tooltiptext")[0];
+                        tooltip.style.visibility = 'visible';
+                        tooltip.style.opacity = 1;
+                        if (temp_radio_aircraft == radio_aircraft) {
+                            tooltip.innerHTML = "Channel already set";
+                        }
+                        else {
+                            if (radio_aircraft == "Everyone"){
+                                tooltip.innerHTML = "Overwriting setting for: " + temp_radio_aircraft;
+                            } else {
+                                tooltip.innerHTML = "Channel already set for Everyone";
+                            }
+                        }
+                        flashError(cells[0].getElementsByClassName("input")[0]);
+                    }
+                }
+            }
+        }
+    } 
 }

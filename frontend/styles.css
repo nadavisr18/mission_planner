@@ -65,6 +65,24 @@ textarea:focus, input:focus{
     height: 37px;
 }
 
+#banner {
+    width: 100%;
+    min-width: 350px;
+}
+
+#weather-map-box {
+    left: 10px;
+    bottom: 10px; 
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    z-index: 10000;
+    text-align: center;
+    font-weight: normal;
+    font-size: 16px;
+    color: #222;
+}
+
 /* Page title*/
 .title {
     font-family: 'Helvetica';
@@ -216,6 +234,7 @@ input[type=number] {
 /* Icons */
 .icon-text {
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    text-shadow: -2px 0 1px black, 0 2px 1px black, 2px 0 1px black, 0 -2px 1px black;
     color: #EEEEEE;
     text-align: center;
     font-size: 12px;
@@ -281,6 +300,58 @@ input[type=number] {
 
 .kneeboard-delete:active{
     color: #ff6b6b;
+}
+
+/* Weather */
+.wind-direction {
+    color: #EEEEEE;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    text-shadow: -2px 0 1px black, 0 2px 1px black, 2px 0 1px black, 0 -2px 1px black;
+    font-size: 40px;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: darkred;
+    color: #EEEEEE;
+    text-align: center;
+    padding: 10px 10px;
+    border-radius: 6px;
+    font-family: 'Helvetica';
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 120%;
+    margin-left: -60px;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 25px;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: darkred transparent transparent transparent;
 }
 
 /* Helpers */
