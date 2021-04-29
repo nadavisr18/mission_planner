@@ -10,7 +10,7 @@ import yaml
 class WeatherEditor(MissionEditor):
     def __init__(self, path):
         super().__init__(path)
-        with open('weather\\weather_config.yml', 'r') as file:
+        with open('backend/mission_editing/weather_config.yml', 'r') as file:
             self.config = yaml.load(file, Loader=yaml.FullLoader)
         self.url = "http://api.weatherapi.com/v1/current.json?key=3961acc65a634b5697e173748201811&q={}"
         self.default_fog_height = 300
@@ -75,37 +75,37 @@ class WeatherEditor(MissionEditor):
         self.mission["weather"]["enable_fog"] = True
         
     def change_clouds_based_on_status(self, cloud_condition, base, visibility):
-        if cloud_condition in self.config['clear']:
+        if cloud_condition in self.config['conditions']['clear']:
             preset = np.random.choice(self.config['presets']['clear'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['partly_cloudy']:
+        elif cloud_condition in self.config['conditions']['partly_cloudy']:
             preset = np.random.choice(self.config['presets']['partly_cloudy'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['cloudy']:
+        elif cloud_condition in self.config['conditions']['cloudy']:
             preset = np.random.choice(self.config['presets']['cloudy'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['overcast']:
+        elif cloud_condition in self.config['conditions']['overcast']:
             preset = np.random.choice(self.config['presets']['overcast'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['patchy_rain']:
+        elif cloud_condition in self.config['conditions']['patchy_rain']:
             preset = np.random.choice(self.config['presets']['patchy_rain'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['patchy_rain_thunder']:
+        elif cloud_condition in self.config['conditions']['patchy_rain_thunder']:
             preset = np.random.choice(self.config['presets']['patchy_rain_thunder'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['light_shower']:
+        elif cloud_condition in self.config['conditions']['light_shower']:
             preset = np.random.choice(self.config['presets']['light_shower'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['moderate_shower']:
+        elif cloud_condition in self.config['conditions']['moderate_shower']:
             preset = np.random.choice(self.config['presets']['moderate_shower'])
             self.change_clouds(base=base, preset=preset)
 
-        elif cloud_condition in self.config['fog']:
+        elif cloud_condition in self.config['conditions']['fog']:
             self.change_fog(height=1500, visibility=visibility)
