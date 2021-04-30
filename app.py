@@ -3,7 +3,7 @@ from backend.data_types import Mission, KneeboardPage, WeatherData
 from backend.utils import *
 
 from typing import Union, List, Tuple
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import uvicorn
 import json
 import os
@@ -55,7 +55,7 @@ def delete_mission(session_id: str):
             json.dump(data, file)
         else:
             json.dump(data, file)
-            return "Session ID doesn't exist"
+            raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.post("/waypoint/{session_id}")
@@ -74,7 +74,7 @@ def add_waypoint(waypoints: Union[List[WayPoint], WayPoint], session_id: str):
             json.dump(data, file)
         else:
             json.dump(data, file)
-            return "Session ID doesn't exist"
+            raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.delete("/waypoint/{session_id}/{waypoint_id}")
@@ -89,12 +89,12 @@ def delete_waypoint(session_id: str, waypoint_id: str):
                     break
             else:
                 json.dump(data, file)
-                return "No Such Waypoint"
+                raise HTTPException(status_code=404, detail="No Such Waypoint")
             data[session_id].update({'waypoints': existing_waypoints})
             json.dump(data, file)
         else:
             json.dump(data, file)
-            return "Session ID doesn't exist"
+            raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.get("/process_mission/{session_id}")
@@ -108,7 +108,7 @@ def process_mission(session_id: str):
             output.data = base64.encodebytes(output.data)
             return output.dict()
     else:
-        return "Session ID doesn't exist"
+        raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.get("/mission_details/client_aircraft/{session_id}")
@@ -120,7 +120,7 @@ def get_client_aircraft(session_id: str):
         types, names = mp.get_client_aircraft()
         return [types, names]
     else:
-        return "Session ID doesn't exist"
+        raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.post("/radios/{session_id}")
@@ -139,7 +139,7 @@ def set_radio_presets(presets: dict, session_id: str):
         re = RadiosEditor(path)
         re.set_radios(presets)
     else:
-        return "Session ID doesn't exist"
+        raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.post('/kneeboard/{session_id}')
@@ -150,7 +150,7 @@ def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
         ke = KneeboardEditor(path)
         ke.add_page(page_data.data, page_data.name, page_data.aircraft)
     else:
-        return "Session ID doesn't exist"
+        raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.delete('/kneeboard/{session_id}')
@@ -161,7 +161,7 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
         ke = KneeboardEditor(path)
         ke.remove_page(page_data.name, page_data.aircraft)
     else:
-        return "Session ID doesn't exist"
+        raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.post('/weather/{session_id}')
@@ -171,9 +171,9 @@ def change_weather(weather_data: WeatherData):
         path = f"backend\\temp_files\\missions\\{weather_data.session_id}.miz"
         we = WeatherEditor(path)
         condition, wind_dir, wind_speed = we.change_weather(weather_data.city, weather_data.time)
-        return [condition, wind_dir, wind_speed]
+        return {"condition": condition, "wind_dir": wind_dir, "wind_speed": wind_speed}
     else:
-        return "Session ID doesn't exist"
+        raise HTTPException(status_code=404, detail="Session not found")
 
 
 if __name__ == "__main__":
