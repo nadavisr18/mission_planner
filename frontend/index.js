@@ -196,6 +196,12 @@ function collapseSection(section)
     arrow.setAttribute("onClick", "expandSection('"+section+"')");
 }
 
+function closeTooltip(tooltip)
+{
+    tooltip.style.visibility = 'hidden';
+    tooltip.style.opacity = 0;
+}
+
 /* Main loop */
 window.onload = setupPage;
 window.onresize = resizePage;
