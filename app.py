@@ -170,8 +170,13 @@ def change_weather(weather_data: WeatherData):
     if weather_data.session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{weather_data.session_id}.miz"
         we = WeatherEditor(path)
-        condition, wind_dir, wind_speed = we.change_weather(weather_data.city, weather_data.time)
-        return {"condition": condition, "wind_dir": wind_dir, "wind_speed": wind_speed}
+        while True:
+            try:
+                weather_data.city = get_random_city()[0] if weather_data.city == "random" else weather_data.city
+                condition, wind_dir, wind_speed = we.change_weather(weather_data.city, weather_data.time)
+                return {"condition": condition, "wind_dir": wind_dir, "wind_speed": wind_speed}
+            except BaseException as e:
+                pass
     else:
         raise HTTPException(status_code=404, detail="Session not found")
 

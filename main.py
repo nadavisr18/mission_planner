@@ -1,7 +1,6 @@
 
 # -------------------BACKEND-------------------
 # TODO: add kneeboards: https://forums.eagle.ru/topic/266375-fa-18c-kneeboard-suite-by-dimon/ | https://www.airgoons.com/w/Kneeboards
-# TODO: randomize weather
 # TODO: add customizable weather options
 # TODO: save waypoint plans
 # TODO: clean temp files every X time
