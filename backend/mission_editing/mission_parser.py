@@ -19,5 +19,5 @@ class MissionParser(MissionEditor):
                     skill = unit_dict['skill']
                     if skill == 'Client':
                         types.append(unit_dict['type'])
-                        names.append(self.dictionary[group_dict['name']])
+                        names.append(group_dict['name'])
         return list(set(types)), list(set(names))
