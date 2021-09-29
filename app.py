@@ -1,5 +1,5 @@
 from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor, WeatherEditor
-from backend.data_types import Mission, KneeboardPage, WeatherData
+from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets
 from backend.utils import *
 
 from typing import Union, List, Tuple
@@ -31,6 +31,13 @@ def is_alive():
 
 @app.post("/mission")
 def new_mission(mission: Mission):
+    """
+    Save a new mission file input from the user, to manipulate later.\n
+    input consists of:\n
+        "data": {mission file bytes},\n
+        "name": {mission name},\n
+        "session id": {current user session id}\n
+    """
     # create mission file to later manipulate
     with open(f"backend\\temp_files\\missions\\{mission.session_id}.miz", 'wb') as file:
         file.write(base64.decodebytes(mission.data))
@@ -43,8 +50,11 @@ def new_mission(mission: Mission):
         json.dump(data, file)
 
 
-@app.delete("/mission/{session_id}")
+@app.delete("/mission/{session_id}", responses={404: {"description": "Session Not Found"}})
 def delete_mission(session_id: str):
+    """
+    Completely delete a mission file.
+    """
     # delete the mission file
     os.remove(f"backend\\temp_files\\missions\\{session_id}.miz")
     # delete mission metadata
@@ -58,8 +68,11 @@ def delete_mission(session_id: str):
             raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.post("/waypoint/{session_id}")
+@app.post("/waypoint/{session_id}", responses={404: {"description": "Session Not Found"}})
 def add_waypoint(waypoints: Union[List[WayPoint], WayPoint], session_id: str):
+    """
+    Add one or more waypoints to a mission given it's Session ID.
+    """
     data = get_dictionary()
     waypoints = [waypoints] if type(waypoints) == WayPoint else waypoints
     with open(f"backend\\temp_files\\dictionary.json", 'w') as file:
@@ -77,8 +90,11 @@ def add_waypoint(waypoints: Union[List[WayPoint], WayPoint], session_id: str):
             raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.delete("/waypoint/{session_id}/{waypoint_id}")
+@app.delete("/waypoint/{session_id}/{waypoint_id}", responses={404: {"description": "Session Not Found | Waypoint Not Found"}})
 def delete_waypoint(session_id: str, waypoint_id: str):
+    """
+    Add one or more waypoints to a mission given it's Session ID.
+    """
     data = get_dictionary()
     with open(f"backend\\temp_files\\dictionary.json", 'w') as file:
         if session_id in data.keys():
@@ -97,8 +113,11 @@ def delete_waypoint(session_id: str, waypoint_id: str):
             raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.get("/process_mission/{session_id}")
+@app.get("/process_mission/{session_id}", responses={404: {"description": "Session Not Found"}})
 def process_mission(session_id: str):
+    """
+    Apply all the changes to the mission given it's Session ID.
+    """
     path = f"backend\\temp_files\\missions\\{session_id}.miz"
     data = get_dictionary()
     if session_id in data.keys():
@@ -111,7 +130,7 @@ def process_mission(session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.get("/mission_details/client_aircraft/{session_id}")
+@app.get("/mission_details/client_aircraft/{session_id}", responses={404: {"description": "Session Not Found"}})
 def get_client_aircraft(session_id: str):
     path = f"backend\\temp_files\\missions\\{session_id}.miz"
     data = get_dictionary()
@@ -123,16 +142,11 @@ def get_client_aircraft(session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.post("/radios/{session_id}")
-def set_radio_presets(presets: dict, session_id: str):
-    # presets is expected to look like
-    # {
-    #     "FA-18C": {
-    #         "1": {
-    #             "12": 260
-    #         }
-    #     }
-    # }
+@app.post("/radios/{session_id}", responses={404: {"description": "Session Not Found"}})
+def set_radio_presets(presets: RadioPresets, session_id: str):
+    """
+    A route to set radio presets in the mission, per aircraft type.
+    """
     data = get_dictionary()
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"

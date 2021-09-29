@@ -1,11 +1,13 @@
+from backend.data_types import RadioPresets
 from .edit_mission import MissionEditor
+from typing import List
 
 
 class RadiosEditor(MissionEditor):
     def __init__(self, path):
         super().__init__(path)
 
-    def set_radios(self, presets: dict):
+    def set_radios(self, presets: RadioPresets):
         for country in self.mission['coalition']['blue']['country']:
             country_dict = self.mission['coalition']['blue']['country'][country]
             if 'plane' not in country_dict.keys():
@@ -16,14 +18,13 @@ class RadiosEditor(MissionEditor):
                     unit_dict = group_dict['units'][unit]
                     skill = unit_dict['skill']
                     unit_type = unit_dict['type']
-                    if skill == 'Client' and unit_type in presets.keys():
-                        unit_presets = presets[unit_type]
-                        for radio in unit_presets.keys():
-                            for channel in unit_presets[radio].keys():
-                                unit_dict['Radio'][int(radio)]['channels'][int(channel)] = presets[unit_type][radio][
-                                    channel]
-                        if "1" in presets[unit_type].keys() and "1" in presets[unit_type]["1"].keys():
-                            group_dict['frequency'] = presets[unit_type]["1"]["1"]
+                    if skill == 'Client' and unit_type == presets.aircraft.value:
+                        unit_presets = presets.channels_presets
+                        for preset in unit_presets:
+                            radio, channel, frequency = preset.dict().values()
+                            unit_dict['Radio'][radio]['channels'][channel] = frequency
+                            if radio == 1 and channel == 1:
+                                group_dict['frequency'] = presets[unit_type]["1"]["1"]
                     group_dict['units'][unit] = unit_dict
                 country_dict['plane']['group'][group] = group_dict
             self.mission['coalition']['blue']['country'][country] = country_dict
