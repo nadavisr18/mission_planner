@@ -1,7 +1,8 @@
 from pydantic import BaseModel
+from .aircraft_types import PlanesEnum
 
 
 class KneeboardPage(BaseModel):
     data: bytes
-    aircraft: str
+    aircraft: PlanesEnum
     name: str

@@ -132,6 +132,9 @@ def process_mission(session_id: str):
 
 @app.get("/mission_details/client_aircraft/{session_id}", responses={404: {"description": "Session Not Found"}})
 def get_client_aircraft(session_id: str):
+    """
+    Get the names and types of all the groups that have client aircraft
+    """
     path = f"backend\\temp_files\\missions\\{session_id}.miz"
     data = get_dictionary()
     if session_id in data.keys():
@@ -156,8 +159,11 @@ def set_radio_presets(presets: RadioPresets, session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.post('/kneeboard/{session_id}')
+@app.post('/kneeboard/{session_id}', responses={404: {"description": "Session Not Found"}})
 def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
+    """
+    Add a kneeboard image to a mission given it's Session ID
+    """
     data = get_dictionary()
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
@@ -167,8 +173,11 @@ def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.delete('/kneeboard/{session_id}')
+@app.delete('/kneeboard/{session_id}', responses={404: {"description": "Session Not Found"}})
 def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
+    """
+    delete a kneeboard page from a mission given the page data nd Session ID
+    """
     data = get_dictionary()
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
@@ -180,13 +189,16 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
 
 @app.post('/weather/{session_id}')
 def change_weather(weather_data: WeatherData):
+    """
+    change the weather in the mission, based on real time data.
+    """
     data = get_dictionary()
     if weather_data.session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{weather_data.session_id}.miz"
         we = WeatherEditor(path)
         while True:
             try:
-                weather_data.city = get_random_city()[0] if weather_data.city == "random" else weather_data.city
+                weather_data.city = get_random_city()[0] if weather_data.city.lower() == "random" else weather_data.city
                 condition, wind_dir, wind_speed = we.change_weather(weather_data.city, weather_data.time)
                 return {"condition": condition, "wind_dir": wind_dir, "wind_speed": wind_speed}
             except BaseException as e:

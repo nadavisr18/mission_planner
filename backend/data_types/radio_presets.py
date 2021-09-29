@@ -1,13 +1,7 @@
-from typing import List
 from pydantic import BaseModel
+from typing import List
 from enum import Enum
-import yaml
-
-
-with open("backend/interface/config.yml") as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-
-PlanesEnum = Enum('PlanesEnum', config['DisplayToBackendName'])
+from .aircraft_types import PlanesEnum
 
 
 class RadioOptions(int, Enum):

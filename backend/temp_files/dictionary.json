@@ -2,5 +2,59 @@
   "dv57irovx89obd1zllm3w": {
     "mission_name": "training.miz",
     "waypoints": []
+  },
+  "p5sehxaxfqh6x4snohog": {
+    "mission_name": "temp.miz",
+    "waypoints": []
+  },
+  "2thsa6qsrrcjt3xdtnodrs": {
+    "mission_name": "test.miz",
+    "waypoints": [
+      {
+        "lat": 42.24478535602799,
+        "lon": null,
+        "altitude": 0.0,
+        "aircraft": null,
+        "name": "WP1",
+        "alt_type": "BARO",
+        "wp_id": "a0855f40-40c6-4dbd-8660-f70a33a24a9e"
+      },
+      {
+        "lat": 43.04480541304369,
+        "lon": null,
+        "altitude": 0.0,
+        "aircraft": null,
+        "name": "WP2",
+        "alt_type": "BARO",
+        "wp_id": "6836a2df-2c98-4dc4-bb3f-30c71c2fbf09"
+      },
+      {
+        "lat": 43.71156424665853,
+        "lon": null,
+        "altitude": 0.0,
+        "aircraft": null,
+        "name": "WP3",
+        "alt_type": "BARO",
+        "wp_id": "800543b2-c9da-437f-ba42-8cf723d1bd1d"
+      },
+      {
+        "lat": 43.560491112629286,
+        "lon": null,
+        "altitude": 0.0,
+        "aircraft": null,
+        "name": "WP4",
+        "alt_type": "BARO",
+        "wp_id": "de867dba-9685-4922-a869-a9c25c701c92"
+      },
+      {
+        "lat": 43.476840397778936,
+        "lon": null,
+        "altitude": 0.0,
+        "aircraft": null,
+        "name": "WP5",
+        "alt_type": "BARO",
+        "wp_id": "ed1ebff6-7869-4946-9f8a-b9bfcd47dabc"
+      }
+    ]
   }
 }
