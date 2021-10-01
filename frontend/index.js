@@ -66,7 +66,6 @@ function setupPage(){
     collapseSection("weather-section");
     collapseSection("kneeboard-section");
 
-    document.getElementById("wind-direction").style.transform = "rotate(45deg)";
 }
 
 /* Resize the table to vertically fill the page */

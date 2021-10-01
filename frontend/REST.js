@@ -243,6 +243,8 @@ function applyWeatherChange()
     var obj = document.getElementById("weather-location");
     var location = obj.value;
 
+    console.log(location)
+
     var form = new FormData();
     form.append("city", obj);
     form.append("time", "0000");
@@ -261,5 +263,6 @@ function applyWeatherChange()
 
 function successWeatherChange(data)
 {
+    document.getElementById("wind-direction").style.transform = "rotate("+data.wind_dir+"deg)";
     console.log(data);
 }

@@ -1,3 +1,7 @@
+const iconhtml = `<table><tr><td class="icon-text">$waypoint-type$<td></tr>
+                  <tr><td class="icon-symbol">$icon$<td></tr>
+                  <tr><td class="icon-text">$waypoint-name$<td></tr></table>`;
+
 const iconHtmls = {
     "Anchor": '<div class="icon-background icon-symbol"><i class="fas fa-anchor" style="padding-left: 0px; padding-top: 2px; font-size: 20px; color: #212d3c;"></i><div>',
     "Route": '<div class="icon-background icon-symbol"><i class="fas fa-play" style="padding-left: 4px; padding-top: 2px; font-size: 20px; color: #212d3c;"></i><div>',

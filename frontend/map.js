@@ -30,14 +30,15 @@ class Waypoint {
     {
         var string = "";
         string += '"lat":'+this.latlng.lat; string += ', ';
-        string += '"lng":'+this.latlng.lng; string += ', ';
+        string += '"lon":'+this.latlng.lng; string += ', ';
         string += '"altitude":'+this.altitude; string += ', ';
-        string += '"aicraft": "'+this.aircraft+'"'; string += ', ';
+        string += '"aircraft": "'+this.aircraft+'"'; string += ', ';
         string += '"name":"'+this.name+'"'; string += ', ';
         if (this.baroRadio == true){ string += '"alt_type":"RADIO"'; string += ', ';}
         else {string += '"alt_type":"BARO"'; string += ', ';}
         string += '"wp_id":"'+this.id+'"';
 
+        console.log(string)
         return '{'+string+'}';
     }
 }
@@ -162,27 +163,7 @@ function drawMap()
     for (var i = 0; i < waypoints.length; i++)
     {  
         /* Draw the marker and add the selected/unselected icon */
-        var html = `
-        <table>
-            <tr>
-                <td class="icon-text">
-                    $waypoint-type$
-                <td>
-            </tr>
-            <tr>
-                <td class="icon-symbol">
-                    $icon$
-                <td>
-            </tr>
-            <tr>    
-                <td class="icon-text">
-                    $waypoint-name$
-                <td>
-            </tr>
-        </table>
-        `;
-
-        html = html.replace('$waypoint-type$', waypoints[i].aircraft);
+        var html = iconhtml.replace('$waypoint-type$', waypoints[i].aircraft);
         if (selectedWaypoint == waypoints[i])
         {
             html = html.replace('$icon$', iconSelectedHtmls[waypoints[i].type]);
@@ -196,7 +177,7 @@ function drawMap()
 
         var icon = L.divIcon({
             html: html,
-            iconSize: [80, 80],
+            iconSize: [100, 80],
             className: waypoints[i].type
         });
 
