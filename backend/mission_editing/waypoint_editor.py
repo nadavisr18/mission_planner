@@ -1,15 +1,15 @@
 from backend.data_types import WayPoint
 from .edit_mission import MissionEditor
 
-from typing import List
+from typing import List, Tuple
 import hashlib
+import math
 
 
 class WayPointEditor(MissionEditor):
     def __init__(self, path):
         super().__init__(path)
         self.key2wp = {}
-        self.map_center = {"y": 96596.571428573, 'x': 29807.0, 'lat': 35.021298, 'lon': 35.899957}
 
     def _update_dictionary(self):
         for key in self.key2wp:
@@ -52,17 +52,11 @@ class WayPointEditor(MissionEditor):
         return group_data
 
     def _convert_waypoint(self, lat: float, lon: float):
-        # 1 degree north = X+00110946 Z+00003945
-        # 1 degree east = X-00002387 Z+00091720
-        # 2 degree north = X+00221918 Z+00007507
-        # 2 degree east = X-00003844 Z+00182956
-        # 3 degree east = X-00004387 Z+00273724
-        # 1 degree east + 1 degree north = X+00108544 Z+00094069
+
         lon_diff = lon - self.map_center['lon']
         lat_diff = lat - self.map_center['lat']
-        y_diff = lon_diff * 91241 + lat_diff * 3754
-        x_diff = lat_diff * 110959 + lon_diff * -1462
-        return x_diff, y_diff
+        y_diff, x_diff = self.ll2xy_model.predict([[lat_diff, lon_diff], ])[0] * 111139
+        return y_diff, x_diff
 
     @staticmethod
     def _get_unit_path(unit_type: str, waypoints: List[WayPoint]) -> List[WayPoint]:
