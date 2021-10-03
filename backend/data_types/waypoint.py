@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pydantic import BaseModel
-from folium import Marker
 from enum import Enum
+from .aircraft_types import PlanesEnum
 
 
 class AltTypeEnum(str, Enum):
@@ -10,10 +10,10 @@ class AltTypeEnum(str, Enum):
 
 
 class WayPoint(BaseModel):
-    lat: float = None
-    lon: float = None
-    altitude: float = None
-    aircraft: str = None
+    lat: float
+    lon: float
+    altitude: float
+    aircraft: PlanesEnum
     name: str = None
-    alt_type: AltTypeEnum = None
-    wp_id: str = None
+    alt_type: AltTypeEnum
+    wp_id: str
