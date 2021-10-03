@@ -14,6 +14,7 @@ class MissionParser(MissionEditor):
         for coalition in self.mission['coalition'].keys():
             for country in self.mission['coalition'][coalition]['country']:
                 country_dict = self.mission['coalition']['blue']['country'][country]
+                country_name = self.mission['coalition']['blue']['country'][country]['name']
                 for group_type in group_types:
                     if group_type in country_dict.keys():
                         if group_type == 'static':
@@ -29,7 +30,7 @@ class MissionParser(MissionEditor):
                                 group_data = Group(group_type=group_type,
                                                    unit_type=unit_type,
                                                    name=group_dict['name'],
-                                                   country=country,
+                                                   country=country_name,
                                                    coalition=coalition,
                                                    lat=lat,
                                                    lon=lon)
