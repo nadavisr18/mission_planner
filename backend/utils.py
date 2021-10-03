@@ -1,6 +1,7 @@
 from backend.mission_editing import WayPointEditor
 from backend.data_types import WayPoint
 
+from typing import List
 import numpy as np
 import json
 
@@ -27,3 +28,15 @@ def get_random_city():
         picked_city = line.split(',')[0]
         country = line.split(',')[1]
     return picked_city, country
+
+
+def generate_random_waypoints(num: int, waypoint: WayPoint) -> List[WayPoint]:
+    import uuid
+    waypoints = []
+    for i in range(num):
+        wp = waypoint.copy()
+        wp.lon = 29.5+np.random.rand()*(42.3333-29.5)
+        wp.lat = 31.9+np.random.rand()*(37.75-31.9)
+        wp.wp_id = uuid.uuid4().hex
+        waypoints.append(wp)
+    return waypoints
