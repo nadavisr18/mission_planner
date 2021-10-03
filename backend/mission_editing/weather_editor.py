@@ -15,8 +15,8 @@ class WeatherEditor(MissionEditor):
         self.url = "http://api.weatherapi.com/v1/current.json?key=3961acc65a634b5697e173748201811&q={}"
         self.default_fog_height = 300
 
-    def change_weather(self, city, time) -> Tuple[str, str, str]:
-        temp, wind_speed, wind_dir, condition, clouds_height, pressure, visibility, gust = self.get_weather(city)
+    def change_weather(self, city, time) -> Tuple[str, str, str, str]:
+        temp, wind_speed, wind_dir, condition, clouds_height, pressure, visibility, gust, icon = self.get_weather(city)
         self.change_time(time)
         self.change_temp(temp)
         self.change_wind(wind_speed, wind_dir)
@@ -24,7 +24,7 @@ class WeatherEditor(MissionEditor):
         self.change_pressure(pressure)
         self.change_fog(self.default_fog_height, visibility)
 
-        return condition, wind_dir, wind_speed
+        return condition, wind_dir, wind_speed, icon
 
     def get_weather(self, city):
         response = requests.get(url=self.url.format(city))
@@ -34,11 +34,12 @@ class WeatherEditor(MissionEditor):
             wind_speed = data['current']['wind_kph'] / 1.852
             wind_dir = data['current']['wind_degree']
             condition = data['current']['condition']['text']
+            icon = data['current']['condition']['icon']
             clouds_height = data['current']['cloud'] * 32.8084
             pressure = data['current']['pressure_mb'] / 1.3333
             visibility = data['current']['vis_km'] * 3280.84
             gust = data["current"]['gust_mph'] / 4
-            return temp, wind_speed, wind_dir, condition, clouds_height, pressure, visibility, gust
+            return temp, wind_speed, wind_dir, condition, clouds_height, pressure, visibility, gust, icon
         else:
             raise BaseException("Location Not Found")
 
