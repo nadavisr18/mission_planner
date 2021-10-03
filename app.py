@@ -1,5 +1,5 @@
 from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor, WeatherEditor
-from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets
+from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets, Group
 from backend.utils import *
 
 from typing import Union, List, Tuple
@@ -29,7 +29,7 @@ def is_alive():
     return "I'm Alive!"
 
 
-@app.post("/mission", responses={400: {"description": "Theatre Not Allowed"}})
+@app.post("/mission", responses={400: {"description": "Theatre Not Allowed"}}, response_model=List[Group])
 def new_mission(mission: Mission):
     """
     Save a new mission file input from the user, to manipulate later.\n
