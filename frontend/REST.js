@@ -3,7 +3,7 @@ var fileUploaded = false;
 var kneeboardFiles = [];
 var kneeboardFilesIndex = 0;
 
-function RESTerror()
+function RESTerror(jqXHR, textStatus, errorThrown)
 {
     if (fileUploaded == true)
     {
@@ -14,18 +14,31 @@ function RESTerror()
         document.getElementById("mission-file-label").innerHTML = "Upload mission file";
     }
     document.getElementById("kneeboard-files-label").innerHTML = "Upload kneeboard files";
-    alert("An error occurred while performing the requested operation")
+    if (jqXHR.hasOwnProperty('responseJSON') && jqXHR.responseJSON.hasOwnProperty('detail')) 
+        alert("An error occurred while performing the requested operation: " + jqXHR.responseJSON.detail);
+    else 
+        alert("An error occurred while performing the requested operation.")
 }
 
 function successMissionFile(data, textStatus, jqXHR)
 {
-    if (data){
-        alert("An error occured while parsing the file");
-        document.getElementById("mission-file-label").innerHTML = "Upload mission file";
-        // TODO: add red flash
-    } else {
-        requestAircraftList();
+    var groupNames = [];
+    for (var i = 0; i < data.length; i++)
+    {
+        groupNames.push(data[i].name);
     }
+    document.getElementById("mission-file-label").innerHTML = "Upload mission file";
+    deactivateInputs("mission-upload-input");
+    activateInputs('waypoint-input');
+    groupNames.push("Everyone");
+    setupSelection(document.getElementById("radio-aircraft"), groupNames);
+    setupSelection(document.getElementById("kneeboard-aircraft"), groupNames);
+    setupSelection(document.getElementById("waypoint-aircraft"), groupNames);
+    unstyleSelections();
+    styleSelections();
+
+    fileUploaded = true;
+    activateInputs('mission-download-input');
 }
 
 function uploadMissionFile()
