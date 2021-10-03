@@ -29,7 +29,7 @@ def is_alive():
     return "I'm Alive!"
 
 
-@app.post("/mission")
+@app.post("/mission", responses={400: {"description": "Theatre Not Allowed"}})
 def new_mission(mission: Mission):
     """
     Save a new mission file input from the user, to manipulate later.\n
@@ -39,7 +39,8 @@ def new_mission(mission: Mission):
         "session id": {current user session id}\n
     """
     # create mission file to later manipulate
-    with open(f"backend\\temp_files\\missions\\{mission.session_id}.miz", 'wb') as file:
+    path = f"backend\\temp_files\\missions\\{mission.session_id}.miz"
+    with open(path, 'wb') as file:
         file.write(base64.decodebytes(mission.data))
     # save metadata about the mission
     data = get_dictionary()
@@ -48,6 +49,11 @@ def new_mission(mission: Mission):
                                           "waypoints": []
                                           }})
         json.dump(data, file)
+    mp = MissionParser(path)
+    groups_info, theatre = mp.get_mission_info()
+    if theatre != "Syria":
+        raise HTTPException(status_code=400, detail="Theatre Not Allowed")
+    return groups_info
 
 
 @app.delete("/mission/{session_id}", responses={404: {"description": "Session Not Found"}})
@@ -69,12 +75,13 @@ def delete_mission(session_id: str):
 
 
 @app.post("/waypoint/{session_id}", responses={404: {"description": "Session Not Found"}})
-def add_waypoint(waypoints: Union[List[WayPoint], WayPoint], session_id: str):
+def add_waypoint(waypoints: List[WayPoint], session_id: str):
     """
     Add one or more waypoints to a mission given it's Session ID.
     """
     data = get_dictionary()
     waypoints = [waypoints] if type(waypoints) == WayPoint else waypoints
+    print(len(waypoints))
     with open(f"backend\\temp_files\\dictionary.json", 'w') as file:
         if session_id in data.keys():
             existing_waypoints = data[session_id]['waypoints']
@@ -199,8 +206,9 @@ def change_weather(weather_data: WeatherData):
         while True:
             try:
                 weather_data.city = get_random_city()[0] if weather_data.city.lower() == "random" else weather_data.city
-                condition, wind_dir, wind_speed = we.change_weather(weather_data.city, weather_data.time)
-                return {"condition": condition, "wind_dir": wind_dir, "wind_speed": wind_speed}
+                condition, wind_dir, wind_speed, icon = we.change_weather(weather_data.city, weather_data.time)
+                return {"condition": condition, "wind_dir": wind_dir,
+                        "wind_speed": wind_speed, "city": weather_data.city, "icon": icon}
             except BaseException as e:
                 pass
     else:
