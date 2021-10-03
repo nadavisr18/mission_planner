@@ -22,18 +22,13 @@ class WayPointEditor(MissionEditor):
                 continue
             for group in country_dict['plane']['group']:
                 group_dict = country_dict['plane']['group'][group]
-                for unit in group_dict['units']:
-                    unit_dict = group_dict['units'][unit]
-                    skill = unit_dict['skill']
-                    if skill == 'Client':
-                        group_dict = self._change_group_wp(group_dict, unit_dict['type'], waypoints)
-                        country_dict['plane']['group'][group] = group_dict
-                        break
+                group_dict = self._change_group_wp(group_dict, group_dict['name'], waypoints)
+                country_dict['plane']['group'][group] = group_dict
             self.mission['coalition']['blue']['country'][country] = country_dict
         self._save_lua_data({'mission': self.mission, 'l10n/DEFAULT/dictionary': self.dictionary})
 
-    def _change_group_wp(self, group_data: dict, unit_type: str, waypoints: List[WayPoint]) -> dict:
-        unit_waypoints = self._get_unit_path(unit_type, waypoints)
+    def _change_group_wp(self, group_data: dict, group_name: str, waypoints: List[WayPoint]) -> dict:
+        unit_waypoints = self._get_unit_path(group_name, waypoints)
         group_data['route']['points'] = {1: group_data['route']['points'][1]}
         for i, wp in enumerate(unit_waypoints):
             group_data = self._add_waypoint(group_data, wp, i)
@@ -59,10 +54,10 @@ class WayPointEditor(MissionEditor):
         return y_diff, x_diff
 
     @staticmethod
-    def _get_unit_path(unit_type: str, waypoints: List[WayPoint]) -> List[WayPoint]:
+    def _get_unit_path(group_name: str, waypoints: List[WayPoint]) -> List[WayPoint]:
         output = []
         for wp in waypoints:
-            if wp.aircraft == unit_type or wp.aircraft == "Everyone":
+            if wp.group == group_name or wp.group == "Everyone":
                 output.append(wp)
         return output
 

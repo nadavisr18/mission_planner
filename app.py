@@ -81,7 +81,6 @@ def add_waypoint(waypoints: List[WayPoint], session_id: str):
     """
     data = get_dictionary()
     waypoints = [waypoints] if type(waypoints) == WayPoint else waypoints
-    print(len(waypoints))
     with open(f"backend\\temp_files\\dictionary.json", 'w') as file:
         if session_id in data.keys():
             existing_waypoints = data[session_id]['waypoints']
@@ -133,21 +132,6 @@ def process_mission(session_id: str):
             output = Mission(data=file.read(), name=data[session_id]['mission_name'], session_id=session_id)
             output.data = base64.encodebytes(output.data)
             return output.dict()
-    else:
-        raise HTTPException(status_code=404, detail="Session not found")
-
-
-@app.get("/mission_details/client_aircraft/{session_id}", responses={404: {"description": "Session Not Found"}})
-def get_client_aircraft(session_id: str):
-    """
-    Get the names and types of all the groups that have client aircraft
-    """
-    path = f"backend\\temp_files\\missions\\{session_id}.miz"
-    data = get_dictionary()
-    if session_id in data.keys():
-        mp = MissionParser(path)
-        types, names = mp.get_client_aircraft()
-        return [types, names]
     else:
         raise HTTPException(status_code=404, detail="Session not found")
 

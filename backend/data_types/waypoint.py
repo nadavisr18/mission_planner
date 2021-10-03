@@ -13,7 +13,7 @@ class WayPoint(BaseModel):
     lat: float
     lon: float
     altitude: float
-    aircraft: PlanesEnum
+    group: str
     name: str = None
     alt_type: AltTypeEnum
     wp_id: str
