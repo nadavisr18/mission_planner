@@ -43,10 +43,26 @@ class Waypoint {
     }
 }
 
+class Group {
+    constructor(attributes) {
+      this.latlng = attributes.latlng;
+      this.type = attributes.type;
+      this.aircraft = attributes.aircraft;
+      this.country = attributes.country;
+      this.coalition = attributes.coalition;
+    }
+
+    getAttributes()
+    {
+        return {latlng: this.latlng, type: this.type, aircraft: this.aircraft, country: this.country, coalition: this.coalition}
+    }
+}
+
 /* Global variables */
 var waypointsHistory = [[]];
 var activeWaypointHistory = 0;
 var waypoints = [];
+var groups = [];
 var markers = [];
 var lines = [];
 var selectedWaypoint = null;
@@ -183,6 +199,34 @@ function drawMap()
 
         /* Add the marker */
         marker = L.marker(waypoints[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
+        markers.push(marker);
+    }
+
+    for (var i = 0; i < groups.length; i++)
+    {  
+        /* Draw the marker and add the selected/unselected icon */
+        var html = iconhtml.replace('$waypoint-type$', groups[i].aircraft);
+
+        for (var key in isoCountries)
+        {
+            console.log(groups[i].country)
+            if(isoCountries[key] == groups[i].country)
+            {
+                html = html.replace('$icon$', '<img src="https://www.countryflags.io/'+key+'/flat/64.png">');
+            }
+        }
+        html = html.replace('$icon$', iconHtmls[groups[i].type]);
+        
+        html = html.replace('$waypoint-name$', groups[i].name);
+
+        var icon = L.divIcon({
+            html: html,
+            iconSize: [100, 80],
+            className: groups[i].type
+        });
+
+        /* Add the marker */
+        marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
         markers.push(marker);
     }
 

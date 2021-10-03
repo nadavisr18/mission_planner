@@ -25,8 +25,13 @@ function successMissionFile(data, textStatus, jqXHR)
     var groupNames = [];
     for (var i = 0; i < data.length; i++)
     {
-        groupNames.push(data[i].name);
+        group = data[i];
+        groupNames.push(group.name);
+        latlng = {lat: group.lat, lng: group.lon}
+        var attributes = {latlng: latlng, type: group.group_type, aircraft: group.name, country: group.country, coalition: group.coalition}
+        groups.push(new Group(attributes));
     }
+    applyMapChanges();
     document.getElementById("mission-file-label").innerHTML = "Upload mission file";
     deactivateInputs("mission-upload-input");
     activateInputs('waypoint-input');
