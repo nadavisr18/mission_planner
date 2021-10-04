@@ -4,6 +4,8 @@ from backend.data_types import Group
 from typing import List, Tuple, Dict, Any
 import numpy as np
 import uuid
+import os
+import re
 
 
 class MissionParser(MissionEditor):
@@ -20,11 +22,15 @@ class MissionParser(MissionEditor):
                 for group_type in group_types:
                     if group_type in country_dict.keys():
                         if group_type == 'static':
-                            groups_data = self.create_static_groups(country_dict[group_type]['group'], country_name, coalition)
+                            groups_data = self.create_static_groups(country_dict[group_type]['group'], country_name,
+                                                                    coalition)
                             groups.extend(groups_data)
                         else:
                             for group in country_dict[group_type]['group']:
                                 group_dict = country_dict[group_type]['group'][group]
+                                radius = 0
+                                if group_type == 'vehicle':
+                                    radius, unit_type = self.check_SAM(group_dict)
                                 unit_type = group_dict['units'][1]['type']
                                 x, y = group_dict['x'] / 111139, group_dict['y'] / 111139
                                 lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
@@ -35,7 +41,8 @@ class MissionParser(MissionEditor):
                                                    country=country_name,
                                                    coalition=coalition,
                                                    lat=lat,
-                                                   lon=lon)
+                                                   lon=lon,
+                                                   range=radius)
                                 groups.append(group_data)
 
         return groups, self.mission['theatre']
@@ -86,3 +93,24 @@ class MissionParser(MissionEditor):
                               lon=lon)
                 groups.append(group)
         return groups
+
+    @staticmethod
+    def check_SAM(group: Dict) -> Tuple[int, str]:
+        max_range = 0
+        unit_name = ""
+        range_regex = r"\[\"rangeMaxAltMax\"\] = (\d+)"
+        unit_regex = r"\[\"displayName\"\] = \"(.+)\""
+        for unit in group['units']:
+            unit_dict = group['units'][unit]
+            if unit_dict['type'] +".lua" in os.listdir('backend/SAM_info'):
+                with open(f"backend/SAM_info/{unit_dict['type']}.lua", 'r') as file:
+                    raw_text = file.read()
+                    try:
+                        curr_range = int(re.findall(range_regex, raw_text)[0])
+                    except IndexError:
+                        continue
+                    if curr_range > max_range:
+                        max_range = curr_range
+                        print(unit_dict['type'])
+                        unit_name = re.findall(unit_regex, raw_text)[0]
+        return max_range, unit_name
