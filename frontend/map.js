@@ -14,7 +14,7 @@ class Waypoint {
 
       this.latlng = attributes.latlng;
       this.type = attributes.type;
-      this.aircraft = attributes.aircraft;
+      this.group = attributes.group;
       this.name = attributes.name;
       this.altitude = attributes.altitude;
       this.baroRadio = attributes.baroRadio;
@@ -23,7 +23,7 @@ class Waypoint {
 
     getAttributes()
     {
-        return {latlng: this.latlng, type: this.type, aircraft: this.aircraft, name: this.name, altitude: this.altitude, baroRadio: this.baroRadio}
+        return {latlng: this.latlng, type: this.type, group: this.group, name: this.name, altitude: this.altitude, baroRadio: this.baroRadio}
     }
 
     getJSON()
@@ -32,7 +32,7 @@ class Waypoint {
         string += '"lat":'+this.latlng.lat; string += ', ';
         string += '"lon":'+this.latlng.lng; string += ', ';
         string += '"altitude":'+this.altitude; string += ', ';
-        string += '"aircraft": "'+this.aircraft+'"'; string += ', ';
+        string += '"group": "'+this.group+'"'; string += ', ';
         string += '"name":"'+this.name+'"'; string += ', ';
         if (this.baroRadio == true){ string += '"alt_type":"RADIO"'; string += ', ';}
         else {string += '"alt_type":"BARO"'; string += ', ';}
@@ -47,6 +47,7 @@ class Group {
     constructor(attributes) {
       this.latlng = attributes.latlng;
       this.type = attributes.type;
+      this.name = attributes.name;
       this.aircraft = attributes.aircraft;
       this.country = attributes.country;
       this.coalition = attributes.coalition;
@@ -54,7 +55,7 @@ class Group {
 
     getAttributes()
     {
-        return {latlng: this.latlng, type: this.type, aircraft: this.aircraft, country: this.country, coalition: this.coalition}
+        return {latlng: this.latlng, type: this.type, name: this.name, aircraft: this.aircraft, country: this.country, coalition: this.coalition}
     }
 }
 
@@ -108,8 +109,8 @@ function onMapClick(e)
     var waypoint_altitude =  obj.value;
     obj = document.getElementById("waypoint-type");
     var waypoint_type =  obj.options[obj.selectedIndex].text;
-    obj = document.getElementById("waypoint-aircraft");
-    var waypoint_aircraft =  obj.options[obj.selectedIndex].text;
+    obj = document.getElementById("waypoint-group");
+    var waypoint_group =  obj.options[obj.selectedIndex].text;
     obj = document.getElementById("waypoint-baro-radio");
     var waypoint_baroRadio =  obj.checked;
 
@@ -119,18 +120,18 @@ function onMapClick(e)
         flashError(document.getElementById('waypoint-type-div-selected'));
     }
 
-     /* Check if the waypoint aircraft was selected, otherwise play the error animation */
-    if (waypoint_aircraft == "...")
+     /* Check if the waypoint group was selected, otherwise play the error animation */
+    if (waypoint_group == "...")
     {
-        flashError(document.getElementById('waypoint-aircraft-div-selected'));
+        flashError(document.getElementById('waypoint-group-div-selected'));
     }
 
-    if (waypoint_type != "..." && waypoint_aircraft != "...")
+    if (waypoint_type != "..." && waypoint_group != "...")
     {
         /* If no waypoint is currently selected, add a new waypoint */
         if (selectedWaypoint === null)
         {
-            var attributes = {latlng: e.latlng, type: waypoint_type, aircraft: waypoint_aircraft, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
+            var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
             var waypoint = new Waypoint(attributes);
             waypoints.push(waypoint);
         }
@@ -139,7 +140,7 @@ function onMapClick(e)
         {
             selectedWaypoint.latlng = e.latlng;
             selectedWaypoint.type = waypoint_type;
-            selectedWaypoint.aircraft = waypoint_aircraft;
+            selectedWaypoint.group = waypoint_group;
             selectedWaypoint.name = waypoint_name;
             selectedWaypoint.altitude = waypoint_altitude;
             selectedWaypoint.baroRadio = waypoint_baroRadio;
@@ -163,11 +164,11 @@ function cleanMap()
 }
 
 /* Retrieve the color of the line from the configuration file */
-function getLineColor(aircraft_type)
+function getLineColor(group_type)
 {
-    obj = document.getElementById("waypoint-aircraft");
-    var waypoint_aircraft =  obj.options[obj.selectedIndex].text;
-    if (aircraft_type == waypoint_aircraft)
+    obj = document.getElementById("waypoint-group");
+    var waypoint_group =  obj.options[obj.selectedIndex].text;
+    if (group_type == waypoint_group)
         return "#537099";
     return "#212d3c";
 }
@@ -175,11 +176,12 @@ function getLineColor(aircraft_type)
 /* Draws the map adding markers, lines and polygons */
 function drawMap()
 {
-    var marker, polyline, icon;
+    var marker, polyline, icon, tempWaypoints;
+    tempWaypoints = waypoints.slice();
     for (var i = 0; i < waypoints.length; i++)
     {  
         /* Draw the marker and add the selected/unselected icon */
-        var html = iconhtml.replace('$waypoint-type$', waypoints[i].aircraft);
+        var html = iconhtml.replace('$waypoint-type$', waypoints[i].group);
         if (selectedWaypoint == waypoints[i])
         {
             html = html.replace('$icon$', iconSelectedHtmls[waypoints[i].type]);
@@ -205,74 +207,79 @@ function drawMap()
     for (var i = 0; i < groups.length; i++)
     {  
         /* Draw the marker and add the selected/unselected icon */
-        var html = iconhtml.replace('$waypoint-type$', groups[i].aircraft);
+        var html = grouphtml.replace('$waypoint-type$', groups[i].name);
 
         for (var key in isoCountries)
         {
-            console.log(groups[i].country)
             if(isoCountries[key] == groups[i].country)
             {
-                html = html.replace('$icon$', '<img src="https://www.countryflags.io/'+key+'/flat/64.png">');
+                html = html.replace('$icon$', `<div class="image-cropper-$color$">
+                <img class="country-flag" src="https://www.countryflags.io/`+key+`/flat/64.png"></div>
+                <img class="aircraft-icon-blurred" src="./Aircrafts/$aircraft$.png">
+                <img class="aircraft-icon-$color$" src="./Aircrafts/$aircraft$.png">`);
+                html = html.replaceAll('$color$', groups[i].coalition);
+                html = html.replaceAll('$aircraft$', groups[i].aircraft);
             }
         }
-        html = html.replace('$icon$', iconHtmls[groups[i].type]);
         
-        html = html.replace('$waypoint-name$', groups[i].name);
-
         var icon = L.divIcon({
             html: html,
-            iconSize: [100, 80],
+            iconSize: [100, 150],
             className: groups[i].type
         });
 
         /* Add the marker */
         marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
         markers.push(marker);
+
+        var attributes = {latlng: groups[i].latlng, type: "spawn", group: groups[i].name, name: "spawn", altitude: 0, baroRadio: "radio"}
+        var waypoint = new Waypoint(attributes);
+        tempWaypoints.unshift(waypoint);
     }
 
     /* Draw all the lines for "Everyone" */
-    for (var i = 0; i < waypoints.length; i++)
+    for (var i = 0; i < tempWaypoints.length; i++)
     {  
-        for (var j = i + 1; j < waypoints.length; j++)
+        for (var j = i + 1; j < tempWaypoints.length; j++)
         {  
-            if (waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == "Everyone")
+            if (tempWaypoints[i].group == "Everyone" && tempWaypoints[j].group == "Everyone")
             {
-                polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(waypoints[i].aircraft)}).addTo(mymap);
+                polyline = L.polyline([tempWaypoints[i].latlng, tempWaypoints[j].latlng], {color: getLineColor(tempWaypoints[i].group)}).addTo(mymap);
                 lines.push(polyline);
                 break;
             }
         }    
     }
 
-    /* Make a list of all the aircraft which have a waypoint */
-    var activeAircraft = [];
-    for (var i = 0; i < waypoints.length; i++){
-        if (activeAircraft.indexOf(waypoints[i].aircraft) == -1) activeAircraft.push(waypoints[i].aircraft)
+    /* Make a list of all the group which have a waypoint */
+    var activeGroup = [];
+    for (var i = 0; i < tempWaypoints.length; i++){
+        if (activeGroup.indexOf(tempWaypoints[i].group) == -1) activeGroup.push(tempWaypoints[i].group)
     }
 
-    /* Draw the aircraft specific lines */
-    for (k = 0; k < activeAircraft.length; k++)
+    /* Draw the group specific lines */
+    for (k = 0; k < activeGroup.length; k++)
     {
         /* Cycle on each "start" point */
-        for (var i = 0; i < waypoints.length; i++)
+        for (var i = 0; i < tempWaypoints.length; i++)
         {  
             /* Search for an appropriate "end" point*/
-            for (var j = i + 1; j < waypoints.length; j++)
+            for (var j = i + 1; j < tempWaypoints.length; j++)
             {  
                 /* If both the start and end points are for "Everyone", we can directly skip to the next start point */
-                if (waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == "Everyone") 
+                if (tempWaypoints[i].group == "Everyone" && tempWaypoints[j].group == "Everyone") 
                 {
                     break;
                 }
 
-                /* Check if we should draw an aircraft specifc line */
-                var check1 = waypoints[i].aircraft == activeAircraft[k] && waypoints[j].aircraft == activeAircraft[k];
-                var check2 = waypoints[i].aircraft == activeAircraft[k] && waypoints[j].aircraft == "Everyone";
-                var check3 = waypoints[i].aircraft == "Everyone" && waypoints[j].aircraft == activeAircraft[k];
+                /* Check if we should draw an group specifc line */
+                var check1 = tempWaypoints[i].group == activeGroup[k] && tempWaypoints[j].group == activeGroup[k];
+                var check2 = tempWaypoints[i].group == activeGroup[k] && tempWaypoints[j].group == "Everyone";
+                var check3 = tempWaypoints[i].group == "Everyone" && tempWaypoints[j].group == activeGroup[k];
                 /* Draw the line */
                 if (check1 || check2 || check3)
                 {
-                    polyline = L.polyline([waypoints[i].latlng, waypoints[j].latlng], {color: getLineColor(activeAircraft[k])}).addTo(mymap);
+                    polyline = L.polyline([tempWaypoints[i].latlng, tempWaypoints[j].latlng], {color: getLineColor(activeGroup[k])}).addTo(mymap);
                     lines.push(polyline);
                     i = j - 1; 
                     break;
@@ -305,9 +312,25 @@ function markerClick(e)
             document.getElementById("waypoint-altitude").value = selectedWaypoint.altitude;
             document.getElementById("waypoint-type").value = selectedWaypoint.type;
             document.getElementById("waypoint-type-div-selected").innerHTML = selectedWaypoint.type;
-            document.getElementById("waypoint-aircraft").value = selectedWaypoint.aircraft;
-            document.getElementById("waypoint-aircraft-div-selected").innerHTML = selectedWaypoint.aircraft;
+            document.getElementById("waypoint-group").value = selectedWaypoint.group;
+            document.getElementById("waypoint-group-div-selected").innerHTML = selectedWaypoint.group;
             document.getElementById("waypoint-baro-radio").checked = selectedWaypoint.baroRadio;
+            break;
+        }
+    }
+    for (var i = 0; i < groups.length; i++)
+    {     
+        if (groups[i].latlng.lat == e.latlng.lat && groups[i].latlng.lng == e.latlng.lng)
+        {
+            /* Select the waypoint and update the inputs with its properties */
+            selectedGroup = groups[i];
+            document.getElementById("waypoint-name").value = "";
+            document.getElementById("waypoint-altitude").value = 0;
+            document.getElementById("waypoint-type").value = "Anchor";
+            document.getElementById("waypoint-type-div-selected").innerHTML = "Anchor";
+            document.getElementById("waypoint-group").value = selectedGroup.name;
+            document.getElementById("waypoint-group-div-selected").innerHTML = selectedGroup.name;
+            document.getElementById("waypoint-baro-radio").checked = false;
             break;
         }
     }
@@ -358,13 +381,13 @@ function applyWaypointChange()
         var waypoint_altitude =  obj.value;
         obj = document.getElementById("waypoint-type");
         var waypoint_type =  obj.options[obj.selectedIndex].text;
-        obj = document.getElementById("waypoint-aircraft");
-        var waypoint_aircraft =  obj.options[obj.selectedIndex].text;
+        obj = document.getElementById("waypoint-group");
+        var waypoint_group =  obj.options[obj.selectedIndex].text;
         obj = document.getElementById("waypoint-baro-radio");
         var waypoint_baroRadio =  obj.checked;
 
         selectedWaypoint.type = waypoint_type;
-        selectedWaypoint.aircraft = waypoint_aircraft;
+        selectedWaypoint.group = waypoint_group;
         selectedWaypoint.name = waypoint_name;
         selectedWaypoint.altitude = waypoint_altitude;
         selectedWaypoint.baroRadio = waypoint_baroRadio;

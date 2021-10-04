@@ -378,3 +378,78 @@ input[type=number] {
     border-top: 1px solid #EEEEEE;
 }
 
+/* Country flags */
+.image-cropper-blue {
+    opacity: 0.7;
+    filter: drop-shadow(1px 1px 0 blue)
+            drop-shadow(-1px 1px 0 blue)
+            drop-shadow(1px -1px 0 blue)
+            drop-shadow(-1px -1px 0 blue);
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-top: -25px;
+    margin-left: 22px;
+}
+
+.image-cropper-red {
+    filter: drop-shadow(1px 1px 0 red)
+            drop-shadow(-1px 1px 0 red)
+            drop-shadow(1px -1px 0 red)
+            drop-shadow(-1px -1px 0 red);
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-top: -25px;
+    margin-left: 22px;
+}
+
+.country-flag {
+    display: inline;
+    margin: 0 auto;
+    margin-top: -30%;
+    margin-left: -29%; 
+    height: 160%;
+    width: auto;
+}
+
+.aircraft-icon-blurred {
+    filter: drop-shadow(1px 1px 0 white)
+            drop-shadow(-1px 1px 0 white)
+            drop-shadow(1px -1px 0 white)
+            drop-shadow(-1px -1px 0 white);
+    position: absolute;
+    display: inline;
+    margin-top: -40px;
+    margin-left: 7px;
+    height: 80px;
+    width: 80px
+}
+
+.aircraft-icon-red {
+    filter: invert(19%) sepia(96%) saturate(6636%) hue-rotate(359deg) brightness(92%) contrast(119%);
+    position: absolute;
+    display: inline;
+    margin-top: -40px;
+    margin-left: 7px;
+    height: 80px;
+    width: 80px
+}
+
+.aircraft-icon-blue {
+    filter: invert(8%) sepia(99%) saturate(6515%) hue-rotate(247deg) brightness(107%) contrast(146%);
+    position: absolute;
+    display: inline;
+    margin-top: -40px;
+    margin-left: 7px;
+    height: 80px;
+    width: 80px
+}
+
+.spawn-symbol {
+    margin: auto;
+}

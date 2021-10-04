@@ -28,7 +28,7 @@ function successMissionFile(data, textStatus, jqXHR)
         group = data[i];
         groupNames.push(group.name);
         latlng = {lat: group.lat, lng: group.lon}
-        var attributes = {latlng: latlng, type: group.group_type, aircraft: group.name, country: group.country, coalition: group.coalition}
+        var attributes = {latlng: latlng, type: group.group_type, name: group.name, aircraft: group.unit_type, country: group.country, coalition: group.coalition}
         groups.push(new Group(attributes));
     }
     applyMapChanges();
@@ -36,9 +36,9 @@ function successMissionFile(data, textStatus, jqXHR)
     deactivateInputs("mission-upload-input");
     activateInputs('waypoint-input');
     groupNames.push("Everyone");
-    setupSelection(document.getElementById("radio-aircraft"), groupNames);
-    setupSelection(document.getElementById("kneeboard-aircraft"), groupNames);
-    setupSelection(document.getElementById("waypoint-aircraft"), groupNames);
+    setupSelection(document.getElementById("radio-group"), groupNames);
+    setupSelection(document.getElementById("kneeboard-group"), groupNames);
+    setupSelection(document.getElementById("waypoint-group"), groupNames);
     unstyleSelections();
     styleSelections();
 
@@ -154,9 +154,9 @@ function readAircraftList(data, textStatus, jqXHR)
     deactivateInputs("mission-upload-input");
     activateInputs('waypoint-input');
     data.push("Everyone");
-    setupSelection(document.getElementById("radio-aircraft"), data);
-    setupSelection(document.getElementById("kneeboard-aircraft"), data);
-    setupSelection(document.getElementById("waypoint-aircraft"), data);
+    setupSelection(document.getElementById("radio-group"), data);
+    setupSelection(document.getElementById("kneeboard-group"), data);
+    setupSelection(document.getElementById("waypoint-group"), data);
     unstyleSelections();
     styleSelections();
 
@@ -192,12 +192,12 @@ function uploadKneeboardFiles()
     reader.onload = function () {
         var base64EncodedStr = btoa(reader.result);
         
-        var obj = document.getElementById("kneeboard-aircraft");
-        var kneeboard_aircraft = obj.options[obj.selectedIndex].text;
+        var obj = document.getElementById("kneeboard-group");
+        var kneeboard_group = obj.options[obj.selectedIndex].text;
 
         var form = new FormData();
         form.append("data", base64EncodedStr);
-        form.append("aircraft", kneeboard_aircraft);
+        form.append("group", kneeboard_group);
         form.append("name", file.name);
 
         $.ajax({
@@ -218,10 +218,10 @@ function uploadKneeboardFiles()
     }
 }
 
-function deleteKneeboardFile(aircraft, filename){
+function deleteKneeboardFile(group, filename){
     var form = new FormData();
     form.append("data", "");
-    form.append("aircraft", aircraft);
+    form.append("group", group);
     form.append("name", filename);
     document.getElementById("kneeboard-files-label").innerHTML = "Processing file...";
     $.ajax({
@@ -229,7 +229,7 @@ function deleteKneeboardFile(aircraft, filename){
         type: 'DELETE',
         data: JSON.stringify(Object.fromEntries(form)),
         processData: false,
-        success: function(result) {successDeleteFile(aircraft, filename);},
+        success: function(result) {successDeleteFile(group, filename);},
         error: RESTerror,
         contentType: 'application/json'
     });
@@ -242,12 +242,12 @@ function successUploadFile(){
     else {document.getElementById("kneeboard-files-label").innerHTML = "Upload kneeboard files";}
 }
 
-function successDeleteFile(aircraft, name){
-    for (i = 0; i < kneeboardVector[aircraft].length; i++)
+function successDeleteFile(group, name){
+    for (i = 0; i < kneeboardVector[group].length; i++)
     {
-        if (kneeboardVector[aircraft][i] == name) {
+        if (kneeboardVector[group][i] == name) {
             console.log("splicing");
-            kneeboardVector[aircraft].splice(i, 1);
+            kneeboardVector[group].splice(i, 1);
             hideKneeboardFiles();
             showKneeboardFiles(); 
             document.getElementById("kneeboard-files-label").innerHTML = "Upload kneeboard files";

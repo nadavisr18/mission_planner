@@ -115,18 +115,18 @@ function selectionCallback(id, i)
             input.disabled = false;
         }
     }
-    else if (id == "radio-aircraft-div"){
-        obj = document.getElementById("radio-aircraft");
-        var radio_aircraft = obj.options[obj.selectedIndex].text;
+    else if (id == "radio-group-div"){
+        obj = document.getElementById("radio-group");
+        var radio_group = obj.options[obj.selectedIndex].text;
         deactivateRadio(1);
-        if (radio_aircraft != "...") activateRadio(1);
+        if (radio_group != "...") activateRadio(1);
         deactivateRadio(2);
-        if (radio_aircraft != "...") activateRadio(2);
+        if (radio_group != "...") activateRadio(2);
     }
-    else if (id == "kneeboard-aircraft-div"){
-        obj = document.getElementById("kneeboard-aircraft");
-        var kneeboard_aircraft = obj.options[obj.selectedIndex].text;
-        if (kneeboard_aircraft != "...") 
+    else if (id == "kneeboard-group-div"){
+        obj = document.getElementById("kneeboard-group");
+        var kneeboard_group = obj.options[obj.selectedIndex].text;
+        if (kneeboard_group != "...") 
         {   
             activateInputs("kneeboard-input");
             hideKneeboardFiles();

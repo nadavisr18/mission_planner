@@ -9,14 +9,14 @@ function setupRadio(radioNumber){
 
 /* Add a row to the radio preset table */
 function addRadioRow(radioNumber){
-    var obj = document.getElementById("radio-aircraft");
-    var radio_aircraft = obj.options[obj.selectedIndex].text;
-    if (radio_aircraft != "...")
+    var obj = document.getElementById("radio-group");
+    var radio_group = obj.options[obj.selectedIndex].text;
+    if (radio_group != "...")
     {
-        var channels = radioVector[radioNumber-1][radio_aircraft];
+        var channels = radioVector[radioNumber-1][radio_group];
         var newChannelNumber = findChannelFree(radioNumber);
         if (channels.length == 20) return;
-        radioVector[radioNumber-1][radio_aircraft].push({"Channel": newChannelNumber, "Frequency": 123.50, "Label": "No label"});
+        radioVector[radioNumber-1][radio_group].push({"Channel": newChannelNumber, "Frequency": 123.50, "Label": "No label"});
         deactivateRadio(radioNumber);
         activateRadio(radioNumber);
     }
@@ -24,11 +24,11 @@ function addRadioRow(radioNumber){
 
 /* Remove last row from the radio preset table */
 function removeRadioRow(radioNumber){
-    var obj = document.getElementById("radio-aircraft");
-    var radio_aircraft = obj.options[obj.selectedIndex].text;
-    if (radio_aircraft != "...")
+    var obj = document.getElementById("radio-group");
+    var radio_group = obj.options[obj.selectedIndex].text;
+    if (radio_group != "...")
     {
-        radioVector[radioNumber-1][radio_aircraft].pop();
+        radioVector[radioNumber-1][radio_group].pop();
         deactivateRadio(radioNumber);
         activateRadio(radioNumber);
     }
@@ -36,17 +36,17 @@ function removeRadioRow(radioNumber){
 
 /* Save the change to the radio vector */
 function applyRadioChange(radioNumber){
-    var obj = document.getElementById("radio-aircraft");
-    var radio_aircraft = obj.options[obj.selectedIndex].text;
-    if (radio_aircraft != "...")
+    var obj = document.getElementById("radio-group");
+    var radio_group = obj.options[obj.selectedIndex].text;
+    if (radio_group != "...")
     {
         var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
-        for (i = 0; i < radioVector[radioNumber-1][radio_aircraft].length; i++)
+        for (i = 0; i < radioVector[radioNumber-1][radio_group].length; i++)
         {
             var cells = radioRows[i].cells;
-            radioVector[radioNumber-1][radio_aircraft][i]["Channel"] = parseInt(cells[0].getElementsByTagName("input")[0].value);
-            radioVector[radioNumber-1][radio_aircraft][i]["Frequency"] = parseFloat(cells[1].getElementsByTagName("input")[0].value);
-            radioVector[radioNumber-1][radio_aircraft][i]["Label"] = cells[2].getElementsByTagName("input")[0].value;
+            radioVector[radioNumber-1][radio_group][i]["Channel"] = parseInt(cells[0].getElementsByTagName("input")[0].value);
+            radioVector[radioNumber-1][radio_group][i]["Frequency"] = parseFloat(cells[1].getElementsByTagName("input")[0].value);
+            radioVector[radioNumber-1][radio_group][i]["Label"] = cells[2].getElementsByTagName("input")[0].value;
         }
     }
 }
@@ -71,10 +71,10 @@ function checkFrequencyRanges(rowIndex, radioNumber){
 /* Show the correct number of rows and set them to the value saved in the vector */
 function activateRadio(radioNumber)
 {
-    var obj = document.getElementById("radio-aircraft");
-    var radio_aircraft =  obj.options[obj.selectedIndex].text;
-    if ((radio_aircraft in radioVector[radioNumber-1]) == false) {
-        radioVector[radioNumber-1][radio_aircraft] = [];
+    var obj = document.getElementById("radio-group");
+    var radio_group =  obj.options[obj.selectedIndex].text;
+    if ((radio_group in radioVector[radioNumber-1]) == false) {
+        radioVector[radioNumber-1][radio_group] = [];
     }
 
     var buttons = document.getElementsByClassName("radio-button");
@@ -84,7 +84,7 @@ function activateRadio(radioNumber)
     }
 
     var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
-    for (i = 0; i < radioVector[radioNumber-1][radio_aircraft].length; i++)
+    for (i = 0; i < radioVector[radioNumber-1][radio_group].length; i++)
     {
         radioRows[i].classList.remove("hidden");
         var cells = radioRows[i].cells;
@@ -93,9 +93,9 @@ function activateRadio(radioNumber)
             el[j].classList.remove("greyed");
             el[j].disabled = false;
         }
-        cells[0].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_aircraft][i]["Channel"];
-        cells[1].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_aircraft][i]["Frequency"];
-        cells[2].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_aircraft][i]["Label"];
+        cells[0].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["Channel"];
+        cells[1].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["Frequency"];
+        cells[2].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["Label"];
         resetError(cells[0].getElementsByTagName("input")[0]);
         resetError(cells[1].getElementsByTagName("input")[0]);
     }
@@ -157,35 +157,35 @@ function setPlacehoder(rowIndex, radioNumber)
 
 function checkChannelFree(radioNumber, rowIndex)
 {
-    var obj = document.getElementById("radio-aircraft");
-    var radio_aircraft = obj.options[obj.selectedIndex].text;
-    if (radio_aircraft != "...")
+    var obj = document.getElementById("radio-group");
+    var radio_group = obj.options[obj.selectedIndex].text;
+    if (radio_group != "...")
     {
         for (j = 0; j < obj.options.length; j++)
         {
-            var temp_radio_aircraft = obj.options[j].text;
-            if ((temp_radio_aircraft in radioVector[radioNumber-1]))
+            var temp_radio_group = obj.options[j].text;
+            if ((temp_radio_group in radioVector[radioNumber-1]))
             {
-                for (k = 0; k < radioVector[radioNumber-1][temp_radio_aircraft].length; k++){
-                    if (temp_radio_aircraft == radio_aircraft && rowIndex == k) continue;
-                    if (radioVector[radioNumber-1][temp_radio_aircraft][k]["Channel"] == radioVector[radioNumber-1][radio_aircraft][rowIndex]["Channel"] && radioVector[radioNumber-1][radio_aircraft][rowIndex]["Channel"] != 0){
+                for (k = 0; k < radioVector[radioNumber-1][temp_radio_group].length; k++){
+                    if (temp_radio_group == radio_group && rowIndex == k) continue;
+                    if (radioVector[radioNumber-1][temp_radio_group][k]["Channel"] == radioVector[radioNumber-1][radio_group][rowIndex]["Channel"] && radioVector[radioNumber-1][radio_group][rowIndex]["Channel"] != 0){
                         var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
                         var cells = radioRows[rowIndex].cells;
                         tooltip = cells[0].getElementsByClassName("tooltiptext")[0];
-                        if (temp_radio_aircraft == radio_aircraft) {
+                        if (temp_radio_group == radio_group) {
                             tooltip.innerHTML = "Channel already set <i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
                             tooltip.style.visibility = 'visible';
                             tooltip.style.opacity = 1;
                             flashError(cells[0].getElementsByClassName("input")[0]);
                         }
                         else {
-                            if (radio_aircraft == "Everyone"){
-                                tooltip.innerHTML = "Overwriting setting for: " + temp_radio_aircraft + "<i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
+                            if (radio_group == "Everyone"){
+                                tooltip.innerHTML = "Overwriting setting for: " + temp_radio_group + "<i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
                                 tooltip.style.visibility = 'visible';
                                 tooltip.style.opacity = 1;
                                 flashError(cells[0].getElementsByClassName("input")[0]);
                             } 
-                            else if (temp_radio_aircraft == "Everyone") {
+                            else if (temp_radio_group == "Everyone") {
                                 tooltip.innerHTML = "Channel already set for Everyone <i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
                                 tooltip.style.visibility = 'visible';
                                 tooltip.style.opacity = 1;
@@ -201,20 +201,20 @@ function checkChannelFree(radioNumber, rowIndex)
 
 function findChannelFree(radioNumber)
 {
-    var obj = document.getElementById("radio-aircraft");
-    var radio_aircraft = obj.options[obj.selectedIndex].text;
-    if (radio_aircraft != "...")
+    var obj = document.getElementById("radio-group");
+    var radio_group = obj.options[obj.selectedIndex].text;
+    if (radio_group != "...")
     {
         for (channel = 1; channel <= 20; channel++){
             var isFree = true;
             for (j = 0; j < obj.options.length; j++)
             {
-                var temp_radio_aircraft = obj.options[j].text;
-                if ((temp_radio_aircraft in radioVector[radioNumber-1]))
+                var temp_radio_group = obj.options[j].text;
+                if ((temp_radio_group in radioVector[radioNumber-1]))
                 {
-                    for (k = 0; k < radioVector[radioNumber-1][temp_radio_aircraft].length; k++){
-                        if (radioVector[radioNumber-1][temp_radio_aircraft][k]["Channel"] == channel){
-                            if (radio_aircraft == "Everyone" || temp_radio_aircraft == "Everyone" || radio_aircraft == temp_radio_aircraft) isFree = false;
+                    for (k = 0; k < radioVector[radioNumber-1][temp_radio_group].length; k++){
+                        if (radioVector[radioNumber-1][temp_radio_group][k]["Channel"] == channel){
+                            if (radio_group == "Everyone" || temp_radio_group == "Everyone" || radio_group == temp_radio_group) isFree = false;
                         }
                     }
                 }
