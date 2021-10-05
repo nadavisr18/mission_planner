@@ -178,7 +178,7 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
 
-@app.post('/weather/{session_id}')
+@app.post('/weather/{session_id}', responses={404: {"description": "Session Not Found"}, 400: {"description": "City Not Found"}})
 def change_weather(weather_data: WeatherData):
     """
     change the weather in the mission, based on real time data.
@@ -187,7 +187,7 @@ def change_weather(weather_data: WeatherData):
     if weather_data.session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{weather_data.session_id}.miz"
         we = WeatherEditor(path)
-        while True:
+        for i in range(100):
             try:
                 weather_data.city = get_random_city()[0] if weather_data.city.lower() == "random" else weather_data.city
                 condition, wind_dir, wind_speed, icon = we.change_weather(weather_data.city, weather_data.time)
@@ -195,6 +195,8 @@ def change_weather(weather_data: WeatherData):
                         "wind_speed": wind_speed, "city": weather_data.city, "icon": icon}
             except BaseException as e:
                 pass
+        else:
+            raise HTTPException(status_code=400, detail="City Not Found")
     else:
         raise HTTPException(status_code=404, detail="Session not found")
 
