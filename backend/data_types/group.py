@@ -9,3 +9,4 @@ class Group(BaseModel):
     coalition: str
     lat: float
     lon: float
+    range: int = 0
