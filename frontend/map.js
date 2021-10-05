@@ -177,7 +177,7 @@ function getLineColor(group_type)
 /* Draws the map adding markers, lines and polygons */
 function drawMap()
 {
-    var marker, polyline, icon, tempWaypoints;
+    var marker, polyline, icon, tempWaypoints, flyable;
     tempWaypoints = waypoints.slice();
     for (var i = 0; i < waypoints.length; i++)
     {  
@@ -207,8 +207,9 @@ function drawMap()
 
     for (var i = 0; i < groups.length; i++)
     {  
+        flyable = false;
         /* Draw the marker and add the selected/unselected icon */
-        var html = grouphtml.replace('$waypoint-type$', groups[i].name);
+        var html = grouphtml;
 
         for (var key in isoCountries)
         {
@@ -225,6 +226,8 @@ function drawMap()
                     var waypoint = new Waypoint(attributes);
                     tempWaypoints.unshift(waypoint);
                     html = html.replaceAll('$aircraft-logo$', './Aircrafts/'+groups[i].unit);
+                    html = html.replace('$waypoint-type$', groups[i].name);
+                    flyable = true;
                 }
                 else if (groups[i].type == 'ship')
                     html = html.replaceAll('$aircraft-logo$', './Naval/naval');
@@ -245,6 +248,8 @@ function drawMap()
             }
         }
         
+        html = html.replace('$waypoint-type$', "&nbsp");
+
         var icon = L.divIcon({
             html: html,
             iconSize: [100, 150],
@@ -252,7 +257,10 @@ function drawMap()
         });
 
         /* Add the marker */
-        marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
+        if (flyable)
+            marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
+        else
+            marker = L.marker(groups[i].latlng, {icon: icon}).addTo(mymap);
         markers.push(marker);
     }
 
