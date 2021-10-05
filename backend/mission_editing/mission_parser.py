@@ -3,6 +3,7 @@ from backend.data_types import Group
 
 from typing import List, Tuple, Dict, Any
 import numpy as np
+import yaml
 import uuid
 import os
 import re
@@ -10,6 +11,8 @@ import re
 
 class MissionParser(MissionEditor):
     def __init__(self, path: str):
+        with open("backend/interface/config.yml") as file:
+            self.config = yaml.load(file, Loader=yaml.FullLoader)
         super().__init__(path)
 
     def get_mission_info(self) -> Tuple[List[Group], str]:
@@ -35,6 +38,7 @@ class MissionParser(MissionEditor):
                                 if group_type == 'vehicle':
                                     radius, unit_type = self.check_SAM(group_dict)
                                 unit_type = group_dict['units'][1]['type'] if len(unit_type) == 0 else unit_type
+                                unit_type = self.config['BackendToDisplayName'].get(unit_type, unit_type)
                                 client = group_dict['units'][1]['skill'] == 'Client'
                                 x, y = group_dict['x'] / 111139, group_dict['y'] / 111139
                                 lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
