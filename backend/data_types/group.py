@@ -9,4 +9,5 @@ class Group(BaseModel):
     coalition: str
     lat: float
     lon: float
+    client: bool = False
     range: int = 0

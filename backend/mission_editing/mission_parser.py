@@ -28,10 +28,14 @@ class MissionParser(MissionEditor):
                         else:
                             for group in country_dict[group_type]['group']:
                                 group_dict = country_dict[group_type]['group'][group]
+                                if group_dict.get("hiddenOnPlanner", False) or group_dict.get("lateActivation", False):
+                                    continue
                                 radius = 0
+                                unit_type = ""
                                 if group_type == 'vehicle':
                                     radius, unit_type = self.check_SAM(group_dict)
-                                unit_type = group_dict['units'][1]['type']
+                                unit_type = group_dict['units'][1]['type'] if len(unit_type) == 0 else unit_type
+                                client = group_dict['units'][1]['skill'] == 'Client'
                                 x, y = group_dict['x'] / 111139, group_dict['y'] / 111139
                                 lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
                                 lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
@@ -42,6 +46,7 @@ class MissionParser(MissionEditor):
                                                    coalition=coalition,
                                                    lat=lat,
                                                    lon=lon,
+                                                   client=client,
                                                    range=radius)
                                 groups.append(group_data)
 
@@ -66,15 +71,18 @@ class MissionParser(MissionEditor):
                     new_group['x'] = np.append(new_group['x'], static['x'])
                     new_group['y'] = np.append(new_group['y'], static['y'])
                     new_group['objects'].append(static_i)
-                    new_group['type'] = 'FARP' if static['units'][1]['category'] == 'Heliports' else new_group['type']
+                    new_group['type'] = 'FARP' if static['units'][1].get("category") == 'Heliports' else new_group[
+                        'type']
                     static_clumps[group_i] = new_group
                     break
             else:
+                group_type = 'Base'
+                group_type = 'FARP' if static['units'][1].get('category') == 'Heliports' else group_type
                 new_group = {
                     'x': np.array(static['x']),
                     'y': np.array(static['y']),
                     'objects': [static_i],
-                    'type': 'FARP' if static['units'][1]['category'] == 'Heliports' else 'Base'
+                    'type': group_type
                 }
                 static_clumps.append(new_group)
 
@@ -102,7 +110,7 @@ class MissionParser(MissionEditor):
         unit_regex = r"\[\"displayName\"\] = \"(.+)\""
         for unit in group['units']:
             unit_dict = group['units'][unit]
-            if unit_dict['type'] +".lua" in os.listdir('backend/SAM_info'):
+            if unit_dict['type'] + ".lua" in os.listdir('backend/SAM_info'):
                 with open(f"backend/SAM_info/{unit_dict['type']}.lua", 'r') as file:
                     raw_text = file.read()
                     try:
