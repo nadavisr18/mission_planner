@@ -26,9 +26,10 @@ function successMissionFile(data, textStatus, jqXHR)
     for (var i = 0; i < data.length; i++)
     {
         group = data[i];
-        groupNames.push(group.name);
+        if (group.group_type == 'plane' || group.group_type == 'helicopter')
+            groupNames.push(group.name);
         latlng = {lat: group.lat, lng: group.lon}
-        var attributes = {latlng: latlng, type: group.group_type, name: group.name, aircraft: group.unit_type, country: group.country, coalition: group.coalition}
+        var attributes = {latlng: latlng, type: group.group_type, name: group.name, unit: group.unit_type, country: group.country, coalition: group.coalition, range: group.range}
         groups.push(new Group(attributes));
     }
     applyMapChanges();
@@ -261,10 +262,8 @@ function applyWeatherChange()
     var obj = document.getElementById("weather-location");
     var location = obj.value;
 
-    console.log(location)
-
     var form = new FormData();
-    form.append("city", obj);
+    form.append("city", location);
     form.append("time", "0000");
     form.append("session_id", sessionId);
 
@@ -281,6 +280,8 @@ function applyWeatherChange()
 
 function successWeatherChange(data)
 {
-    document.getElementById("wind-direction").style.transform = "rotate("+data.wind_dir+"deg)";
     console.log(data);
+    document.getElementById("wind-direction").style.transform = "rotate("+data.wind_dir+"deg)";
+    document.getElementById("weather-logo").src = 'http:\\'+data.icon;
+    
 }

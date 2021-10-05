@@ -70,12 +70,25 @@ textarea:focus, input:focus{
     min-width: 350px;
 }
 
-#weather-map-box {
+#wind-map-box {
     left: 10px;
-    bottom: 50px; 
+    bottom: 10px; 
     position: absolute;
     width: 100px;
-    height: 50px;
+    height: 100px;
+    z-index: 10000;
+    text-align: center;
+    font-weight: normal;
+    font-size: 16px;
+    color: #222;
+}
+
+#weather-map-box {
+    left: 80px;
+    bottom: 10px; 
+    position: absolute;
+    width: 100px;
+    height: 100px;
     z-index: 10000;
     text-align: center;
     font-weight: normal;
@@ -310,6 +323,13 @@ input[type=number] {
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     text-shadow: -2px 0 1px black, 0 2px 1px black, 2px 0 1px black, 0 -2px 1px black;
     font-size: 40px;
+}
+
+.weather-logo{
+    filter: drop-shadow(1px 1px 0 white)
+    drop-shadow(-1px 1px 0 white)
+    drop-shadow(1px -1px 0 white)
+    drop-shadow(-1px -1px 0 white);
 }
 
 .tooltip {

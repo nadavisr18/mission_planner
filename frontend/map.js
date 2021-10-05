@@ -48,14 +48,15 @@ class Group {
       this.latlng = attributes.latlng;
       this.type = attributes.type;
       this.name = attributes.name;
-      this.aircraft = attributes.aircraft;
+      this.unit = attributes.unit;
       this.country = attributes.country;
       this.coalition = attributes.coalition;
+      this.range = attributes.range;
     }
 
     getAttributes()
     {
-        return {latlng: this.latlng, type: this.type, name: this.name, aircraft: this.aircraft, country: this.country, coalition: this.coalition}
+        return {latlng: this.latlng, type: this.type, name: this.name, aircraft: this.unit, country: this.country, coalition: this.coalition, range: this.range}
     }
 }
 
@@ -215,10 +216,32 @@ function drawMap()
             {
                 html = html.replace('$icon$', `<div class="image-cropper-$color$">
                 <img class="country-flag" src="https://www.countryflags.io/`+key+`/flat/64.png"></div>
-                <img class="aircraft-icon-blurred" src="./Aircrafts/$aircraft$.png">
-                <img class="aircraft-icon-$color$" src="./Aircrafts/$aircraft$.png">`);
+                <img class="aircraft-icon-blurred" src="$aircraft-logo$.png">
+                <img class="aircraft-icon-$color$" src="$aircraft-logo$.png">`);
                 html = html.replaceAll('$color$', groups[i].coalition);
-                html = html.replaceAll('$aircraft$', groups[i].aircraft);
+                if (groups[i].type == 'plane' || groups[i].type == 'helicopter')
+                {
+                    var attributes = {latlng: groups[i].latlng, type: "spawn", group: groups[i].name, name: "spawn", altitude: 0, baroRadio: "radio"}
+                    var waypoint = new Waypoint(attributes);
+                    tempWaypoints.unshift(waypoint);
+                    html = html.replaceAll('$aircraft-logo$', './Aircrafts/'+groups[i].unit);
+                }
+                else if (groups[i].type == 'ship')
+                    html = html.replaceAll('$aircraft-logo$', './Naval/naval');
+                else if (groups[i].type == 'vehicle')
+                    if (groups[i].range > 0){
+                        marker = L.circle(groups[i].latlng, {radius: groups[i].range, color: groups[i].coalition}).addTo(mymap);
+                        markers.push(marker);
+                        html = html.replaceAll('$aircraft-logo$', './Ground/SAM');
+                    }
+                    else 
+                        html = html.replaceAll('$aircraft-logo$', './Ground/tank');
+                else if (groups[i].unit == 'Base')
+                    html = html.replaceAll('$aircraft-logo$', './Ground/base');
+                else if (groups[i].unit == 'FARP')
+                    html = html.replaceAll('$aircraft-logo$', './Ground/farp');
+               
+                html = html.replaceAll('$aircraft$', groups[i].unit);
             }
         }
         
@@ -231,10 +254,6 @@ function drawMap()
         /* Add the marker */
         marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
         markers.push(marker);
-
-        var attributes = {latlng: groups[i].latlng, type: "spawn", group: groups[i].name, name: "spawn", altitude: 0, baroRadio: "radio"}
-        var waypoint = new Waypoint(attributes);
-        tempWaypoints.unshift(waypoint);
     }
 
     /* Draw all the lines for "Everyone" */
