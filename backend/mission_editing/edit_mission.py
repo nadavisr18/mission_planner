@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from slpp import slpp as lua
+import re
 import zipfile
 import keras
 
@@ -19,7 +20,8 @@ class MissionEditor:
         with zipfile.ZipFile(self.path, mode='r') as archive:
             with archive.open(local_path) as msnfile:
                 raw_data = msnfile.read().decode('utf-8')
-                data_dict = raw_data.split(local_path.split("/")[-1] + " =")[1]
+                match = re.search(rf'{local_path.split("/")[-1]}\s?=', raw_data)
+                data_dict = raw_data[match.end()+1:]
                 data = lua.decode(data_dict)
         return data
 

@@ -111,6 +111,5 @@ class MissionParser(MissionEditor):
                         continue
                     if curr_range > max_range:
                         max_range = curr_range
-                        print(unit_dict['type'])
                         unit_name = re.findall(unit_regex, raw_text)[0]
         return max_range, unit_name
