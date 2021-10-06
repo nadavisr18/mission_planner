@@ -32,7 +32,7 @@ class MissionParser(MissionEditor):
                         else:
                             for group in country_dict[group_type]['group']:
                                 group_dict = country_dict[group_type]['group'][group]
-                                if group_dict.get("hiddenOnPlanner", False) or group_dict.get("lateActivation", False):
+                                if coalition == 'red' and (group_dict.get("hiddenOnPlanner", False) or group_dict.get("lateActivation", False)):
                                     continue
                                 radius = 0
                                 unit_type = ""
@@ -40,7 +40,7 @@ class MissionParser(MissionEditor):
                                     radius, unit_type = self.check_SAM(group_dict)
                                 unit_type = group_dict['units'][1]['type'] if len(unit_type) == 0 else unit_type
                                 unit_type = self.config['BackendToDisplayName'].get(unit_type, unit_type)
-                                client = group_dict['units'][1]['skill'] == 'Client'
+                                client = group_dict['units'][1].get('skill') == 'Client'
                                 x, y = group_dict['x'] / 111139, group_dict['y'] / 111139
                                 lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
                                 lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff

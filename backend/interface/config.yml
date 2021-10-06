@@ -1,5 +1,6 @@
 BackendToDisplayName:
   FA-18C_hornet: FA-18C
+  S-3B Tanker: S-3
   M-2000C: M-2000C
   F-16C_50: F-16
   F-16C bl.52d: F-16
@@ -28,7 +29,10 @@ BackendToDisplayName:
   UH-1H: UH-1
   Mi-8MT: Mi-8
   SH-60B: UH-60
-  RQ-1A Predator: RQ-1
+  KC130: KC-130
+  Tornado IDS: TORNADO
+  RQ-1A Predator: RQ-1 Predator
+  MQ-9 Reaper: MQ-9 Reaper
   Everyone: Everyone
 
 PlaneToColor:
