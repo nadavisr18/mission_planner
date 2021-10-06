@@ -2,6 +2,7 @@ from .edit_mission import MissionEditor
 from backend.data_types import Group
 
 from typing import List, Tuple, Dict, Any
+from global_land_mask import globe
 import numpy as np
 import yaml
 import uuid
@@ -96,14 +97,15 @@ class MissionParser(MissionEditor):
                 x, y = clump['x'].mean() / 111139, clump['y'].mean() / 111139
                 lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
                 lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
-                group = Group(group_type='static',
-                              unit_type=clump['type'],
-                              name=uuid.uuid4().hex,
-                              country=country_name,
-                              coalition=coalition,
-                              lat=lat,
-                              lon=lon)
-                groups.append(group)
+                if globe.is_land(lat, lon):
+                    group = Group(group_type='static',
+                                  unit_type=clump['type'],
+                                  name=uuid.uuid4().hex,
+                                  country=country_name,
+                                  coalition=coalition,
+                                  lat=lat,
+                                  lon=lon)
+                    groups.append(group)
         return groups
 
     @staticmethod
