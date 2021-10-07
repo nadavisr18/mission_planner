@@ -53,6 +53,9 @@ def new_mission(mission: Mission):
     groups_info, theatre = mp.get_mission_info()
     if theatre != "Syria":
         raise HTTPException(status_code=400, detail="Theatre Not Allowed")
+    # for group in groups_info:
+    #     if group.group_type == 'plane':
+    #         print(group)
     return groups_info
 
 

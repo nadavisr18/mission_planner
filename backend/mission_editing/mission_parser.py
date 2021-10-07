@@ -20,9 +20,11 @@ class MissionParser(MissionEditor):
         groups = []
         group_types = ('vehicle', 'plane', 'static', 'ship', 'helicopter')
         for coalition in self.mission['coalition'].keys():
+            if coalition == "neutrals": continue
             for country in self.mission['coalition'][coalition]['country']:
                 country_dict = self.mission['coalition'][coalition]['country'][country]
                 country_name = self.mission['coalition'][coalition]['country'][country]['name']
+                country_name = self.config['CountryAliases'].get(country_name, country_name)
                 for group_type in group_types:
                     if group_type in country_dict.keys():
                         if group_type == 'static':
