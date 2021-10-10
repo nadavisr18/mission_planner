@@ -45,6 +45,9 @@ CountryAliases:
   CJTF Red: Russia
   CJTF Blue: USA
   USAF Aggressors: USA
+  Combined Joint Task Forces Blue: USA
+  Combined Joint Task Forces Red: Russia
+  
 
 PlaneToColor:
   Everyone: black

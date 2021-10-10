@@ -467,3 +467,9 @@ function deleteWaypoint()
         }
     }
 }
+
+document.onkeydown = function(event) {
+    if( event.key == 'Delete' ){
+        deleteWaypoint();
+    }
+}
