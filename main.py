@@ -2,10 +2,14 @@
 # -------------------BACKEND-------------------
 # TODO: save waypoint plans
 # TODO: clean temp files every X time
+# TODO: return current weather on mission load
+# TODO: return AI flights waypoints on mission load
 
 # -------------------FRONTEND-------------------
-# TODO: add more map source options
-# TODO: add random weather button
-# TODO: match up the icons file names with the DCS plane names
-# TODO: get icons for "home base" and "contested area" type waypoints
 # TODO: only be able to edit waypoints for client groups
+# TODO: get icons for "home base" and "contested area" type waypoints
+# TODO: display AI routes on map (waiting for backend to finish first), have different route color to Client flights
+# TODO: display current weather on mission load (waiting for backend to finish first)
+# TODO: add random weather button
+# TODO: add more map source options
+
