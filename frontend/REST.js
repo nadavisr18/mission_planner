@@ -22,7 +22,12 @@ function RESTerror(jqXHR, textStatus, errorThrown)
 
 function successMissionFile(data, textStatus, jqXHR)
 {
-    console.log(data)
+    clearInterval(progressInterval);
+    clearInterval(animationInterval);
+    progressBar = 0;
+    progressBarTarget = 0;
+    document.getElementById("bar").style.width = "0%";
+
     var groupNames = [];
     for (var i = 0; i < data.length; i++)
     {
@@ -32,6 +37,11 @@ function successMissionFile(data, textStatus, jqXHR)
         latlng = {lat: group.lat, lng: group.lon}
         var attributes = {latlng: latlng, type: group.group_type, name: group.name, unit: group.unit_type, country: group.country, coalition: group.coalition, range: group.range, client: group.client}
         groups.push(new Group(attributes));
+
+        for (var j = 0; j < group.waypoints.length; j++)
+        {
+            waypoints.push(new Waypoint({latlng: {lat: group.waypoints[j].lat, lng: group.waypoints[j].lon}, type: 'route', group: group.waypoints[j].group, name: group.waypoints[j].name, altitude: group.waypoints[j].altitude, baroRadio: group.waypoints[j] == 'RADIO', id: group.waypoints[j].wp_id}))
+        }
     }
     applyMapChanges();
     document.getElementById("mission-file-label").innerHTML = "Upload mission file";
@@ -68,7 +78,8 @@ function uploadMissionFile()
     }
 
     document.getElementById("mission-file-label").innerHTML = "Processing file...";
-    
+
+
     var missionName = filename;
     var reader = new FileReader();
     
@@ -78,6 +89,18 @@ function uploadMissionFile()
         form.append("name", missionName);
         form.append("session_id", sessionId);
         form.append("data", base64EncodedStr);
+
+        progressInterval = setInterval(function() {
+            requestProgress()
+        }, 1000);
+        
+        animationInterval = setInterval(function() {
+            if (progressBar < progressBarTarget)
+            {
+                progressBar += (progressBarTarget - progressBar) / 10.0;
+                document.getElementById("bar").style.width = progressBar + "%";
+            }  
+        }, 50);
 
         $.ajax({
             url: serverAddress+"/mission",
@@ -113,6 +136,22 @@ function requestAircraftList()
         success: readAircraftList,
         error: RESTerror
     });
+}
+
+function requestProgress()
+{
+    $.ajax({
+        url: serverAddress+"/progress",
+        type: 'GET',
+        processData: false,
+        success: drawProgressBar,
+        error: RESTerror
+    });
+}
+
+function drawProgressBar(data, textStatus, jqXHR)
+{
+    progressBarTarget = data*100;
 }
 
 function requestMissionProcess()

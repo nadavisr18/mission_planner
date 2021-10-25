@@ -204,3 +204,8 @@ function closeTooltip(tooltip)
 /* Main loop */
 window.onload = setupPage;
 window.onresize = resizePage;
+
+var progressBar = 0;
+var progressBarTarget = 0;
+var progressInterval;
+var animationInterval;

@@ -13,6 +13,5 @@
 # TODO: add tooltips for the top tool bar
 # TODO: display AI routes on map, have different route color to Client flights
 # TODO: display current weather on mission load (waiting for backend to finish first)
-# TODO: add random weather button (just send the word "random" instead of a city name)
 # TODO: add more map source options
 
