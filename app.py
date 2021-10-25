@@ -14,6 +14,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 profiler = cProfile.Profile()
 
+PROGRESS = 0
+
 origins = ["*"]
 
 app = FastAPI()
@@ -41,6 +43,7 @@ def new_mission(mission: Mission) -> List[Group]:
         "name": {mission name},\n
         "session id": {current user session id}\n
     """
+    # profiler.enable()
     # create mission file to later manipulate
     path = f"backend\\temp_files\\missions\\{mission.session_id}.miz"
     with open(path, 'wb') as file:
@@ -59,6 +62,8 @@ def new_mission(mission: Mission) -> List[Group]:
     # for group in groups_info:
     #     if group.group_type == 'plane':
     #         print(group)
+    # profiler.disable()
+    # profiler.print_stats(2)
     return groups_info
 
 
@@ -205,6 +210,11 @@ def change_weather(weather_data: WeatherData):
             raise HTTPException(status_code=400, detail="City Not Found")
     else:
         raise HTTPException(status_code=404, detail="Session not found")
+
+
+@app.get('/progress')
+def get_progress() -> int:
+    return PROGRESS
 
 
 if __name__ == "__main__":

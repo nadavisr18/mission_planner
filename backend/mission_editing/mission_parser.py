@@ -17,8 +17,11 @@ class MissionParser(MissionEditor):
         super().__init__(path)
 
     def get_mission_info(self) -> Tuple[List[Group], str]:
+        import app
         groups = []
         group_types = ('vehicle', 'plane', 'static', 'ship', 'helicopter')
+        total_groups = self.get_total_groups(group_types)
+        processed_groups = 0
         for coalition in self.mission['coalition'].keys():
             if coalition == "neutrals": continue
             for country in self.mission['coalition'][coalition]['country']:
@@ -63,6 +66,8 @@ class MissionParser(MissionEditor):
                                                    range=radius,
                                                    waypoints=waypoints)
                                 groups.append(group_data)
+                                processed_groups += 1
+                                app.PROGRESS = processed_groups / total_groups
 
         return groups, self.mission['theatre']
 
@@ -136,6 +141,23 @@ class MissionParser(MissionEditor):
                               wp_id=wp_id)
                 waypoints.append(wp)
         return waypoints
+
+    def get_total_groups(self, group_types: Tuple[str, str, str, str, str]) -> int:
+        groups = 0
+        for coalition in self.mission['coalition'].keys():
+            if coalition != 'neutrals':
+                for country in self.mission['coalition'][coalition]['country']:
+                    country_dict = self.mission['coalition'][coalition]['country'][country]
+                    for group_type in group_types:
+                        if group_type in country_dict.keys() and group_type != 'static':
+                            for group in country_dict[group_type]['group']:
+                                group_dict = country_dict[group_type]['group'][group]
+                                if coalition == 'red' and (
+                                        group_dict.get("hiddenOnPlanner", False) or group_dict.get("lateActivation",
+                                                                                                   False)):
+                                    continue
+                                groups += 1
+        return groups
 
     @staticmethod
     def check_SAM(group: Dict) -> Tuple[int, str]:
