@@ -26,10 +26,10 @@ function successMissionFile(data, textStatus, jqXHR)
     for (var i = 0; i < data.length; i++)
     {
         group = data[i];
-        if (group.group_type == 'plane' || group.group_type == 'helicopter')
+        if ((group.group_type == 'plane' || group.group_type == 'helicopter') && group.client == true)
             groupNames.push(group.name);
         latlng = {lat: group.lat, lng: group.lon}
-        var attributes = {latlng: latlng, type: group.group_type, name: group.name, unit: group.unit_type, country: group.country, coalition: group.coalition, range: group.range}
+        var attributes = {latlng: latlng, type: group.group_type, name: group.name, unit: group.unit_type, country: group.country, coalition: group.coalition, range: group.range, client: group.client}
         groups.push(new Group(attributes));
     }
     applyMapChanges();

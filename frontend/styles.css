@@ -177,10 +177,12 @@ input[type=number] {
 
 .button:hover{
     background-color: #33455e;
+    color: #EEEEEE;
 }
 
 .button:active{
     background-color: #537099;
+    color: #EEEEEE;
 }
 
 /* File select */
@@ -228,6 +230,11 @@ input[type=number] {
     height: 30px;
     font-size: 14px;
     padding: 7px 7px;
+}
+
+.selected {
+    background-color: #EEEEEE;
+    color: #212d3c;
 }
 
 .toolbar-select {

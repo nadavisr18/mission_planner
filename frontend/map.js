@@ -52,11 +52,12 @@ class Group {
       this.country = attributes.country;
       this.coalition = attributes.coalition;
       this.range = attributes.range;
+      this.client = attributes.client;
     }
 
     getAttributes()
     {
-        return {latlng: this.latlng, type: this.type, name: this.name, aircraft: this.unit, country: this.country, coalition: this.coalition, range: this.range}
+        return {latlng: this.latlng, type: this.type, name: this.name, aircraft: this.unit, country: this.country, coalition: this.coalition, range: this.range, client: this.client}
     }
 }
 
@@ -70,6 +71,7 @@ var lines = [];
 var selectedWaypoint = null;
 var mymap;
 var tileLayer = null;
+var visibility = ['user', 'non-user', 'SAM', 'vehicle', 'static', 'ship']
 
 /* Changle the tiles layer provider */
 function setMapProvider(mapProvider)
@@ -174,6 +176,34 @@ function getLineColor(group_type)
     return "#212d3c";
 }
 
+function truncateToLen(string, length)
+{
+    if (string.length > length)
+    {
+        return string.substring(0, length-3) + "...";
+    }
+    return string
+}
+
+function toggleVisibility(object)
+{
+    if (visibility.includes(object))
+    {
+        document.getElementById("visibility-"+object).classList.remove("selected");
+        var index = visibility.indexOf(object);
+        if (index !== -1) {
+            visibility.splice(index, 1);
+        }
+    }
+    else
+    {
+        document.getElementById("visibility-"+object).classList.add("selected");
+        visibility.push(object);
+    }
+    cleanMap();
+    drawMap();
+}
+
 /* Draws the map adding markers, lines and polygons */
 function drawMap()
 {
@@ -182,7 +212,7 @@ function drawMap()
     for (var i = 0; i < waypoints.length; i++)
     {  
         /* Draw the marker and add the selected/unselected icon */
-        var html = iconhtml.replace('$waypoint-type$', waypoints[i].group);
+        var html = iconhtml.replace('$waypoint-type$', truncateToLen(waypoints[i].group, 12));
         if (selectedWaypoint == waypoints[i])
         {
             html = html.replace('$icon$', iconSelectedHtmls[waypoints[i].type]);
@@ -192,7 +222,7 @@ function drawMap()
             html = html.replace('$icon$', iconHtmls[waypoints[i].type]);
         }
         
-        html = html.replace('$waypoint-name$', waypoints[i].name);
+        html = html.replace('$waypoint-name$', truncateToLen(waypoints[i].name, 12));
 
         var icon = L.divIcon({
             html: html,
@@ -226,17 +256,20 @@ function drawMap()
                     var waypoint = new Waypoint(attributes);
                     tempWaypoints.unshift(waypoint);
                     html = html.replaceAll('$aircraft-logo$', './Aircrafts/'+groups[i].unit);
-                    html = html.replace('$waypoint-type$', groups[i].name);
+                    html = html.replace('$waypoint-type$', truncateToLen(groups[i].name, 12));
                     flyable = true;
                 }
                 else if (groups[i].type == 'ship')
                     html = html.replaceAll('$aircraft-logo$', './Naval/naval');
                 else if (groups[i].type == 'vehicle')
-                    if (groups[i].range > 0){
-                        marker = L.circle(groups[i].latlng, {radius: groups[i].range, color: groups[i].coalition}).addTo(mymap);
-                        markers.push(marker);
-                        html = html.replaceAll('$aircraft-logo$', './Ground/SAM');
-                    }
+                        if (groups[i].range > 0){
+                            if (visibility.includes('vehicle') && visibility.includes('SAM'))
+                            {
+                                marker = L.circle(groups[i].latlng, {radius: groups[i].range, color: groups[i].coalition}).addTo(mymap);
+                                markers.push(marker);
+                            }
+                            html = html.replaceAll('$aircraft-logo$', './Ground/SAM');
+                        }
                     else 
                         html = html.replaceAll('$aircraft-logo$', './Ground/tank');
                 else if (groups[i].unit == 'Base')
@@ -244,24 +277,34 @@ function drawMap()
                 else if (groups[i].unit == 'FARP')
                     html = html.replaceAll('$aircraft-logo$', './Ground/farp');
                
-                html = html.replaceAll('$aircraft$', groups[i].unit);
+                html = html.replaceAll('$aircraft$', truncateToLen(groups[i].unit, 12));
             }
         }
         
         html = html.replace('$waypoint-type$', "&nbsp");
 
-        var icon = L.divIcon({
-            html: html,
-            iconSize: [100, 150],
-            className: groups[i].type
-        });
+        if (((groups[i].type == 'plane' || groups[i].type == 'helicopter') && (groups[i].client == true) && (visibility.includes('user'))) ||
+            ((groups[i].type == 'plane' || groups[i].type == 'helicopter') && (groups[i].client == false) && (visibility.includes('non-user'))) ||
+            ((groups[i].type == 'vehicle') && (visibility.includes('vehicle'))) || 
+            ((groups[i].type == 'ship') && (visibility.includes('ship'))) || 
+            ((groups[i].type == 'Base') && (visibility.includes('static'))) || 
+            ((groups[i].type == 'FARP') && (visibility.includes('static')))
+        )
+        {
+            var icon = L.divIcon({
+                html: html,
+                iconSize: [100, 150],
+                className: groups[i].type
+            });
 
-        /* Add the marker */
-        if (flyable)
-            marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
-        else
-            marker = L.marker(groups[i].latlng, {icon: icon}).addTo(mymap);
-        markers.push(marker);
+            /* Add the marker */
+            if (flyable)
+                marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
+            else
+                marker = L.marker(groups[i].latlng, {icon: icon}).addTo(mymap);
+            marker.bindTooltip(groups[i].name + " " + groups[i].unit);
+            markers.push(marker);
+        }
     }
 
     /* Draw all the lines for "Everyone" */
