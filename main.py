@@ -11,7 +11,7 @@
 # TODO: fix waypoint line going through the top of the waypoint icon and not center
 # TODO: get icons for "home base" and "contested area" type waypoints
 # TODO: add tooltips for the top tool bar
-# TODO: display AI routes on map (waiting for backend to finish first), have different route color to Client flights
+# TODO: display AI routes on map, have different route color to Client flights
 # TODO: display current weather on mission load (waiting for backend to finish first)
 # TODO: add random weather button (just send the word "random" instead of a city name)
 # TODO: add more map source options
