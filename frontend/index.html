@@ -288,6 +288,9 @@
                                                 <tr>
                                                     <td><span class="button wwather-input" style="width: 100%;" onClick="applyWeatherChange()">Apply</span></td>
                                                 </tr>
+                                                <tr>
+                                                    <td><span class="button wwather-input" style="width: 100%;" onClick="randomizeWeather()">Randomize</span></td>
+                                                </tr>
                                             </table>
                                         </td>
                                     </tr>
@@ -344,16 +347,17 @@
                 <td>
                     <table>
                         <tr></tr>
-                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapUndo()"><i class="fas fa-undo"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapRedo()"><i class="fas fa-redo"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapClear()"><i class="fas fa-eraser"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapUndo()" title="Undo"><i class="fas fa-undo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapRedo()" title="Redo"><i class="fas fa-redo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapClear()" title="Clear all"><i class="fas fa-eraser"></i></span></td>
                             <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-user" onclick="toggleVisibility('user')"><i class="fas fa-plane"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-non-user" onclick="toggleVisibility('non-user')"><i class="fas fa-plane-slash"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-SAM" onclick="toggleVisibility('SAM')"><i class="fas fa-exclamation-triangle"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-static" onclick="toggleVisibility('static')"><i class="fas fa-warehouse"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-vehicle" onclick="toggleVisibility('vehicle')"><i class="fas fa-truck-pickup"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-ship" onclick="toggleVisibility('ship')"><i class="fas fa-ship"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-user" onclick="toggleVisibility('user')" title="Toggle client aircraft visibility"><i class="fas fa-plane"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-non-user" onclick="toggleVisibility('non-user')" title="Toggle non-client aircraft visibility"><i class="fas fa-plane-slash"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-SAM" onclick="toggleVisibility('SAM')" title="Toggle SAM threat circle visibility"><i class="fas fa-exclamation-triangle"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-static" onclick="toggleVisibility('static')" title="Toggle static objects visibility"><i class="fas fa-warehouse" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-vehicle" onclick="toggleVisibility('vehicle')" title="Toggle vehicles visibility"><i class="fas fa-truck-pickup" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-ship" onclick="toggleVisibility('ship')" title="Toggle ships visibility"><i class="fas fa-ship" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-flag" onclick="toggleVisibility('flag')" title="Toggle flags visibility"><i class="fas fa-flag"></i></span></td>
                             <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
                             <td class="horizontal-fill"></td>
                         </tr>

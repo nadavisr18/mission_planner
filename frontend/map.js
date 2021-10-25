@@ -61,6 +61,30 @@ class Group {
     }
 }
 
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    console.log(document.cookie)
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {   
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
 /* Global variables */
 var waypointsHistory = [[]];
 var activeWaypointHistory = 0;
@@ -71,7 +95,16 @@ var lines = [];
 var selectedWaypoint = null;
 var mymap;
 var tileLayer = null;
-var visibility = ['user', 'non-user', 'SAM', 'vehicle', 'static', 'ship']
+var visibility;
+
+console.log(getCookie('visibility') )
+if (getCookie('visibility') == null)
+{
+    visibility = ['user', 'non-user', 'SAM', 'vehicle', 'static', 'ship', 'flag']
+} else 
+{
+    visibility = getCookie('visibility');
+}
 
 /* Changle the tiles layer provider */
 function setMapProvider(mapProvider)
@@ -137,6 +170,8 @@ function onMapClick(e)
             var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
             var waypoint = new Waypoint(attributes);
             waypoints.push(waypoint);
+
+            autoIncreaseWaypoint();
         }
         /* If a waypoint is selected, update its properties */
         else 
@@ -182,6 +217,11 @@ function truncateToLen(string, length)
     {
         return string.substring(0, length-3) + "...";
     }
+    if (string.length == 0)
+    {
+        return "&nbsp";
+    }
+
     return string
 }
 
@@ -202,6 +242,8 @@ function toggleVisibility(object)
     }
     cleanMap();
     drawMap();
+
+    setCookie('visibility', visibility.toString(), null);
 }
 
 /* Draws the map adding markers, lines and polygons */
@@ -245,10 +287,18 @@ function drawMap()
         {
             if(isoCountries[key] == groups[i].country)
             {
-                html = html.replace('$icon$', `<div class="image-cropper-$color$">
-                <img class="country-flag" src="https://www.countryflags.io/`+key+`/flat/64.png"></div>
-                <img class="aircraft-icon-blurred" src="$aircraft-logo$.png">
-                <img class="aircraft-icon-$color$" src="$aircraft-logo$.png">`);
+                if (visibility.includes('flag'))
+                {
+                    html = html.replace('$icon$', `<div class="image-cropper-$color$">
+                    <img class="country-flag" src="https://flagcdn.com/w80/`+key.toLowerCase()+`.png"></div>
+                    <img class="aircraft-icon-blurred" src="$aircraft-logo$.png">
+                    <img class="aircraft-icon-$color$" src="$aircraft-logo$.png">`);
+                } else 
+                {
+                    html = html.replace('$icon$', `
+                    <img class="aircraft-icon-blurred" src="$aircraft-logo$.png">
+                    <img class="aircraft-icon-$color$" src="$aircraft-logo$.png">`);
+                }
                 html = html.replaceAll('$color$', groups[i].coalition);
                 if (groups[i].type == 'plane' || groups[i].type == 'helicopter')
                 {
@@ -287,8 +337,7 @@ function drawMap()
             ((groups[i].type == 'plane' || groups[i].type == 'helicopter') && (groups[i].client == false) && (visibility.includes('non-user'))) ||
             ((groups[i].type == 'vehicle') && (visibility.includes('vehicle'))) || 
             ((groups[i].type == 'ship') && (visibility.includes('ship'))) || 
-            ((groups[i].type == 'Base') && (visibility.includes('static'))) || 
-            ((groups[i].type == 'FARP') && (visibility.includes('static')))
+            ((groups[i].type == 'static') && (visibility.includes('static'))) 
         )
         {
             var icon = L.divIcon({
@@ -483,13 +532,16 @@ function applyMapChanges()
     waypointsHistory.push(newWaypoints);
     activeWaypointHistory++;
 
-    var string = document.getElementById("waypoint-name").value;
-    var num = string.match(/\d+/);
-    document.getElementById("waypoint-name").value = string.replace(num, parseInt(num)+1);
-
     /* Clean and redraw the map */
     cleanMap();
     drawMap();
+}
+
+function autoIncreaseWaypoint()
+{
+    var string = document.getElementById("waypoint-name").value;
+    var num = string.match(/\d+/);
+    document.getElementById("waypoint-name").value = string.replace(num, parseInt(num)+1);
 }
 
 function mapClear()

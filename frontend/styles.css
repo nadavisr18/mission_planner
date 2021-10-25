@@ -438,9 +438,9 @@ input[type=number] {
 .country-flag {
     display: inline;
     margin: 0 auto;
-    margin-top: -30%;
-    margin-left: -29%; 
-    height: 160%;
+    margin-top: 0%;
+    margin-left: -12px; 
+    height: 100%;
     width: auto;
 }
 

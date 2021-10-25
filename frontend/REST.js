@@ -22,6 +22,7 @@ function RESTerror(jqXHR, textStatus, errorThrown)
 
 function successMissionFile(data, textStatus, jqXHR)
 {
+    console.log(data)
     var groupNames = [];
     for (var i = 0; i < data.length; i++)
     {
@@ -247,7 +248,6 @@ function successDeleteFile(group, name){
     for (i = 0; i < kneeboardVector[group].length; i++)
     {
         if (kneeboardVector[group][i] == name) {
-            console.log("splicing");
             kneeboardVector[group].splice(i, 1);
             hideKneeboardFiles();
             showKneeboardFiles(); 
@@ -255,6 +255,12 @@ function successDeleteFile(group, name){
             return;
         }
     }
+}
+
+function randomizeWeather()
+{
+    document.getElementById("weather-location").value = "Random";
+    applyWeatherChange();
 }
 
 function applyWeatherChange()
@@ -280,8 +286,6 @@ function applyWeatherChange()
 
 function successWeatherChange(data)
 {
-    console.log(data);
     document.getElementById("wind-direction").style.transform = "rotate("+data.wind_dir+"deg)";
     document.getElementById("weather-logo").src = 'http:\\'+data.icon;
-    
 }
