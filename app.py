@@ -43,7 +43,6 @@ def new_mission(mission: Mission) -> List[Group]:
         "name": {mission name},\n
         "session id": {current user session id}\n
     """
-    # profiler.enable()
     # create mission file to later manipulate
     path = f"backend\\temp_files\\missions\\{mission.session_id}.miz"
     with open(path, 'wb') as file:
@@ -62,8 +61,8 @@ def new_mission(mission: Mission) -> List[Group]:
     # for group in groups_info:
     #     if group.group_type == 'plane':
     #         print(group)
-    # profiler.disable()
-    # profiler.print_stats(2)
+    global PROGRESS
+    PROGRESS = 0
     return groups_info
 
 
@@ -213,7 +212,7 @@ def change_weather(weather_data: WeatherData):
 
 
 @app.get('/progress')
-def get_progress() -> int:
+def get_progress() -> float:
     return PROGRESS
 
 

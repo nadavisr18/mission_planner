@@ -68,7 +68,6 @@ class MissionParser(MissionEditor):
                                 groups.append(group_data)
                                 processed_groups += 1
                                 app.PROGRESS = processed_groups / total_groups
-
         return groups, self.mission['theatre']
 
     def create_static_groups(self, static_objects: Dict[int, Dict[str, Any]], country_name: str, coalition: str,
