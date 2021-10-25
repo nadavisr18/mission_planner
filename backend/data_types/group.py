@@ -1,3 +1,6 @@
+from .waypoint import WayPoint
+
+from typing import List
 from pydantic import BaseModel
 
 
@@ -11,3 +14,4 @@ class Group(BaseModel):
     lon: float
     client: bool = False
     range: int = 0
+    waypoints: List[WayPoint] = []

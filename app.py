@@ -30,7 +30,7 @@ def is_alive():
 
 
 @app.post("/mission", responses={400: {"description": "Theatre Not Allowed"}}, response_model=List[Group])
-def new_mission(mission: Mission):
+def new_mission(mission: Mission) -> List[Group]:
     """
     Save a new mission file input from the user, to manipulate later.\n
     input consists of:\n
@@ -53,9 +53,9 @@ def new_mission(mission: Mission):
     groups_info, theatre = mp.get_mission_info()
     if theatre != "Syria":
         raise HTTPException(status_code=400, detail="Theatre Not Allowed")
-    # for group in groups_info:
-    #     if group.group_type == 'plane':
-    #         print(group)
+    for group in groups_info:
+        if group.group_type == 'plane':
+            print(group)
     return groups_info
 
 

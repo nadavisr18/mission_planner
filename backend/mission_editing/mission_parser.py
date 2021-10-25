@@ -1,5 +1,5 @@
 from .edit_mission import MissionEditor
-from backend.data_types import Group
+from backend.data_types import Group, WayPoint
 
 from typing import List, Tuple, Dict, Any
 from global_land_mask import globe
@@ -34,7 +34,9 @@ class MissionParser(MissionEditor):
                         else:
                             for group in country_dict[group_type]['group']:
                                 group_dict = country_dict[group_type]['group'][group]
-                                if coalition == 'red' and (group_dict.get("hiddenOnPlanner", False) or group_dict.get("lateActivation", False)):
+                                if coalition == 'red' and (
+                                        group_dict.get("hiddenOnPlanner", False) or group_dict.get("lateActivation",
+                                                                                                   False)):
                                     continue
                                 radius = 0
                                 unit_type = ""
@@ -46,6 +48,10 @@ class MissionParser(MissionEditor):
                                 x, y = group_dict['x'] / 111139, group_dict['y'] / 111139
                                 lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
                                 lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
+                                if not client and not group_type == 'static':
+                                    waypoints = self.get_waypoints(group_dict)
+                                else:
+                                    waypoints = []
                                 group_data = Group(group_type=group_type,
                                                    unit_type=unit_type,
                                                    name=group_dict['name'],
@@ -54,7 +60,8 @@ class MissionParser(MissionEditor):
                                                    lat=lat,
                                                    lon=lon,
                                                    client=client,
-                                                   range=radius)
+                                                   range=radius,
+                                                   waypoints=waypoints)
                                 groups.append(group_data)
 
         return groups, self.mission['theatre']
@@ -109,6 +116,26 @@ class MissionParser(MissionEditor):
                                   lon=lon)
                     groups.append(group)
         return groups
+
+    def get_waypoints(self, group_dict: Dict) -> List[WayPoint]:
+        route = group_dict.get('route', {"points": []})
+        route_length = len(route['points'])
+        waypoints = []
+        if route_length >= 2:
+            for i in range(2, route_length + 1):
+                point = route['points'][i]
+                x, y = point['x'] / 111139, point['y'] / 111139
+                lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
+                lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
+                altitude = point['alt']
+                group_name = group_dict['name']
+                point_name = point.get("name", "")
+                alt_type = point.get("alt_type", "BARO")
+                wp_id = uuid.uuid4().hex
+                wp = WayPoint(lat=lat, lon=lon, altitude=altitude, group=group_name, name=point_name, alt_type=alt_type,
+                              wp_id=wp_id)
+                waypoints.append(wp)
+        return waypoints
 
     @staticmethod
     def check_SAM(group: Dict) -> Tuple[int, str]:
