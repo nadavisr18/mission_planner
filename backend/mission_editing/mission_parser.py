@@ -48,7 +48,7 @@ class MissionParser(MissionEditor):
                                 x, y = group_dict['x'] / 111139, group_dict['y'] / 111139
                                 lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
                                 lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
-                                if not client and not group_type == 'static':
+                                if not group_type == 'static':
                                     waypoints = self.get_waypoints(group_dict)
                                 else:
                                     waypoints = []

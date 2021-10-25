@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import List, Tuple
 from slpp import slpp as lua
 import re
@@ -7,23 +8,13 @@ import keras
 
 class MissionEditor:
     def __init__(self, path: str):
+        print(path)
         self.path = path
         self.buffer_dict = self._get_buffer()
-        self.mission = self._get_data('mission')
-        self.dictionary = self._get_data('l10n/DEFAULT/dictionary')
-        self.ll2xy_model = keras.models.load_model("backend/models/latlon_to_xy.h5")
-        self.xy2ll_model = keras.models.load_model("backend/models/xy_to_latlon.h5")
+        self.mission = self._get_data('mission', path)
+        self.dictionary = self._get_data('l10n/DEFAULT/dictionary', path)
+        self.ll2xy_model, self.xy2ll_model = self.get_models()
         self.map_center = {'lat': 35.021298, 'lon': 35.899957}
-
-
-    def _get_data(self, local_path: str) -> dict:
-        with zipfile.ZipFile(self.path, mode='r') as archive:
-            with archive.open(local_path) as msnfile:
-                raw_data = msnfile.read().decode('utf-8')
-                match = re.search(rf'{local_path.split("/")[-1]}\s?=', raw_data)
-                data_dict = raw_data[match.end()+1:]
-                data = lua.decode(data_dict)
-        return data
 
     def _get_buffer(self) -> dict:
         with zipfile.ZipFile(self.path, mode='r') as archive:
@@ -60,3 +51,21 @@ class MissionEditor:
                 if filename != path:
                     archive_w.writestr(filename, buffer)
         self.buffer_dict = self._get_buffer()
+
+    @staticmethod
+    @lru_cache()
+    def _get_data(local_path: str, path: str) -> dict:
+        with zipfile.ZipFile(path, mode='r') as archive:
+            with archive.open(local_path) as msnfile:
+                raw_data = msnfile.read().decode('utf-8')
+                match = re.search(rf'{local_path.split("/")[-1]}\s?=', raw_data)
+                data_dict = raw_data[match.end()+1:]
+                data = lua.decode(data_dict)
+        return data
+
+    @staticmethod
+    @lru_cache()
+    def get_models():
+        ll2xy_model = keras.models.load_model("backend/models/latlon_to_xy.h5")
+        xy2ll_model = keras.models.load_model("backend/models/xy_to_latlon.h5")
+        return ll2xy_model, xy2ll_model

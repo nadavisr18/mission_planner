@@ -4,12 +4,15 @@ from backend.utils import *
 
 from typing import Union, List, Tuple
 from fastapi import FastAPI, HTTPException
+import cProfile
 import uvicorn
 import json
 import os
 import base64
 
 from fastapi.middleware.cors import CORSMiddleware
+
+profiler = cProfile.Profile()
 
 origins = ["*"]
 
@@ -53,9 +56,9 @@ def new_mission(mission: Mission) -> List[Group]:
     groups_info, theatre = mp.get_mission_info()
     if theatre != "Syria":
         raise HTTPException(status_code=400, detail="Theatre Not Allowed")
-    for group in groups_info:
-        if group.group_type == 'plane':
-            print(group)
+    # for group in groups_info:
+    #     if group.group_type == 'plane':
+    #         print(group)
     return groups_info
 
 
@@ -197,7 +200,7 @@ def change_weather(weather_data: WeatherData):
                 return {"condition": condition, "wind_dir": wind_dir,
                         "wind_speed": wind_speed, "city": weather_data.city, "icon": icon}
             except BaseException as e:
-                pass
+                weather_data.city = 'random'
         else:
             raise HTTPException(status_code=400, detail="City Not Found")
     else:
