@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mission planner</title>
+        <link rel="icon" href="patch.png">
+        <!------------------- CSS --------------------->
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="select.css">
+        <link rel="stylesheet" href="switch.css">
+        <link rel="stylesheet" href="modifier.css">
+        <!------------------- Leaflet --------------------->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+        <!------------------- Font Awesome --------------------->
+        <script src="https://kit.fontawesome.com/3899ccc5e3.js" crossorigin="anonymous"></script>
+        <!------------------- Javascript --------------------->
+        <script src="jquery.js" type="text/javascript"></script>
+        <script src="config.js" type="text/javascript"></script>
+        <script src="countries.js" type="text/javascript"></script>
+        <script src="icons.js" type="text/javascript"></script>
+        <script src="map.js" type="text/javascript"></script>
+        <script src="radio.js" type="text/javascript"></script>
+        <script src="kneeboard.js" type="text/javascript"></script>
+        <script src="switch.js" type="text/javascript"></script>
+        <script src="select.js" type="text/javascript"></script>
+        <script src="REST.js" type="text/javascript"></script>
+        <script src="index.js" type="text/javascript"></script>
+        
+    </head>
+    <body>
+        <!-- Root table -->
+        <table id="root-table">
+            <tr>
+                <td colspan="2" id="progress-row">
+                    <div id="progress">
+                        <div id="bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr id="toolbar-row">
+                <!-- Left controls column -->
+                <td id="root-table-left" rowspan="2">
+                    <table id="controls-table">
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><a href="https://discord.gg/q38YbxsDav" target="_blank" ><img src="banner.png" id="banner"></a></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                         <!------------------- Map section --------------------->
+                         <tr class="section-title-tr">
+                             <td>
+                             <table>
+                                 <tr class="section-title-td section-title">
+                                    <td >Map data source</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='map-provider-section-arrow' onclick="collapseSection('map-provider-section')"></i></td>
+                                 </tr>
+                             </table>
+                            </td>
+                        </tr>
+
+                        <tr class="section-content-td">
+                            <td class="section-content-td map-provider-section section">
+                                <div class="selection-div" style="width: 100%;" id="map-provider-div">
+                                    <select class="selection" id="map-provider"></select>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!------------------- Files management section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td >Files management</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='files-management-section-arrow' onclick="collapseSection('files-management-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- Mission file select -->
+                        <tr class="section-content-td">
+                            <td class="section-content-td files-management-section section">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label for="mission-file" id="mission-file-label" class="button mission-upload-input" style="width: 100%;">
+                                                Upload mission file
+                                            </label>
+                                            <input type="file" id="mission-file" class="mission-upload-input" oninput="uploadMissionFile()" hidden>
+                                        </td>
+                                        <td>
+                                            <label id="mission-file-download-label" class="button mission-download-input" onclick="processMissionFile()" style="width: 100%;">
+                                                Apply & download
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                               
+                            </td>
+                        </tr>
+                        
+                        <!------------------- Waypoints section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td >Waypoints</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='waypoints-section-arrow' onclick="collapseSection('waypoints-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="section-content-tr">
+                            <td class="section-content-td waypoints-section section">
+                                <!-- Waypoints insert/edit table -->
+                                <table class="content-table">
+                                    <!-- Waypoint name -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Name</div></td>
+                                        <td><input class="input waypoint-input" type="text" id="waypoint-name" value = "WP1"></td>
+                                    </tr>
+                                    <!-- Waypoint altitude -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Altitude [ft]</div></td>
+                                        <td>
+                                            <!-- Altitude text input + ASL/AGL toggle switch -->
+                                            <table>
+                                                <tr>
+                                                    <td><input class="input waypoint-input" type="number" id="waypoint-altitude" value = "0"></td>
+                                                    <td style="padding-left: 5px;">
+                                                        <label class="switch">
+                                                            <input type="checkbox" class="waypoint-input" id="waypoint-baro-radio" onchange="toggleSwitchText('waypoint-baro-radio', 'AGL', 'ASL')">
+                                                            <span class="slider-text round"><div class="slider-text-div waypoint-input" id="waypoint-baro-radio-label">ASL</div></span>
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- Waypoint type -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Type</div></td>
+                                        <td>
+                                            <div class="selection-div waypoint-input" id="waypoint-type-div">
+                                                <select class="selection" id="waypoint-type"></select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Waypoint group -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Group</div></td>
+                                        <td>
+                                            <div class="selection-div waypoint-input" id="waypoint-group-div">
+                                                <select class="selection" id="waypoint-group"></select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Apply/delete button -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label"></div></td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="applyWaypointChange()">Apply</span></td>
+                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="deleteWaypoint()">Delete</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!------------------- Radios section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td>Radios</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='radios-section-arrow' onclick="collapseSection('radios-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="section-content-td">
+                            <td class="section-content-td radios-section section">
+                                <table id="radio-table-1">
+                                    <!-- Radio group -->
+                                    <tr class="radio-not-row">
+                                        <td colspan="3">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">Group</div></td>
+                                                    <td>
+                                                        <div class="selection-div waypoint-input" id="radio-group-div">
+                                                        <select class="selection" id="radio-group"></select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Radio label -->
+                                    <tr class="radio-not-row">
+                                        <td colspan="3">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">RADIO 1</div></td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="radio-not-row">
+                                        <td style="width: 50px;"><div class="selection-label" style="text-align: center;">Chan.</div></td>
+                                        <td style="width: 80px;"><div class="selection-label" style="text-align: center;">Freq. [MHz]</div></td>
+                                        <td><div class="selection-label" style="text-align: center;">Label</div></td>
+                                    </tr>
+                                    <tr class="radio-not-row">
+                                        <td colspan="3"><span class="button toolbar-button right-align radio-button" onClick="addRadioRow(1)"><i class="fas fa-plus"></i></span>
+                                        <span class="button toolbar-button right-align radio-button" onClick="removeRadioRow(1)"><i class="fas fa-minus"></i></span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr class="section-content-td">
+                            <td class="section-content-td radios-section">
+                                <table id="radio-table-2">      
+                                    <!-- Radio label -->
+                                    <tr class="radio-not-row">
+                                        <td colspan="3">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">RADIO 2</div></td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>                             
+                                    <tr class="radio-not-row">
+                                        <td style="width: 50px;"><div class="selection-label" style="text-align: center;">Chan.</div></td>
+                                        <td style="width: 80px;"><div class="selection-label" style="text-align: center;">Freq. [MHz]</div></td>
+                                        <td><div class="selection-label" style="text-align: center;">Label</div></td>
+                                    </tr>
+                                    <tr class="radio-not-row">
+                                        <td colspan="3"><span class="button toolbar-button right-align radio-button" onClick="addRadioRow(2)"><i class="fas fa-plus"></i></span>
+                                        <span class="button toolbar-button right-align radio-button" onClick="removeRadioRow(2)"><i class="fas fa-minus"></i></span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!------------------- Weather section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td >Weather and time</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='weather-section-arrow' onclick="collapseSection('weather-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="section-content-td">
+                            <td class="section-content-td weather-section section">
+                                <!-- Weather edit table -->
+                                <table class="content-table">
+                                    <!-- Weather location -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Location</div></td>
+                                        <td><input class="input weather-input" type="text" id="weather-location" value = "London"></td>
+                                    </tr>
+                                    <!-- Weather location -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label">Start time</div></td>
+                                        <td><input class="input weather-input" type="time" id="weather-time"></td>
+                                    </tr>
+                                    <!-- Apply button -->
+                                    <tr class="content-tr">
+                                        <td class="content-td"><div class="selection-label"></div></td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><span class="button wwather-input" style="width: 100%;" onClick="applyWeatherChange()">Apply</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><span class="button wwather-input" style="width: 100%;" onClick="randomizeWeather()">Randomize</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!------------------- Kneeboard section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td>Kneeboard</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='kneeboard-section-arrow' onclick="collapseSection('kneeboard-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="section-content-td">
+                            <td class="section-content-td kneeboard-section section">
+                                <!-- Kneeboard files select -->
+                                <table id="kneeboard-table" style="padding:5px;">
+                                    <!-- Radio group -->
+                                    <tr class="kneeboard-not-row">
+                                        <td colspan="2">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">Group</div></td>
+                                                    <td>
+                                                        <div class="selection-div waypoint-input" id="kneeboard-group-div">
+                                                        <select class="selection" id="kneeboard-group"></select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr class="section-content-td kneeboard-not-row">
+                                        <td class="section-content-td" colspan="2">
+                                            <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
+                                                Upload kneeboard files
+                                            </label>
+                                            <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" accept="image/png, image/jpeg" hidden multiple>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="vertical-fill">
+                            <td class="vertical-fill"></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <tr></tr>
+                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapUndo()" title="Undo"><i class="fas fa-undo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapRedo()" title="Redo"><i class="fas fa-redo"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button" onclick="mapClear()" title="Clear all"><i class="fas fa-eraser"></i></span></td>
+                            <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-user" onclick="toggleVisibility('user')" title="Toggle client aircraft visibility"><i class="fas fa-plane"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-non-user" onclick="toggleVisibility('non-user')" title="Toggle non-client aircraft visibility"><i class="fas fa-plane-slash"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-SAM" onclick="toggleVisibility('SAM')" title="Toggle SAM threat circle visibility"><i class="fas fa-exclamation-triangle"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-static" onclick="toggleVisibility('static')" title="Toggle static objects visibility"><i class="fas fa-warehouse" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-vehicle" onclick="toggleVisibility('vehicle')" title="Toggle vehicles visibility"><i class="fas fa-truck-pickup" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-ship" onclick="toggleVisibility('ship')" title="Toggle ships visibility"><i class="fas fa-ship" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-flag" onclick="toggleVisibility('flag')" title="Toggle flags visibility"><i class="fas fa-flag"></i></span></td>
+                            <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
+                            <td class="horizontal-fill"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <!------------------- Leaflet map --------------------->
+                <td id="root-table-right">
+                    <div id="mapid">
+                        <div id='wind-map-box'><img id="wind-direction" class="wind-direction" src="arrow.png" height="100px"></div>
+                        <div id='weather-map-box'><img id="weather-logo" class="weather-logo" src="http:\\//cdn.weatherapi.com/weather/64x64/day/113.png" height="100px"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

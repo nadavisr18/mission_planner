@@ -1,15 +1,17 @@
-from interface.interface import get_interface
 
+# -------------------BACKEND-------------------
+# TODO: save waypoint plans
+# TODO: clean temp files every X time
+# TODO: return current weather on mission load
+# TODO: return AI flights waypoints on mission load
 
-# TODO: add kneeboards: https://forums.eagle.ru/topic/266375-fa-18c-kneeboard-suite-by-dimon/ | https://www.airgoons.com/w/Kneeboards
-# TODO: modify radio presets
-# TODO: randomize weather
+# -------------------FRONTEND-------------------
+# TODO: fix static groups not showing at all
+# TODO: add to the top toolbar option to hide country flags
+# TODO: fix waypoint line going through the top of the waypoint icon and not center
+# TODO: get icons for "home base" and "contested area" type waypoints
+# TODO: add tooltips for the top tool bar
+# TODO: display AI routes on map, have different route color to Client flights
+# TODO: display current weather on mission load (waiting for backend to finish first)
+# TODO: add more map source options
 
-
-def main():
-    i = get_interface()
-    i.render()
-
-
-if __name__ == '__main__':
-    main()

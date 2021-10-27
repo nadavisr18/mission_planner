@@ -1,0 +1,19 @@
+.greyed {
+    color: gray;
+    cursor: default;
+}
+
+.greyed:hover.button{
+    background-color: #212d3c;
+    cursor: default;
+}
+
+.greyed:active.button{
+    background-color: #212d3c;
+    cursor: default;
+}
+
+.hidden {
+    display: none;
+}
+

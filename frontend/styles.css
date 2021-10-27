@@ -1,0 +1,497 @@
+/* Global properties */
+body {
+    background-color: #2d3e50;
+    margin-top: 0px; 
+}
+
+table {
+    width: 100%;
+    height: 100%;
+    padding: 0px; 
+    margin: 0px;
+    box-sizing: border-box;
+    border-collapse: collapse;
+    border: none;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+    background-color: #33455e;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+}
+
+/* Id specific properties */
+#root-table-left {
+    width: 20%;
+    padding-right: 2px;
+}
+
+#root-table-right {
+    width: 80%;
+}
+
+#mapid { 
+    height: 100%; 
+}
+
+#controls-table {
+    height: 100%;
+    width: 100%;
+    display: block;
+    overflow-y: scroll;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+
+#toolbar-row {
+    height: 37px;
+}
+
+#banner {
+    width: 100%;
+    min-width: 350px;
+}
+
+#wind-map-box {
+    left: 10px;
+    bottom: 10px; 
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    z-index: 10000;
+    text-align: center;
+    font-weight: normal;
+    font-size: 16px;
+    color: #222;
+}
+
+#weather-map-box {
+    left: 80px;
+    bottom: 10px; 
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    z-index: 10000;
+    text-align: center;
+    font-weight: normal;
+    font-size: 16px;
+    color: #222;
+}
+
+/* Page title*/
+.title {
+    font-family: 'Helvetica';
+    font-size: 20px;
+    color: lightblue;
+    text-transform: uppercase;
+    padding-top: 3px;
+    font-weight: bold;
+}
+
+/* Section title */
+.section-title {
+    font-family: 'Helvetica';
+    font-size: 14px;
+    color: lightblue;
+    text-transform: uppercase;
+    border-top: 1px solid #add8e655;
+    padding-top: 3px;
+}
+
+.section-title-td {
+    height: 30px
+}
+
+.section-arrow {
+    cursor: pointer;
+}
+
+.section-arrow:hover {
+    color: #EEEEEE;
+}
+
+/* Content */
+.content-td {
+    width: 120px;
+    height: 37px;
+}
+
+/* Text input */
+.input {
+    color: #EEEEEE;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    background-color: #212d3c;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Helvetica';
+    font-size: 12px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Button */
+.button {
+    background-color: #212d3c;
+    color: #EEEEEE;
+    padding: 7px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.button:hover{
+    background-color: #33455e;
+    color: #EEEEEE;
+}
+
+.button:active{
+    background-color: #537099;
+    color: #EEEEEE;
+}
+
+/* File select */
+.file {
+    background-color: #212d3c;
+    color: #EEEEEE;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+}
+
+.success {
+    animation-name: success-color;
+    animation-duration: 0.5s;
+    animation-iteration-count: 3;
+}
+
+@keyframes success-color {
+    0% {border: 1px solid transparent;}
+    50% {border: 1px solid green}
+    100% {border: 1px solid transparent;}
+}
+
+.error {
+    animation-name: error-color;
+    animation-duration: 0.5s;
+    animation-iteration-count: 3;
+}
+
+@keyframes error-color {
+    0% {border: 1px solid transparent;}
+    50% {border: 1px solid darkred;}
+    100% {border: 1px solid transparent;}
+}
+
+/* Toolbar */
+
+.toolbar-button {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    padding: 7px 7px;
+}
+
+.selected {
+    background-color: #EEEEEE;
+    color: #212d3c;
+}
+
+.toolbar-select {
+    width: 150px;
+    height: 30px;
+    font-size: 14px;
+}
+
+.toolbar-td{
+    border: none;
+}
+
+.toolbar-spacer{
+    width: 20px;
+}
+
+/* Icons */
+.icon-text {
+    text-shadow: rgb(238, 238, 238) 2px 0px 0px, rgb(238, 238, 238) 1.75517px 0.958851px 0px, rgb(238, 238, 238) 1.0806px 1.68294px 0px, rgb(238, 238, 238) 0.141474px 1.99499px 0px, rgb(238, 238, 238) -0.832294px 1.81859px 0px, rgb(238, 238, 238) -1.60229px 1.19694px 0px, rgb(238, 238, 238) -1.97998px 0.28224px 0px, rgb(238, 238, 238) -1.87291px -0.701566px 0px, rgb(238, 238, 238) -1.30729px -1.5136px 0px, rgb(238, 238, 238) -0.421592px -1.95506px 0px, rgb(238, 238, 238) 0.567324px -1.91785px 0px, rgb(238, 238, 238) 1.41734px -1.41108px 0px, rgb(238, 238, 238) 1.92034px -0.558831px 0px;
+    /* text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
+    /* text-shadow: -2px 0 1px black, 0 2px 1px black, 2px 0 1px black, 0 -2px 1px black; */
+    color: #000000;
+    /* background-color: #EEEEEEAA; */
+    text-align: center;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+}
+
+.icon-symbol {
+    margin: auto;
+}
+
+.icon-background {
+    background-color: #EEEEEE;
+    border-radius: 50%;
+    padding: 3px 3px 3px 3px;
+    height: 23px;
+    width: 23px;
+    border: 1px solid #212d3c;
+}
+
+.icon-background-selected {
+    background-color: #212d3c;
+    border-radius: 50%;
+    padding: 3px 3px 3px 3px;
+    height: 23px;
+    width: 23px;
+    border: 1px solid #EEEEEE;
+}
+
+/* Kneeboard */
+.kneeboard-row{
+    background-color: #212d3c; 
+    border: 2px solid #2d3e50;
+}
+
+.kneeboard-filename{
+    color: #EEEEEE;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+}
+
+.kneeboard-delete{
+    color: #bb0000;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-family: 'Helvetica';
+    box-sizing: border-box;
+    cursor: pointer;
+    padding-right: 10px;
+}
+
+.kneeboard-delete:hover{
+    color: #FF0000;
+}
+
+.kneeboard-delete:active{
+    color: #ff6b6b;
+}
+
+/* Weather */
+.wind-direction {
+    color: #EEEEEE;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    text-shadow: -2px 0 1px black, 0 2px 1px black, 2px 0 1px black, 0 -2px 1px black;
+    font-size: 40px;
+}
+
+.weather-logo{
+    filter: drop-shadow(1px 1px 0 white)
+    drop-shadow(-1px 1px 0 white)
+    drop-shadow(1px -1px 0 white)
+    drop-shadow(-1px -1px 0 white);
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    background-color: darkred;
+    color: #EEEEEE;
+    text-align: center;
+    padding: 10px 10px;
+    border-radius: 6px;
+    font-family: 'Helvetica';
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 120%;
+    margin-left: -60px;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 25px;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: darkred transparent transparent transparent;
+}
+
+.tooltip-delete {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Helpers */
+.vertical-fill {
+    height: 100%;
+}
+
+.horizontal-fill {
+    width: 100%;
+}
+
+.right-align {
+    float: right;
+}
+
+.horizontal-delimiter {
+    border-top: 1px solid #EEEEEE;
+}
+
+/* Country flags */
+.image-cropper-blue {
+    opacity: 0.7;
+    filter: drop-shadow(1px 1px 0 blue)
+            drop-shadow(-1px 1px 0 blue)
+            drop-shadow(1px -1px 0 blue)
+            drop-shadow(-1px -1px 0 blue);
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-top: -25px;
+    margin-left: 22px;
+}
+
+.image-cropper-red {
+    filter: drop-shadow(1px 1px 0 red)
+            drop-shadow(-1px 1px 0 red)
+            drop-shadow(1px -1px 0 red)
+            drop-shadow(-1px -1px 0 red);
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-top: -25px;
+    margin-left: 22px;
+}
+
+.country-flag {
+    display: inline;
+    margin: 0 auto;
+    margin-top: 0%;
+    margin-left: -12px; 
+    height: 100%;
+    width: auto;
+}
+
+.aircraft-icon-blurred {
+    filter: drop-shadow(1px 1px 0 white)
+            drop-shadow(-1px 1px 0 white)
+            drop-shadow(1px -1px 0 white)
+            drop-shadow(-1px -1px 0 white);
+    position: absolute;
+    display: inline;
+    margin-top: -40px;
+    margin-left: 7px;
+    height: 80px;
+    width: 80px
+}
+
+.aircraft-icon-red {
+    filter: invert(19%) sepia(96%) saturate(6636%) hue-rotate(359deg) brightness(92%) contrast(119%);
+    position: absolute;
+    display: inline;
+    margin-top: -40px;
+    margin-left: 7px;
+    height: 80px;
+    width: 80px
+}
+
+.aircraft-icon-blue {
+    filter: invert(8%) sepia(99%) saturate(6515%) hue-rotate(247deg) brightness(107%) contrast(146%);
+    position: absolute;
+    display: inline;
+    margin-top: -40px;
+    margin-left: 7px;
+    height: 80px;
+    width: 80px
+}
+
+.spawn-symbol {
+    margin: auto;
+}
+
+#progress-row {
+    height: 5px;
+}
+
+#progress {
+    width: 100%;
+    background-color: #2d3e50;
+}
+
+#bar {
+    width: 0%;
+    height: 5px;
+    background-color: #EEEEEE;
+}
