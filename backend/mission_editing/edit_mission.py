@@ -1,5 +1,6 @@
+from threading import Thread
 from functools import lru_cache
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from slpp import slpp as lua
 import re
 import zipfile
@@ -11,6 +12,15 @@ class MissionEditor:
         print(path)
         self.path = path
         self.buffer_dict = self._get_buffer()
+
+        mission_p = Thread(target=self._get_data, args=('mission', path))
+        mission_p.start()
+        dictionary_p = Thread(target=self._get_data, args=('l10n/DEFAULT/dictionary', path))
+        dictionary_p.start()
+
+        mission_p.join()
+        dictionary_p.join()
+
         self.mission = self._get_data('mission', path)
         self.dictionary = self._get_data('l10n/DEFAULT/dictionary', path)
         self.ll2xy_model, self.xy2ll_model = self.get_models()
@@ -54,7 +64,7 @@ class MissionEditor:
 
     @staticmethod
     @lru_cache()
-    def _get_data(local_path: str, path: str) -> dict:
+    def _get_data(local_path: str, path: str):
         with zipfile.ZipFile(path, mode='r') as archive:
             with archive.open(local_path) as msnfile:
                 raw_data = msnfile.read().decode('utf-8')

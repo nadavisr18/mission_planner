@@ -1,14 +1,15 @@
 from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor, WeatherEditor
-from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets, Group
+from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets, Group, WeatherOutput
 from backend.utils import *
 
 from typing import Union, List, Tuple
 from fastapi import FastAPI, HTTPException
 import cProfile
 import uvicorn
-import json
-import os
 import base64
+import json
+import yaml
+import os
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,7 +36,7 @@ def is_alive():
 
 
 @app.post("/mission", responses={400: {"description": "Theatre Not Allowed"}}, response_model=List[Group])
-def new_mission(mission: Mission) -> List[Group]:
+def new_mission(mission: Mission) -> Tuple[List[Group], WeatherOutput]:
     """
     Save a new mission file input from the user, to manipulate later.\n
     input consists of:\n
@@ -47,6 +48,14 @@ def new_mission(mission: Mission) -> List[Group]:
     path = f"backend\\temp_files\\missions\\{mission.session_id}.miz"
     with open(path, 'wb') as file:
         file.write(base64.decodebytes(mission.data))
+
+    while len(os.listdir("backend\\temp_files\\missions")) > 50:
+        list_of_files = os.listdir('backend\\temp_files\\missions')
+        full_path = ["backend\\temp_files\\missions\\{0}".format(x) for x in list_of_files]
+
+        oldest_file = min(full_path, key=os.path.getctime)
+        os.remove(oldest_file)
+
     # save metadata about the mission
     data = get_dictionary()
     with open(f"backend\\temp_files\\dictionary.json", 'w') as file:
@@ -56,6 +65,8 @@ def new_mission(mission: Mission) -> List[Group]:
         json.dump(data, file)
     mp = MissionParser(path)
     groups_info, theatre = mp.get_mission_info()
+    we = WeatherEditor(path)
+    weather_data = we.get_mission_weather()
     if theatre != "Syria":
         raise HTTPException(status_code=400, detail="Theatre Not Allowed")
     # for group in groups_info:
@@ -63,7 +74,7 @@ def new_mission(mission: Mission) -> List[Group]:
     #         print(group)
     global PROGRESS
     PROGRESS = 0
-    return groups_info
+    return groups_info, weather_data
 
 
 @app.delete("/mission/{session_id}", responses={404: {"description": "Session Not Found"}})
@@ -169,7 +180,7 @@ def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         ke = KneeboardEditor(path)
-        ke.add_page(page_data.data, page_data.name, page_data.aircraft)
+        ke.add_page(page_data.data, page_data.name, page_data.group)
     else:
         raise HTTPException(status_code=404, detail="Session not found")
 
@@ -183,13 +194,13 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         ke = KneeboardEditor(path)
-        ke.remove_page(page_data.name, page_data.aircraft)
+        ke.remove_page(page_data.name, page_data.group)
     else:
         raise HTTPException(status_code=404, detail="Session not found")
 
 
 @app.post('/weather/{session_id}', responses={404: {"description": "Session Not Found"}, 400: {"description": "City Not Found"}})
-def change_weather(weather_data: WeatherData):
+def change_weather(weather_data: WeatherData) -> WeatherOutput:
     """
     change the weather in the mission, based on real time data.
     """
@@ -197,12 +208,13 @@ def change_weather(weather_data: WeatherData):
     if weather_data.session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{weather_data.session_id}.miz"
         we = WeatherEditor(path)
-        for i in range(100):
+        for i in range(10):
             try:
                 weather_data.city = get_random_city()[0] if weather_data.city.lower() == "random" else weather_data.city
-                condition, wind_dir, wind_speed, icon = we.change_weather(weather_data.city, weather_data.time)
-                return {"condition": condition, "wind_dir": wind_dir,
-                        "wind_speed": wind_speed, "city": weather_data.city, "icon": icon}
+                weather_output = we.change_weather(weather_data.city, weather_data.time)
+                weather_output.icon = we.daytime_icon(weather_data.time, weather_output.icon)
+
+                return weather_output
             except BaseException as e:
                 weather_data.city = 'random'
         else:

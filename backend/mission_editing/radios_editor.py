@@ -17,14 +17,14 @@ class RadiosEditor(MissionEditor):
                 for unit in group_dict['units']:
                     unit_dict = group_dict['units'][unit]
                     skill = unit_dict['skill']
-                    unit_type = unit_dict['type']
-                    if skill == 'Client' and unit_type == presets.aircraft.value:
+                    group_name = group_dict['name']
+                    if skill == 'Client' and (group_name == presets.group or group_name.lower() == "everyone"):
                         unit_presets = presets.channels_presets
                         for preset in unit_presets:
                             radio, channel, frequency = preset.dict().values()
                             unit_dict['Radio'][radio]['channels'][channel] = frequency
                             if radio == 1 and channel == 1:
-                                group_dict['frequency'] = presets[unit_type]["1"]["1"]
+                                group_dict['frequency'] = presets[group_name]["1"]["1"]
                     group_dict['units'][unit] = unit_dict
                 country_dict['plane']['group'][group] = group_dict
             self.mission['coalition']['blue']['country'][country] = country_dict

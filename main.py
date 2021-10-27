@@ -1,17 +1,18 @@
 
 # -------------------BACKEND-------------------
-# TODO: save waypoint plans
-# TODO: clean temp files every X time
 # TODO: return current weather on mission load
 # TODO: return AI flights waypoints on mission load
+# TODO: auto kneeboards
+# TODO:
 
 # -------------------FRONTEND-------------------
-# TODO: fix static groups not showing at all
-# TODO: add to the top toolbar option to hide country flags
-# TODO: fix waypoint line going through the top of the waypoint icon and not center
+# TODO: change kneeboard page request key from "group" to "aircraft"
+# TODO: fix radios, reset the freq textbox when switching groups
+# TODO: radio panel "Apply" button for the group
+# TODO: change kneeboard to be per aircraft type and not per group
+# TODO: remove the word "visibility" from all the tooltips XD
 # TODO: get icons for "home base" and "contested area" type waypoints
-# TODO: add tooltips for the top tool bar
-# TODO: display AI routes on map, have different route color to Client flights
-# TODO: display current weather on mission load (waiting for backend to finish first)
+# TODO: display current weather on mission load
 # TODO: add more map source options
+# TODO: come up with a better icon for non-client aircraft
 

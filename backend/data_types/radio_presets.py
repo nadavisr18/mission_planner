@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import List
 from enum import Enum
-from .aircraft_types import PlanesEnum
 
 
 class RadioOptions(int, Enum):
@@ -16,5 +15,5 @@ class ChannelsPresets(BaseModel):
 
 
 class RadioPresets(BaseModel):
-    aircraft: PlanesEnum
+    group: str
     channels_presets: List[ChannelsPresets]
