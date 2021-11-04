@@ -116,6 +116,7 @@ class WeatherEditor(MissionEditor):
     def get_mission_weather(self) -> WeatherOutput:
         hours = int(self.mission["start_time"])//3600
         minutes = (int(self.mission["start_time"])-hours*3600)//60
+        minutes = minutes if len(str(minutes)) == 2 else str(minutes)+"0"
         time = "0"+f"{hours}{minutes}" if hours < 10 else f"{hours}{minutes}"
 
         cloud_preset = self.mission["weather"]["clouds"]["preset"]
@@ -137,5 +138,5 @@ class WeatherEditor(MissionEditor):
         night_status = int(time[:2]) > 18 or int(time[:2]) < 6
         current_status = "night" if night_status else "day"
         other_status = "day" if night_status else "night"
-        icon = icon.replace(current_status, other_status)
+        icon = icon.replace(other_status, current_status)
         return icon
