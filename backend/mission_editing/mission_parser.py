@@ -48,9 +48,7 @@ class MissionParser(MissionEditor):
                                 unit_type = group_dict['units'][1]['type'] if len(unit_type) == 0 else unit_type
                                 unit_type = self.config['BackendToDisplayName'].get(unit_type, unit_type)
                                 client = group_dict['units'][1].get('skill') == 'Client'
-                                x, y = group_dict['x'] / 111139, group_dict['y'] / 111139
-                                lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
-                                lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
+                                lat, lon = self.xy2ll.transform(group_dict['x'], group_dict['y'])
                                 if not group_type == 'static':
                                     waypoints = self.get_waypoints(group_dict)
                                 else:
@@ -107,9 +105,7 @@ class MissionParser(MissionEditor):
         groups = []
         for clump in static_clumps:
             if len(clump['objects']) >= min_objects:
-                x, y = clump['x'].mean() / 111139, clump['y'].mean() / 111139
-                lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
-                lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
+                lat, lon = self.xy2ll.transform(clump['x'].mean(), clump['y'].mean())
                 if globe.is_land(lat, lon):
                     group = Group(group_type='static',
                                   unit_type=clump['type'],
@@ -128,9 +124,7 @@ class MissionParser(MissionEditor):
         if route_length >= 2:
             for i in range(2, route_length + 1):
                 point = route['points'][i]
-                x, y = point['x'] / 111139, point['y'] / 111139
-                lat_diff, lon_diff = self.xy2ll_model.predict([[x, y], ])[0]
-                lat, lon = self.map_center['lat'] + lat_diff, self.map_center['lon'] + lon_diff
+                lat, lon = self.xy2ll.transform(point['x'], point['y'])
                 altitude = point['alt']
                 group_name = group_dict['name']
                 point_name = point.get("name", "")

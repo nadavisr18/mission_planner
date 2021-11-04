@@ -1,9 +1,13 @@
+import backend.theatres as theatres
+from backend.theatres.transverse_mercator import TransverseMercator
+
+from pyproj import CRS, Transformer
 from threading import Thread
 from functools import lru_cache
 from typing import List, Tuple, Dict
 from slpp import slpp as lua
-import re
 import zipfile
+import re
 import keras
 
 
@@ -23,8 +27,14 @@ class MissionEditor:
 
         self.mission = self._get_data('mission', path)
         self.dictionary = self._get_data('l10n/DEFAULT/dictionary', path)
-        self.ll2xy_model, self.xy2ll_model = self.get_models()
-        self.map_center = {'lat': 35.021298, 'lon': 35.899957}
+
+        projection_parameters = self.get_params(self.mission['theatre'])
+        self.ll2xy = Transformer.from_crs(
+            CRS("WGS84"), projection_parameters.to_crs()
+        )
+        self.xy2ll = Transformer.from_crs(
+            projection_parameters.to_crs(), CRS("WGS84")
+        )
 
     def _get_buffer(self) -> dict:
         with zipfile.ZipFile(self.path, mode='r') as archive:
@@ -61,6 +71,17 @@ class MissionEditor:
                 if filename != path:
                     archive_w.writestr(filename, buffer)
         self.buffer_dict = self._get_buffer()
+
+    @staticmethod
+    def get_params(theatre: str) -> TransverseMercator:
+        if theatre == "Syria":
+            return theatres.SYRIA_PARAMS
+        if theatre == "Nevada":
+            return theatres.NEVADA_PARAMS
+        if theatre == "Caucasus":
+            return theatres.CAUCASUS_PARAMS
+        if theatre == "PersianGulf":
+            return theatres.PERSIAN_GULF_PARAMS
 
     @staticmethod
     @lru_cache()

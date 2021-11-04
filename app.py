@@ -36,7 +36,7 @@ def is_alive():
 
 
 @app.post("/mission", responses={400: {"description": "Theatre Not Allowed"}}, response_model=List[Group])
-def new_mission(mission: Mission) -> Tuple[List[Group], WeatherOutput]:
+def new_mission(mission: Mission) -> List[Group]:
     """
     Save a new mission file input from the user, to manipulate later.\n
     input consists of:\n
@@ -65,16 +65,11 @@ def new_mission(mission: Mission) -> Tuple[List[Group], WeatherOutput]:
         json.dump(data, file)
     mp = MissionParser(path)
     groups_info, theatre = mp.get_mission_info()
-    we = WeatherEditor(path)
-    weather_data = we.get_mission_weather()
     if theatre != "Syria":
         raise HTTPException(status_code=400, detail="Theatre Not Allowed")
-    # for group in groups_info:
-    #     if group.group_type == 'plane':
-    #         print(group)
     global PROGRESS
     PROGRESS = 0
-    return groups_info, weather_data
+    return groups_info
 
 
 @app.delete("/mission/{session_id}", responses={404: {"description": "Session Not Found"}})
@@ -199,6 +194,14 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
 
+@app.get('/current_weather/{session_id}')
+def get_weather(session_id: str) -> WeatherOutput:
+    path = f"backend\\temp_files\\missions\\{session_id}.miz"
+    we = WeatherEditor(path)
+    weather_data = we.get_mission_weather()
+    return weather_data
+
+
 @app.post('/weather/{session_id}', responses={404: {"description": "Session Not Found"}, 400: {"description": "City Not Found"}})
 def change_weather(weather_data: WeatherData) -> WeatherOutput:
     """
@@ -229,4 +232,4 @@ def get_progress() -> float:
 
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=5000, log_level="info")
+    uvicorn.run("app:app", host="127.0.0.1", port=5000, log_level="info")

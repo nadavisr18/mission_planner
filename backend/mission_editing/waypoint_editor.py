@@ -36,7 +36,7 @@ class WayPointEditor(MissionEditor):
 
     def _add_waypoint(self, group_data: dict, wp: WayPoint, i: int):
         point = self.point_template()
-        x, y = self._convert_waypoint(wp.lat, wp.lon)
+        x, y = self.ll2xy.transform(wp.lat, wp.lon)
         point.update({'alt': wp.altitude / 0.3048})  # altitude in mission file is meters
         point.update({'alt_type': wp.alt_type})
         point.update({'x': x})
@@ -45,13 +45,6 @@ class WayPointEditor(MissionEditor):
         # waypoints start from 1 and we don't touch the first waypoint (spawn place), hence i + 2
         group_data['route']['points'].update({i + 2: point})
         return group_data
-
-    def _convert_waypoint(self, lat: float, lon: float):
-
-        lon_diff = lon - self.map_center['lon']
-        lat_diff = lat - self.map_center['lat']
-        y_diff, x_diff = self.ll2xy_model.predict([[lat_diff, lon_diff], ])[0] * 111139
-        return y_diff, x_diff
 
     @staticmethod
     def _get_unit_path(group_name: str, waypoints: List[WayPoint]) -> List[WayPoint]:
