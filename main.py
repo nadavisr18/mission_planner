@@ -14,6 +14,7 @@
 # TODO: display current weather on mission load
 # TODO: add more map source options
 # TODO: come up with a better icon for non-client aircraft
+# TODO: if ship unit type has "CVN" make a carrier icon for the group
 # TODO: add some way to selectively hide flights 
 # TODO: add some way to hide waypoints only
 

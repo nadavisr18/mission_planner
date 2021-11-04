@@ -65,7 +65,7 @@ def new_mission(mission: Mission) -> List[Group]:
         json.dump(data, file)
     mp = MissionParser(path)
     groups_info, theatre = mp.get_mission_info()
-    if theatre != "Syria":
+    if theatre not in ("Syria", "PersianGulf", "Nevada", "Caucasus"):
         raise HTTPException(status_code=400, detail="Theatre Not Allowed")
     global PROGRESS
     PROGRESS = 0
