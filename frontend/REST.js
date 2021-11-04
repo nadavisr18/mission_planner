@@ -40,7 +40,7 @@ function successMissionFile(data, textStatus, jqXHR)
 
         for (var j = 0; j < group.waypoints.length; j++)
         {
-            waypoints.push(new Waypoint({latlng: {lat: group.waypoints[j].lat, lng: group.waypoints[j].lon}, type: 'route', group: group.waypoints[j].group, name: group.waypoints[j].name, altitude: group.waypoints[j].altitude, baroRadio: group.waypoints[j] == 'RADIO', id: group.waypoints[j].wp_id}))
+            waypoints.push(new Waypoint({latlng: {lat: group.waypoints[j].lat, lng: group.waypoints[j].lon}, type: 'route', group: group.waypoints[j].group, name: group.waypoints[j].name, altitude: Math.round(group.waypoints[j].altitude), baroRadio: group.waypoints[j] == 'RADIO', id: group.waypoints[j].wp_id}))
         }
     }
     applyMapChanges();
@@ -56,6 +56,8 @@ function successMissionFile(data, textStatus, jqXHR)
 
     fileUploaded = true;
     activateInputs('mission-download-input');
+
+    requestCurrentWeather();
 }
 
 function uploadMissionFile()
@@ -300,6 +302,22 @@ function randomizeWeather()
 {
     document.getElementById("weather-location").value = "Random";
     applyWeatherChange();
+}
+
+function requestCurrentWeather()
+{
+    var form = new FormData();
+    form.append("session_id", sessionId);
+
+    $.ajax({
+        url: serverAddress+"/current_weather/"+sessionId,
+        type: 'GET',
+        data: JSON.stringify(Object.fromEntries(form)),
+        processData: false,
+        success: successWeatherChange,
+        error: RESTerror,
+        contentType: 'application/json'
+    });
 }
 
 function applyWeatherChange()

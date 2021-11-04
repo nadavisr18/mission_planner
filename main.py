@@ -11,8 +11,9 @@
 # TODO: radio panel "Apply" button for the group
 # TODO: change kneeboard to be per aircraft type and not per group
 # TODO: remove the word "visibility" from all the tooltips XD
-# TODO: get icons for "home base" and "contested area" type waypoints
 # TODO: display current weather on mission load
 # TODO: add more map source options
 # TODO: come up with a better icon for non-client aircraft
+# TODO: add some way to selectively hide flights 
+# TODO: add some way to hide waypoints only
 

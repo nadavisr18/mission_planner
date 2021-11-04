@@ -579,6 +579,55 @@ function mapClear()
     applyMapChanges();
 }
 
+function zeroPad(num, places) {
+    var zero = places - num.toString().length + 1;
+    return Array(+(zero > 0 && zero)).join("0") + num;
+  }
+
+function ConvertDDtoDMS(dd, pads)
+{
+    var deg = dd | 0; // truncate dd to get degrees
+    var frac = Math.abs(dd - deg); // get fractional part
+    var min = (frac * 60) | 0; // multiply fraction by 60 and truncate
+    var sec = frac * 3600 - min * 60;
+    sec = sec.toFixed(2);
+    return zeroPad(deg, pads) + "\xB0" + zeroPad(min,2) + "'" + zeroPad(sec,5) + "\"";
+}
+
+function exportCSV()
+{
+    groupWaypoints = []
+    let csvContent = "data:text/csv;charset=utf-8,"
+    for (i = 0; i < groups.length; i++)
+    {
+        if(groups[i].client)
+        {
+            groupWaypoints.push(["\r\n"+groups[i].name])
+            groupWaypoints.push(['Name', 'Notes', 'Alt.', 'Lat.', 'Long.'])
+            for (j = 0; j < waypoints.length; j++)
+            {
+                if (waypoints[j].group === groups[i].name)
+                {
+                    if (waypoints[j].baroRadio) baroRadio = 'ASL';
+                    else baroRadio = 'AGL'
+                    groupWaypoints.push([waypoints[j].name, '', waypoints[j].altitude + baroRadio, ConvertDDtoDMS(waypoints[j].latlng.lat, 2), ConvertDDtoDMS(waypoints[j].latlng.lng, 3)])
+                }
+            }
+        }
+    }
+    groupWaypoints.forEach(function(rowArray) {
+        let row = rowArray.join(",");
+        csvContent += row + "\r\n";
+    });
+    var encodedUri = encodeURI(csvContent.replace(/#/g, ''));
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "waypointsExport.csv");
+    document.body.appendChild(link); // Required for FF
+
+    link.click();
+}
+
 function deleteWaypoint()
 {
     for (var i = 0; i < waypoints.length; i++)
