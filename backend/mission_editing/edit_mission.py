@@ -46,7 +46,7 @@ class MissionEditor:
     def _save_lua_data(self, data: dict):
         save_data = {}
         for data_file in data:
-            raw_data = data_file.split("/")[-1] + " =" + lua.encode(data[data_file])
+            raw_data = data_file.split("/")[-1] + " =\n" + lua.encode(data[data_file])
             save_data.update({data_file: raw_data})
         with zipfile.ZipFile(self.path, mode='w', compression=zipfile.ZIP_DEFLATED) as archive_w:
             for filename, buffer in self.buffer_dict.items():
