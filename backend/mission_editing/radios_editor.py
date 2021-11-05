@@ -24,7 +24,7 @@ class RadiosEditor(MissionEditor):
                             radio, channel, frequency = preset.dict().values()
                             unit_dict['Radio'][radio]['channels'][channel] = frequency
                             if radio == 1 and channel == 1:
-                                group_dict['frequency'] = presets[group_name]["1"]["1"]
+                                group_dict['frequency'] = frequency
                     group_dict['units'][unit] = unit_dict
                 country_dict['plane']['group'][group] = group_dict
             self.mission['coalition']['blue']['country'][country] = country_dict

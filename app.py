@@ -155,7 +155,7 @@ def process_mission(session_id: str):
 @app.post("/radios/{session_id}", responses={404: {"description": "Session Not Found"}})
 def set_radio_presets(presets: RadioPresets, session_id: str):
     """
-    A route to set radio presets in the mission, per aircraft type.
+    A route to set radio presets in the mission, per aircraft group.
     """
     data = get_dictionary()
     if session_id in data.keys():
