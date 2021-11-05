@@ -121,6 +121,13 @@ function setMapProvider(mapProvider)
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             });
     }
+    else if (mapProvider == "Mapbox Satellite")
+    {
+        tileLayer =  L.tileLayer('https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.pngraw?access_token=pk.eyJ1IjoibmFkYXZmciIsImEiOiJja3ZtYXpzZDE1N3hmMnFvazZsbDk0OWh3In0.lMcppAAJbflwlwman-AQhg', {
+                maxZoom: 19,
+                attribution: 'MapBox'
+            });
+    }
     tileLayer.addTo(mymap);
 }
 
