@@ -18,11 +18,12 @@ class RadiosEditor(MissionEditor):
                     unit_dict = group_dict['units'][unit]
                     skill = unit_dict['skill']
                     group_name = group_dict['name']
-                    if skill == 'Client' and (group_name == presets.group or group_name.lower() == "everyone"):
+                    if skill == 'Client' and (group_name == presets.group or presets.group.lower() == "everyone"):
                         unit_presets = presets.channels_presets
                         for preset in unit_presets:
                             radio, channel, frequency = preset.dict().values()
-                            unit_dict['Radio'][radio]['channels'][channel] = frequency
+                            if "Radio" in unit_dict.keys():
+                                unit_dict['Radio'][radio]['channels'][channel] = frequency
                             if radio == 1 and channel == 1:
                                 group_dict['frequency'] = frequency
                     group_dict['units'][unit] = unit_dict
