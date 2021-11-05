@@ -1,0 +1,40 @@
+tank:
+  sclaing_20: 0.42
+  downsize: 8
+  rot: true
+
+truck:
+  scaling_20: 0.1
+  downsize: 8
+  rot: true
+
+roadblock:
+  scaling_20: 0.4
+  downsize: 24
+  rot: true
+
+comm_center:
+  scaling_20: 0.4
+  downsize: 24
+  rot: true
+
+chem_tank:
+  scaling_20: 0.7
+  downsize: 6
+  rot: false
+
+comm_tower:
+  scaling_20: 0.9
+  downsize: 16
+  rot: false
+
+bunker:
+  scaling_20: 0.8
+  downsize: 22
+  rot: false
+
+tv_tower:
+  scaling_20: 1.2
+  downsize: 16
+  rot: true
+
