@@ -341,6 +341,67 @@ function applyWeatherChange()
     });
 }
 
+
+function requestRadioChange()
+{
+    var obj = document.getElementById("radio-group");
+    var group = obj.value;
+
+    var list = [];
+    var radioString = ''
+    for (var i = 0; i <= 1; i++)
+    {
+        var channels = radioVector[i][group];
+        for (var j = 0; j < channels.length; j++)
+        {
+            var radioPreset = new RadioPreset(channels[j]);
+            list.push(radioPreset);
+        }
+    }
+
+    for (var i = 0; i < list.length; i++) {
+        radioString += list[i].getJSON();
+        if (i < list.length - 1) radioString += ', ';
+    }
+    radioString = '['+radioString+']';
+
+    var form = new FormData();
+    form.append("group", group);
+    form.append("radio_presets", radioString);
+
+    var reqString = '{"group": "' + group + '", "channels_presets": ' + radioString + '}';
+
+    $.ajax({
+        url: serverAddress+"/radios/"+sessionId,
+        type: 'POST',
+        data: reqString,
+        processData: false,
+        success: successRadioChange,
+        error: RESTerror,
+        contentType: 'application/json'
+    });
+
+}
+
+function successRadioChange(data)
+{
+    var obj = document.getElementById("radio-group");
+    var group = obj.value;
+
+    for (var i = 0; i <= 1; i++)
+    {
+        var channels = radioVector[i][group];
+        for (var j = 0; j < channels.length; j++)
+        {
+            channels[j].saved = true;
+        }
+    }
+    deactivateRadio(1);
+    activateRadio(1);
+    deactivateRadio(2);
+    activateRadio(2);
+}
+
 function successWeatherChange(data)
 {
     document.getElementById("wind-direction").style.transform = "rotate("+data.wind_dir+"deg)";

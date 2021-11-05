@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Mission planner</title>
+        <title>Mission Planner</title>
         <link rel="icon" href="patch.png">
         <!------------------- CSS --------------------->
         <link rel="stylesheet" href="styles.css">
@@ -265,7 +265,15 @@
                                 </table>
                             </td>
                         </tr>
-
+                        <tr class="section-content-td">
+                            <td class="section-content-td radios-section">
+                                <table>
+                                    <tr>
+                                        <td><span class="button waypoint-input" style="width: 100%;" onClick="requestRadioChange()">Apply</span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
                         <!------------------- Weather section --------------------->
                         <tr class="section-title-tr">
                             <td>
@@ -362,13 +370,13 @@
                             <td class="toolbar-td"><span class="button toolbar-button" onclick="mapRedo()" title="Redo"><i class="fas fa-redo"></i></span></td>
                             <td class="toolbar-td"><span class="button toolbar-button" onclick="mapClear()" title="Clear all"><i class="fas fa-eraser"></i></span></td>
                             <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-user" onclick="toggleVisibility('user')" title="Toggle client aircraft visibility"><i class="fas fa-plane"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-non-user" onclick="toggleVisibility('non-user')" title="Toggle non-client aircraft visibility"><i class="fas fa-plane-slash"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-SAM" onclick="toggleVisibility('SAM')" title="Toggle SAM threat circle visibility"><i class="fas fa-exclamation-triangle"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-static" onclick="toggleVisibility('static')" title="Toggle static objects visibility"><i class="fas fa-warehouse" ></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-vehicle" onclick="toggleVisibility('vehicle')" title="Toggle vehicles visibility"><i class="fas fa-truck-pickup" ></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-ship" onclick="toggleVisibility('ship')" title="Toggle ships visibility"><i class="fas fa-ship" ></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-flag" onclick="toggleVisibility('flag')" title="Toggle flags visibility"><i class="fas fa-flag"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-user" onclick="toggleVisibility('user')" title="Toggle client aircraft"><i class="fas fa-plane"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-non-user" onclick="toggleVisibility('non-user')" title="Toggle non-client aircraft"><i class="fas fa-plane-slash"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-SAM" onclick="toggleVisibility('SAM')" title="Toggle SAM threat circle"><i class="fas fa-exclamation-triangle"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-static" onclick="toggleVisibility('static')" title="Toggle static objects"><i class="fas fa-warehouse" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-vehicle" onclick="toggleVisibility('vehicle')" title="Toggle vehicles"><i class="fas fa-truck-pickup" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-ship" onclick="toggleVisibility('ship')" title="Toggle ships"><i class="fas fa-ship" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-flag" onclick="toggleVisibility('flag')" title="Toggle flags"><i class="fas fa-flag"></i></span></td>
                             <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
                             <td class="horizontal-fill"></td>
                         </tr>

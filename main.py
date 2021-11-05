@@ -20,4 +20,5 @@
 # TODO: add some way to hide waypoints only
 # TODO: when a user selects a waypoint, open the waypoint tab. When a user de-selects a waypoint close the tab and don't add more waypoints when they press on the map
 # TODO: create a tab for package management
+# TODO: find a way to add a waypoint in between existing waypoints
 

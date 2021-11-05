@@ -1,3 +1,20 @@
+class RadioPreset {
+    constructor(attributes) {
+        this.radio = attributes.radio;
+        this.channel = attributes.channel;
+        this.frequency = attributes.frequency;
+    }
+
+    getJSON()
+    {
+        var string = "";
+        string += '"radio":'+(this.radio+1); string += ', ';
+        string += '"preset":'+this.channel; string += ', ';
+        string += '"frequency":'+this.frequency + '';
+        return '{'+string+'}';
+    }
+}
+
 var radioVector = [{}, {}];
 var radioTables = [null, null];
 
@@ -16,7 +33,7 @@ function addRadioRow(radioNumber){
         var channels = radioVector[radioNumber-1][radio_group];
         var newChannelNumber = findChannelFree(radioNumber);
         if (channels.length == 20) return;
-        radioVector[radioNumber-1][radio_group].push({"Channel": newChannelNumber, "Frequency": 123.50, "Label": "No label"});
+        radioVector[radioNumber-1][radio_group].push({"channel": newChannelNumber, "frequency": 123.45, "label": "No label", "radio": radioNumber-1, "saved": false});
         deactivateRadio(radioNumber);
         activateRadio(radioNumber);
     }
@@ -44,9 +61,9 @@ function applyRadioChange(radioNumber){
         for (i = 0; i < radioVector[radioNumber-1][radio_group].length; i++)
         {
             var cells = radioRows[i].cells;
-            radioVector[radioNumber-1][radio_group][i]["Channel"] = parseInt(cells[0].getElementsByTagName("input")[0].value);
-            radioVector[radioNumber-1][radio_group][i]["Frequency"] = parseFloat(cells[1].getElementsByTagName("input")[0].value);
-            radioVector[radioNumber-1][radio_group][i]["Label"] = cells[2].getElementsByTagName("input")[0].value;
+            radioVector[radioNumber-1][radio_group][i]["channel"] = parseInt(cells[0].getElementsByTagName("input")[0].value);
+            radioVector[radioNumber-1][radio_group][i]["frequency"] = parseFloat(cells[1].getElementsByTagName("input")[0].value);
+            radioVector[radioNumber-1][radio_group][i]["label"] = cells[2].getElementsByTagName("input")[0].value;
         }
     }
 }
@@ -93,9 +110,13 @@ function activateRadio(radioNumber)
             el[j].classList.remove("greyed");
             el[j].disabled = false;
         }
-        cells[0].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["Channel"];
-        cells[1].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["Frequency"];
-        cells[2].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["Label"];
+        cells[0].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["channel"];
+        cells[1].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["frequency"];
+        cells[2].getElementsByTagName("input")[0].value = radioVector[radioNumber-1][radio_group][i]["label"];
+        if (radioVector[radioNumber-1][radio_group][i]["saved"])
+            cells[3].innerHTML = '<div class="radio-saved-check"></div>';
+        else
+            cells[3].innerHTML = '<div class="radio-saved-check"><i class="fas fa-exclamation"></i></div>';
         resetError(cells[0].getElementsByTagName("input")[0]);
         resetError(cells[1].getElementsByTagName("input")[0]);
     }
@@ -112,9 +133,17 @@ function deactivateRadio(radioNumber)
 
     var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
     var el = radioRows[0].getElementsByTagName("input");
+
+    var cells = radioRows[0].cells;
+    cells[0].getElementsByTagName("input")[0].value = 1;
+    cells[1].getElementsByTagName("input")[0].value = 123.45;
+    cells[2].getElementsByTagName("input")[0].value = "No label";
+    cells[3].innerHTML = '<div class="radio-saved-check"></div>';
+
     for (i = 0; i < el.length; i++) {
+
         el[i].classList.add("greyed");
-        el[i].disabled = true;
+        //el[i].disabled = true;
     }
     for (i = 1; i < radioRows.length; i++)
     {
@@ -133,10 +162,12 @@ function addNewRow(radioNumber){
     var cell1 = newRow.insertCell(0);
     var cell2 = newRow.insertCell(1);
     var cell3 = newRow.insertCell(2);
+    var cell4 = newRow.insertCell(3);
 
     cell1.innerHTML = '<div class="tooltip"><input class="input" type="number" value='+(radiorowsLength+1)+' oninput="checkChannelRanges('+radiorowsLength+', '+radioNumber+')" onblur="applyRadioChange('+radioNumber+'); checkChannelFree('+radioNumber+', '+radiorowsLength+');"><span class="tooltiptext">Tooltip text</span></div>';
-    cell2.innerHTML = '<input class="input" type="number" value="123.50" oninput="checkFrequencyRanges('+radiorowsLength+', '+radioNumber+')" onblur="applyRadioChange('+radioNumber+')">';
+    cell2.innerHTML = '<input class="input" type="number" value="123.45" oninput="checkFrequencyRanges('+radiorowsLength+', '+radioNumber+')" onblur="applyRadioChange('+radioNumber+')">';
     cell3.innerHTML = '<input class="input" type="text" value="No label" onfocus="removePlacehoder('+radiorowsLength+', '+radioNumber+')" onblur="setPlacehoder('+radiorowsLength+', '+radioNumber+'); applyRadioChange('+radioNumber+')">'
+    cell4.innerHTML = '<div class="radio-saved-check"></div>'
 }
 
 function removePlacehoder(rowIndex, radioNumber)
@@ -168,12 +199,12 @@ function checkChannelFree(radioNumber, rowIndex)
             {
                 for (k = 0; k < radioVector[radioNumber-1][temp_radio_group].length; k++){
                     if (temp_radio_group == radio_group && rowIndex == k) continue;
-                    if (radioVector[radioNumber-1][temp_radio_group][k]["Channel"] == radioVector[radioNumber-1][radio_group][rowIndex]["Channel"] && radioVector[radioNumber-1][radio_group][rowIndex]["Channel"] != 0){
+                    if (radioVector[radioNumber-1][temp_radio_group][k]["channel"] == radioVector[radioNumber-1][radio_group][rowIndex]["channel"] && radioVector[radioNumber-1][radio_group][rowIndex]["channel"] != 0){
                         var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
                         var cells = radioRows[rowIndex].cells;
                         tooltip = cells[0].getElementsByClassName("tooltiptext")[0];
                         if (temp_radio_group == radio_group) {
-                            tooltip.innerHTML = "Channel already set <i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
+                            tooltip.innerHTML = "channel already set <i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
                             tooltip.style.visibility = 'visible';
                             tooltip.style.opacity = 1;
                             flashError(cells[0].getElementsByClassName("input")[0]);
@@ -186,7 +217,7 @@ function checkChannelFree(radioNumber, rowIndex)
                                 flashError(cells[0].getElementsByClassName("input")[0]);
                             } 
                             else if (temp_radio_group == "Everyone") {
-                                tooltip.innerHTML = "Channel already set for Everyone <i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
+                                tooltip.innerHTML = "channel already set for Everyone <i class='fas fa-times-circle right-align tooltip-delete' onclick='closeTooltip(this.parentElement)'></i>";
                                 tooltip.style.visibility = 'visible';
                                 tooltip.style.opacity = 1;
                                 flashError(cells[0].getElementsByClassName("input")[0]);
@@ -213,7 +244,7 @@ function findChannelFree(radioNumber)
                 if ((temp_radio_group in radioVector[radioNumber-1]))
                 {
                     for (k = 0; k < radioVector[radioNumber-1][temp_radio_group].length; k++){
-                        if (radioVector[radioNumber-1][temp_radio_group][k]["Channel"] == channel){
+                        if (radioVector[radioNumber-1][temp_radio_group][k]["channel"] == channel){
                             if (radio_group == "Everyone" || temp_radio_group == "Everyone" || radio_group == temp_radio_group) isFree = false;
                         }
                     }
