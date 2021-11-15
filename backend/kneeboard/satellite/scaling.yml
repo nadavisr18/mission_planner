@@ -38,3 +38,8 @@ tv_tower:
   downsize: 16
   rot: true
 
+ammo_depot:
+  scaling_20: 0.25
+  downsize: 10
+  rot: true
+

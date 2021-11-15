@@ -5,3 +5,4 @@ from .weather import WeatherData
 from .radio_presets import RadioPresets
 from .group import Group
 from .weather_output import WeatherOutput
+from .unit import Unit
