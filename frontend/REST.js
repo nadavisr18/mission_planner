@@ -22,6 +22,7 @@ function RESTerror(jqXHR, textStatus, errorThrown)
 
 function successMissionFile(data, textStatus, jqXHR)
 {
+    console.log(data)
     clearInterval(progressInterval);
     clearInterval(animationInterval);
     progressBar = 0;
@@ -29,11 +30,16 @@ function successMissionFile(data, textStatus, jqXHR)
     document.getElementById("bar").style.width = "0%";
 
     var groupNames = [];
+    var aircraftNames = [];
     for (var i = 0; i < data.length; i++)
     {
         group = data[i];
         if ((group.group_type == 'plane' || group.group_type == 'helicopter') && group.client == true)
+        {
             groupNames.push(group.name);
+            if (!aircraftNames.includes(group.unit_type))
+                aircraftNames.push(group.unit_type)
+        }
         latlng = {lat: group.lat, lng: group.lon}
         var attributes = {latlng: latlng, type: group.group_type, name: group.name, unit: group.unit_type, country: group.country, coalition: group.coalition, range: group.range, client: group.client}
         groups.push(new Group(attributes));
@@ -49,7 +55,7 @@ function successMissionFile(data, textStatus, jqXHR)
     activateInputs('waypoint-input');
     groupNames.push("Everyone");
     setupSelection(document.getElementById("radio-group"), groupNames);
-    setupSelection(document.getElementById("kneeboard-group"), groupNames);
+    setupSelection(document.getElementById("kneeboard-group"), aircraftNames);
     setupSelection(document.getElementById("waypoint-group"), groupNames);
     unstyleSelections();
     styleSelections();
@@ -129,16 +135,7 @@ function processMissionFile(){
     }
 }
 
-function requestAircraftList()
-{
-    $.ajax({
-        url: serverAddress+"/mission_details/client_aircraft/"+sessionId,
-        type: 'GET',
-        processData: false,
-        success: readAircraftList,
-        error: RESTerror
-    });
-}
+
 
 function requestProgress()
 {
@@ -190,22 +187,7 @@ function downloadMissionFile()
     });
 }
 
-function readAircraftList(data, textStatus, jqXHR)
-{
-    data = data[0]; // Get the aircraft list
-    document.getElementById("mission-file-label").innerHTML = "Upload mission file";
-    deactivateInputs("mission-upload-input");
-    activateInputs('waypoint-input');
-    data.push("Everyone");
-    setupSelection(document.getElementById("radio-group"), data);
-    setupSelection(document.getElementById("kneeboard-group"), data);
-    setupSelection(document.getElementById("waypoint-group"), data);
-    unstyleSelections();
-    styleSelections();
 
-    fileUploaded = true;
-    activateInputs('mission-download-input');
-}
 
 function readProcessedMission(data, textStatus, jqXHR)
 {
@@ -240,7 +222,7 @@ function uploadKneeboardFiles()
 
         var form = new FormData();
         form.append("data", base64EncodedStr);
-        form.append("group", kneeboard_group);
+        form.append("aircraft", kneeboard_group);
         form.append("name", file.name);
 
         $.ajax({
@@ -264,7 +246,7 @@ function uploadKneeboardFiles()
 function deleteKneeboardFile(group, filename){
     var form = new FormData();
     form.append("data", "");
-    form.append("group", group);
+    form.append("aircraft", group);
     form.append("name", filename);
     document.getElementById("kneeboard-files-label").innerHTML = "Processing file...";
     $.ajax({
@@ -301,6 +283,12 @@ function successDeleteFile(group, name){
 function randomizeWeather()
 {
     document.getElementById("weather-location").value = "Random";
+    var H = Math.floor(Math.random() * 24).toString()
+    if (H.length == 1) H = "0"+H
+    var M = Math.floor(Math.random() * 60).toString()
+    if (M.length == 1) M = "0"+M
+    var template = H + ":" + M 
+    document.getElementById("weather-time").value = template;
     applyWeatherChange();
 }
 

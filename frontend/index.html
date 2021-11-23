@@ -171,10 +171,9 @@
                                                     <td><span class="button waypoint-input" style="width: 100%;" onClick="applyWaypointChange()">Apply</span></td>
                                                     <td><span class="button waypoint-input" style="width: 100%;" onClick="deleteWaypoint()">Delete</span></td>
                                                 </tr>
-                                                <!-- <tr>
-                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="importCSV()">Import CSV</span></td> 
+                                                <tr>
                                                     <td><span class="button waypoint-input" style="width: 100%;" onClick="exportCSV()">Export CSV</span></td>
-                                                </tr> -->
+                                                </tr>
                                             </table>
                                         </td>
                                     </tr>
@@ -274,6 +273,47 @@
                                 </table>
                             </td>
                         </tr>
+                        <!------------------- Kneeboard section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td>Kneeboard</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='kneeboard-section-arrow' onclick="collapseSection('kneeboard-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="section-content-td">
+                            <td class="section-content-td kneeboard-section section">
+                                <!-- Kneeboard files select -->
+                                <table id="kneeboard-table" style="padding:5px;">
+                                    <!-- Radio group -->
+                                    <tr class="kneeboard-not-row">
+                                        <td colspan="2">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">Group</div></td>
+                                                    <td>
+                                                        <div class="selection-div waypoint-input" id="kneeboard-group-div">
+                                                        <select class="selection" id="kneeboard-group"></select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr class="section-content-td kneeboard-not-row">
+                                        <td class="section-content-td" colspan="2">
+                                            <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
+                                                Upload kneeboard files
+                                            </label>
+                                            <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" accept="image/png, image/jpeg" hidden multiple>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
                         <!------------------- Weather section --------------------->
                         <tr class="section-title-tr">
                             <td>
@@ -311,48 +351,6 @@
                                                     <td><span class="button wwather-input" style="width: 100%;" onClick="randomizeWeather()">Randomize</span></td>
                                                 </tr>
                                             </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-
-                        <!------------------- Kneeboard section --------------------->
-                        <tr class="section-title-tr">
-                            <td>
-                                <table>
-                                    <tr class="section-title-td section-title">
-                                    <td>Kneeboard</td> 
-                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='kneeboard-section-arrow' onclick="collapseSection('kneeboard-section')"></i></td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr class="section-content-td">
-                            <td class="section-content-td kneeboard-section section">
-                                <!-- Kneeboard files select -->
-                                <table id="kneeboard-table" style="padding:5px;">
-                                    <!-- Radio group -->
-                                    <tr class="kneeboard-not-row">
-                                        <td colspan="2">
-                                            <table>
-                                                <tr class="content-tr">
-                                                    <td class="content-td"><div class="selection-label">Group</div></td>
-                                                    <td>
-                                                        <div class="selection-div waypoint-input" id="kneeboard-group-div">
-                                                        <select class="selection" id="kneeboard-group"></select>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr class="section-content-td kneeboard-not-row">
-                                        <td class="section-content-td" colspan="2">
-                                            <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
-                                                Upload kneeboard files
-                                            </label>
-                                            <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" accept="image/png, image/jpeg" hidden multiple>
                                         </td>
                                     </tr>
                                 </table>

@@ -302,7 +302,15 @@ function drawMap()
                         flyable = true;
                 }
                 else if (groups[i].type == 'ship')
-                    html = html.replaceAll('$aircraft-logo$', './Naval/naval');
+                {
+                    var attributes = {latlng: groups[i].latlng, type: "spawn", group: groups[i].name, name: "spawn", altitude: 0, baroRadio: "radio"}
+                    var waypoint = new Waypoint(attributes);
+                    tempWaypoints.unshift(waypoint);
+                    if (groups[i].unit.includes("CV"))
+                        html = html.replaceAll('$aircraft-logo$', './Naval/CVN');
+                    else
+                        html = html.replaceAll('$aircraft-logo$', './Naval/naval');
+                }
                 else if (groups[i].type == 'vehicle')
                         if (groups[i].range > 0){
                             if (visibility.includes('vehicle') && visibility.includes('SAM'))

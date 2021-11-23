@@ -175,7 +175,7 @@ def add_kneeboard_page(page_data: KneeboardPage, session_id: str):
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         ke = KneeboardEditor(path)
-        ke.add_page(page_data.data, page_data.name, page_data.group)
+        ke.add_page(page_data.data, page_data.name, page_data.aircraft)
     else:
         raise HTTPException(status_code=404, detail="Session not found")
 
@@ -189,7 +189,7 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
     if session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{session_id}.miz"
         ke = KneeboardEditor(path)
-        ke.remove_page(page_data.name, page_data.group)
+        ke.remove_page(page_data.name, page_data.aircraft)
     else:
         raise HTTPException(status_code=404, detail="Session not found")
 
