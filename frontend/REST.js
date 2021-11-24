@@ -62,6 +62,7 @@ function successMissionFile(data, textStatus, jqXHR)
 
     fileUploaded = true;
     activateInputs('mission-download-input');
+    activateInputs('weather-input');
 
     requestCurrentWeather();
 }
@@ -312,10 +313,12 @@ function applyWeatherChange()
 {
     var obj = document.getElementById("weather-location");
     var location = obj.value;
+    obj = document.getElementById("weather-time")
+    var time = obj.value.replace(":", "")
 
     var form = new FormData();
     form.append("city", location);
-    form.append("time", "0000");
+    form.append("time", time);
     form.append("session_id", sessionId);
 
     $.ajax({

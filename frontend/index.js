@@ -54,6 +54,7 @@ function setupPage(){
     deactivateInputs('waypoint-input');
     deactivateInputs('kneeboard-input');
     deactivateInputs('mission-download-input');
+    deactivateInputs('weather-input');
 
     /* Create and setup the radios */
     setupRadio(1);
