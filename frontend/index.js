@@ -66,6 +66,7 @@ function setupPage(){
     collapseSection("radios-section");
     collapseSection("weather-section");
     collapseSection("kneeboard-section");
+    collapseSection("select-section");
 
 }
 

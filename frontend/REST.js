@@ -22,7 +22,6 @@ function RESTerror(jqXHR, textStatus, errorThrown)
 
 function successMissionFile(data, textStatus, jqXHR)
 {
-    console.log(data)
     clearInterval(progressInterval);
     clearInterval(animationInterval);
     progressBar = 0;
@@ -50,6 +49,24 @@ function successMissionFile(data, textStatus, jqXHR)
         }
     }
     applyMapChanges();
+
+    var fieldset = document.getElementById("flight-select-fieldset")
+    for (var i = 0; i < groupNames.length; i++)
+    {
+        var row = fieldset.insertRow(0);
+        var cell = row.insertCell(0)
+        var newFieldSet = document.createElement('input');
+        newFieldSet.type = "checkbox";
+        newFieldSet.id = "select-flight-"+groupNames[i]
+        newFieldSet.onclick = updateGroupVisibility
+        newFieldSet.checked = true
+        cell.appendChild(newFieldSet);
+
+        var newlabel = document.createElement('label');
+        newlabel.innerHTML = '<label for="select-flight-'+groupNames[i]+'">'+truncateToLen(groupNames[i], 50)+'</label>';
+        cell.appendChild(newlabel);
+    }
+
     document.getElementById("mission-file-label").innerHTML = "Upload mission file";
     deactivateInputs("mission-upload-input");
     activateInputs('waypoint-input');

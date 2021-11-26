@@ -54,6 +54,7 @@ class Group {
       this.range = attributes.range;
       this.client = attributes.client;
       this.visible = true;
+      this.enabled = true;
     }
 
     getAttributes()
@@ -128,6 +129,13 @@ function setMapProvider(mapProvider)
                 attribution: 'MapBox'
             });
     }
+    else if (mapProvider == "TPC")
+    {
+        tileLayer =  L.tileLayer('./maps/{z}/{x}/{y}.png', {
+                maxZoom: 11,
+                attribution: 'MapBox'
+            });
+    }
     tileLayer.addTo(mymap);
 }
 
@@ -136,7 +144,7 @@ function setupLeafletMap() {
     mymap = L.map('mapid').setView([33.47, 35.13], 7);
     mymap.on('click', onMapClick);
     mymap.on('contextmenu', onMapRightClick)
-    setMapProvider("OpenTopoMap");
+    setMapProvider(selections["map-provider"][0]);
 }
 
 /* Left click callback */
@@ -252,6 +260,19 @@ function toggleVisibility(object)
     setCookie('visibility', visibility.toString(), null);
 }
 
+function updateGroupVisibility()
+{
+    for (var i = 0; i < groups.length; i++)
+    {
+        if (groups[i].client)
+        {
+            var input = document.getElementById("select-flight-"+(groups[i].name));
+            groups[i].enabled = input.checked;
+        }
+    }
+    applyMapChanges();
+}
+
 function getGroupByName(groupName)
 {
     for (var i = 0; i < groups.length; i++)
@@ -350,7 +371,7 @@ function drawMap()
 
             /* Add the marker */
             if (flyable)
-                marker = L.marker(groups[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
+                marker = L.marker(groups[i].latlng, {icon: icon, group: groups[i]}).on('click', function(e) {markerClickGroup(e.sourceTarget.options.group)}).addTo(mymap);
             else
                 marker = L.marker(groups[i].latlng, {icon: icon}).addTo(mymap);
             marker.bindTooltip(groups[i].name + " " + groups[i].unit);
@@ -363,7 +384,7 @@ function drawMap()
 
     for (var i = 0; i < waypoints.length; i++)
     {  
-        if (getGroupByName(waypoints[i].group).visible)
+        if (getGroupByName(waypoints[i].group).visible && getGroupByName(waypoints[i].group).enabled)
         {
             /* Draw the marker and add the selected/unselected icon */
             var html = iconhtml.replace('$waypoint-type$', truncateToLen(waypoints[i].group, 12));
@@ -386,7 +407,7 @@ function drawMap()
 
             /* Add the marker */
             if (getGroupByName(waypoints[i].group).client == true)
-                marker = L.marker(waypoints[i].latlng, {icon: icon}).on('click', markerClick).addTo(mymap);
+                marker = L.marker(waypoints[i].latlng, {icon: icon, waypoint: waypoints[i]}).on('click', function(e) {markerClickWaypoint(e.sourceTarget.options.waypoint)}).addTo(mymap);
             else
                 marker = L.marker(waypoints[i].latlng, {icon: icon}).addTo(mymap);
             markers.push(marker);
@@ -400,7 +421,7 @@ function drawMap()
         {  
             if (tempWaypoints[i].group == "Everyone" && tempWaypoints[j].group == "Everyone")
             {
-                if (getGroupByName(tempWaypoints[i].group).visible)
+                if (getGroupByName(tempWaypoints[i].group).visible && getGroupByName(tempWaypoints[i].group).enabled)
                 {
                     polyline = L.polyline([tempWaypoints[i].latlng, tempWaypoints[j].latlng], {color: getLineColor(tempWaypoints[i].group)}).addTo(mymap);
                     lines.push(polyline);
@@ -438,7 +459,7 @@ function drawMap()
                 /* Draw the line */
                 if (check1 || check2 || check3)
                 {
-                    if (getGroupByName(tempWaypoints[i].group).visible)
+                    if (getGroupByName(tempWaypoints[i].group).visible && getGroupByName(tempWaypoints[i].group).enabled)
                     {
                         polyline = L.polyline([tempWaypoints[i].latlng, tempWaypoints[j].latlng], {color: getLineColor(activeGroup[k])}).addTo(mymap);
                         lines.push(polyline);
@@ -461,42 +482,33 @@ function onMapRightClick(e)
 }
 
 /* Marker click callback */
-function markerClick(e)
+function markerClickWaypoint(waypoint)
 {
-    var obj;
-    console.log(e)
-    for (var i = 0; i < waypoints.length; i++)
-    {  
-        if (waypoints[i].latlng.lat == e.latlng.lat && waypoints[i].latlng.lng == e.latlng.lng)
-        {
-            /* Select the waypoint and update the inputs with its properties */
-            selectedWaypoint = waypoints[i];
-            document.getElementById("waypoint-name").value = selectedWaypoint.name;
-            document.getElementById("waypoint-altitude").value = selectedWaypoint.altitude;
-            document.getElementById("waypoint-type").value = selectedWaypoint.type;
-            document.getElementById("waypoint-type-div-selected").innerHTML = selectedWaypoint.type;
-            document.getElementById("waypoint-group").value = selectedWaypoint.group;
-            document.getElementById("waypoint-group-div-selected").innerHTML = selectedWaypoint.group;
-            document.getElementById("waypoint-baro-radio").checked = selectedWaypoint.baroRadio;
-            break;
-        }
-    }
-    for (var i = 0; i < groups.length; i++)
-    {     
-        if (groups[i].latlng.lat == e.latlng.lat && groups[i].latlng.lng == e.latlng.lng)
-        {
-            /* Select the waypoint and update the inputs with its properties */
-            selectedGroup = groups[i];
-            document.getElementById("waypoint-name").value = "";
-            document.getElementById("waypoint-altitude").value = 0;
-            document.getElementById("waypoint-type").value = "anchor";
-            document.getElementById("waypoint-type-div-selected").innerHTML = "anchor";
-            document.getElementById("waypoint-group").value = selectedGroup.name;
-            document.getElementById("waypoint-group-div-selected").innerHTML = selectedGroup.name;
-            document.getElementById("waypoint-baro-radio").checked = false;
-            break;
-        }
-    }
+    selectedWaypoint = waypoint
+    document.getElementById("waypoint-name").value = selectedWaypoint.name;
+    document.getElementById("waypoint-altitude").value = selectedWaypoint.altitude;
+    document.getElementById("waypoint-type").value = selectedWaypoint.type;
+    document.getElementById("waypoint-type-div-selected").innerHTML = selectedWaypoint.type;
+    document.getElementById("waypoint-group").value = selectedWaypoint.group;
+    document.getElementById("waypoint-group-div-selected").innerHTML = selectedWaypoint.group;
+    document.getElementById("waypoint-baro-radio").checked = selectedWaypoint.baroRadio;
+
+    cleanMap();
+    drawMap();
+}
+
+function markerClickGroup(group)
+{
+    selectedGroup = group
+    /* Select the waypoint and update the inputs with its properties */
+    document.getElementById("waypoint-name").value = "";
+    document.getElementById("waypoint-altitude").value = 0;
+    document.getElementById("waypoint-type").value = "anchor";
+    document.getElementById("waypoint-type-div-selected").innerHTML = "anchor";
+    document.getElementById("waypoint-group").value = selectedGroup.name;
+    document.getElementById("waypoint-group-div-selected").innerHTML = selectedGroup.name;
+    document.getElementById("waypoint-baro-radio").checked = false;
+
     cleanMap();
     drawMap();
 }
