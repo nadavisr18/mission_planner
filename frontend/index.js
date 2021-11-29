@@ -167,6 +167,21 @@ function flashSuccess(el)
 
 function expandSection(section)
 {
+    //var els = document.getElementsByClassName('section');
+    //for (var i = 0; i < els.length; i++) 
+    //{
+    //    var classList = els[i].className.split(' ');
+    //    for (var j = 0; j < classList.length; j++)
+    //    {
+    //        if (classList[j].includes("-section") && classList[j] != section)
+    //        {
+    //            collapseSection(classList[j]);
+    //        }
+    //    }
+    //}
+
+    if (section == "waypoints-section") waypoint_tab_open = true;
+
     var els = document.getElementsByClassName(section)
     for (i = 0; i < els.length; i++) 
     {
@@ -183,8 +198,17 @@ function expandSection(section)
 
 function collapseSection(section)
 {
+    if (section == "waypoints-section") 
+    {
+        waypoint_tab_open = false;
+        selectedWaypoint = null;
+        document.getElementById("waypoint-group").value = "...";
+        document.getElementById("waypoint-group-div-selected").innerHTML = "...";
+        applyMapChanges();
+    }
+
     var els = document.getElementsByClassName(section)
-    for (i = 0; i < els.length; i++) 
+    for (var i = 0; i < els.length; i++) 
     {
         els[i].style.display = 'none';
         var x = els[i].getElementsByClassName("error");

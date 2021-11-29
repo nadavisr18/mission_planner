@@ -287,8 +287,8 @@ input[type=number] {
     background-color: #EEEEEE;
     border-radius: 50%;
     padding: 3px 3px 3px 3px;
-    height: 23px;
-    width: 23px;
+    height: 24px;
+    width: 24px;
     border: 1px solid #212d3c;
 }
 
@@ -296,9 +296,34 @@ input[type=number] {
     background-color: #212d3c;
     border-radius: 50%;
     padding: 3px 3px 3px 3px;
-    height: 23px;
-    width: 23px;
+    height: 24px;
+    width: 24px;
     border: 1px solid #EEEEEE;
+}
+
+.spinner-in {
+    content: " ";
+    position: absolute;
+    z-index: -1;
+    margin-left: 27px;
+    margin-top: -36px;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    border-top: 4px solid #212d3c;
+    border-bottom: 4px solid #212d3c;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    animation: spin 2s linear infinite;
+  }
+
+
+@keyframes spin {
+    100% {transform: rotate(360deg);}
+}
+
+@keyframes spin-reverse {
+    100% {transform: rotate(-360deg);}
 }
 
 /* Kneeboard */

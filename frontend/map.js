@@ -97,6 +97,7 @@ var selectedWaypoint = null;
 var mymap;
 var tileLayer = null;
 var visibility;
+var waypoint_tab_open = false;
 
 if (getCookie('visibility') == null)
 {
@@ -176,7 +177,7 @@ function onMapClick(e)
         flashError(document.getElementById('waypoint-group-div-selected'));
     }
 
-    if (waypoint_type != "..." && waypoint_group != "...")
+    if (waypoint_type != "..." && waypoint_group != "..." && waypoint_tab_open)
     {
         /* If no waypoint is currently selected, add a new waypoint */
         if (selectedWaypoint === null)
@@ -219,7 +220,7 @@ function cleanMap()
 function getLineColor(group_type)
 {
     obj = document.getElementById("waypoint-group");
-    var waypoint_group =  obj.options[obj.selectedIndex].text;
+    var waypoint_group = obj.options[obj.selectedIndex].text;
     if (group_type == waypoint_group)
         return "#537099";
     return "#212d3c";
@@ -484,33 +485,45 @@ function onMapRightClick(e)
 /* Marker click callback */
 function markerClickWaypoint(waypoint)
 {
-    selectedWaypoint = waypoint
-    document.getElementById("waypoint-name").value = selectedWaypoint.name;
-    document.getElementById("waypoint-altitude").value = selectedWaypoint.altitude;
-    document.getElementById("waypoint-type").value = selectedWaypoint.type;
-    document.getElementById("waypoint-type-div-selected").innerHTML = selectedWaypoint.type;
-    document.getElementById("waypoint-group").value = selectedWaypoint.group;
-    document.getElementById("waypoint-group-div-selected").innerHTML = selectedWaypoint.group;
-    document.getElementById("waypoint-baro-radio").checked = selectedWaypoint.baroRadio;
+    document.getElementById("radio-group").value = waypoint.group;
+    document.getElementById("radio-group-div-selected").innerHTML = waypoint.group;
 
-    cleanMap();
-    drawMap();
+    if (waypoint_tab_open)
+    {
+        selectedWaypoint = waypoint
+        document.getElementById("waypoint-name").value = selectedWaypoint.name;
+        document.getElementById("waypoint-altitude").value = selectedWaypoint.altitude;
+        document.getElementById("waypoint-type").value = selectedWaypoint.type;
+        document.getElementById("waypoint-type-div-selected").innerHTML = selectedWaypoint.type;
+        document.getElementById("waypoint-group").value = selectedWaypoint.group;
+        document.getElementById("waypoint-group-div-selected").innerHTML = selectedWaypoint.group;
+        document.getElementById("waypoint-baro-radio").checked = selectedWaypoint.baroRadio;
+
+        cleanMap();
+        drawMap();
+    }
 }
 
 function markerClickGroup(group)
 {
-    selectedGroup = group
-    /* Select the waypoint and update the inputs with its properties */
-    document.getElementById("waypoint-name").value = "";
-    document.getElementById("waypoint-altitude").value = 0;
-    document.getElementById("waypoint-type").value = "anchor";
-    document.getElementById("waypoint-type-div-selected").innerHTML = "anchor";
-    document.getElementById("waypoint-group").value = selectedGroup.name;
-    document.getElementById("waypoint-group-div-selected").innerHTML = selectedGroup.name;
-    document.getElementById("waypoint-baro-radio").checked = false;
+    document.getElementById("radio-group").value = group.name;
+    document.getElementById("radio-group-div-selected").innerHTML = group.name;
 
-    cleanMap();
-    drawMap();
+    if (waypoint_tab_open)
+    {
+        selectedGroup = group
+        /* Select the waypoint and update the inputs with its properties */
+        document.getElementById("waypoint-name").value = "";
+        document.getElementById("waypoint-altitude").value = 0;
+        document.getElementById("waypoint-type").value = "anchor";
+        document.getElementById("waypoint-type-div-selected").innerHTML = "anchor";
+        document.getElementById("waypoint-group").value = selectedGroup.name;
+        document.getElementById("waypoint-group-div-selected").innerHTML = selectedGroup.name;
+        document.getElementById("waypoint-baro-radio").checked = false;
+
+        cleanMap();
+        drawMap();
+    }
 }
 
 function mapUndo()
