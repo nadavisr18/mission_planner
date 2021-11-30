@@ -183,16 +183,16 @@ function onMapClick(e)
         /* If no waypoint is currently selected, add a new waypoint */
         if (selectedWaypoint === null)
         {
-            var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
-            var waypoint = new Waypoint(attributes);
-            waypoints.push(waypoint);
-
-            autoIncreaseWaypoint();
+            //var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
+            //var waypoint = new Waypoint(attributes);
+            //waypoints.push(waypoint);
+//
+            //autoIncreaseWaypoint();
         }
         /* If a waypoint is selected, update its properties */
         else 
         {
-            if (e.originalEvent.ctrlKey) {
+            if (!e.originalEvent.ctrlKey) {
                 var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
                 var waypoint = new Waypoint(attributes);
                 index = waypoints.findIndex(element => element == selectedWaypoint);
