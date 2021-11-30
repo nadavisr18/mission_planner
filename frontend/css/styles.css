@@ -293,12 +293,12 @@ input[type=number] {
 }
 
 .icon-background-selected {
-    background-color: #212d3c;
+    background-color: #EEEEEE;
     border-radius: 50%;
     padding: 3px 3px 3px 3px;
     height: 24px;
     width: 24px;
-    border: 1px solid #EEEEEE;
+    border: 1px solid #212d3c;
 }
 
 .spinner-in {

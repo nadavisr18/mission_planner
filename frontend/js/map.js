@@ -98,6 +98,7 @@ var mymap;
 var tileLayer = null;
 var visibility;
 var waypoint_tab_open = false;
+var radios_tab_open = false;
 
 if (getCookie('visibility') == null)
 {
@@ -191,12 +192,22 @@ function onMapClick(e)
         /* If a waypoint is selected, update its properties */
         else 
         {
-            selectedWaypoint.latlng = e.latlng;
-            selectedWaypoint.type = waypoint_type;
-            selectedWaypoint.group = waypoint_group;
-            selectedWaypoint.name = waypoint_name;
-            selectedWaypoint.altitude = waypoint_altitude;
-            selectedWaypoint.baroRadio = waypoint_baroRadio;
+            if (e.originalEvent.ctrlKey) {
+                var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
+                var waypoint = new Waypoint(attributes);
+                index = waypoints.findIndex(element => element == selectedWaypoint);
+                waypoints.splice(index+1, 0, waypoint);
+                selectedWaypoint = waypoint;
+            }
+            else
+            {
+                selectedWaypoint.latlng = e.latlng;
+                selectedWaypoint.type = waypoint_type;
+                selectedWaypoint.group = waypoint_group;
+                selectedWaypoint.name = waypoint_name;
+                selectedWaypoint.altitude = waypoint_altitude;
+                selectedWaypoint.baroRadio = waypoint_baroRadio;
+            }
         }
 
         applyMapChanges();
@@ -222,8 +233,15 @@ function getLineColor(group_type)
     obj = document.getElementById("waypoint-group");
     var waypoint_group = obj.options[obj.selectedIndex].text;
     if (group_type == waypoint_group)
-        return "#537099";
-    return "#212d3c";
+        return "#212d3c";
+    else {
+        var color = getGroupByName(group_type).coalition;
+        if (!getGroupByName(group_type).client){
+            if (color == "red") color = "#ba6c57";
+            else color = "#576cba";
+        }
+    }
+    return color;
 }
 
 function truncateToLen(string, length)
@@ -272,6 +290,19 @@ function updateGroupVisibility()
         }
     }
     applyMapChanges();
+}
+
+function setGroupsVisibility(visibility)
+{
+    for (var i = 0; i < groups.length; i++)
+    {
+        if (groups[i].client)
+        {
+            var input = document.getElementById("select-flight-"+(groups[i].name));
+            input.checked = visibility;
+        }
+    }
+    updateGroupVisibility();
 }
 
 function getGroupByName(groupName)
@@ -397,6 +428,12 @@ function drawMap()
             {
                 html = html.replace('$icon$', iconHtmls[waypoints[i].type]);
             }
+            var color = getGroupByName(waypoints[i].group).coalition;
+            if (!getGroupByName(waypoints[i].group).client){
+                if (color == "red") color = "#ba6c57";
+                else color = "#576cba";
+            }
+            html = html.replaceAll('$color$', color);
             html = html.replace('$icon$', iconHtmls['route']);
             html = html.replace('$waypoint-name$', truncateToLen(waypoints[i].name, 12));
             
@@ -485,9 +522,16 @@ function onMapRightClick(e)
 /* Marker click callback */
 function markerClickWaypoint(waypoint)
 {
-    document.getElementById("radio-group").value = waypoint.group;
-    document.getElementById("radio-group-div-selected").innerHTML = waypoint.group;
+    if (radios_tab_open)
+    {
+        document.getElementById("radio-group").value = waypoint.group;
+        document.getElementById("radio-group-div-selected").innerHTML = waypoint.group;
+    }
 
+    if (!waypoint_tab_open)
+    {
+        expandSection("waypoints-section");
+    }
     if (waypoint_tab_open)
     {
         selectedWaypoint = waypoint
@@ -506,8 +550,11 @@ function markerClickWaypoint(waypoint)
 
 function markerClickGroup(group)
 {
-    document.getElementById("radio-group").value = group.name;
-    document.getElementById("radio-group-div-selected").innerHTML = group.name;
+    if (radios_tab_open)
+    {
+        document.getElementById("radio-group").value = group.name;
+        document.getElementById("radio-group-div-selected").innerHTML = group.name;
+    }
 
     if (waypoint_tab_open)
     {
@@ -615,7 +662,7 @@ function autoIncreaseWaypoint()
 
 function mapClear()
 {
-    waypoints = [];
+    waypoints = waypoints.filter(waypoint => !getGroupByName(waypoint.group).client)
     applyMapChanges();
 }
 
@@ -682,7 +729,7 @@ function deleteWaypoint()
 }
 
 document.onkeydown = function(event) {
-    if( event.key == 'Delete' ){
+    if(event.key == 'Delete'){
         deleteWaypoint();
     }
 }

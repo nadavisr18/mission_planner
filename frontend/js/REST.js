@@ -70,7 +70,7 @@ function successMissionFile(data, textStatus, jqXHR)
     document.getElementById("mission-file-label").innerHTML = "Upload mission file";
     deactivateInputs("mission-upload-input");
     activateInputs('waypoint-input');
-    groupNames.push("Everyone");
+    groupNames.unshift("Everyone");
     setupSelection(document.getElementById("radio-group"), groupNames);
     setupSelection(document.getElementById("kneeboard-group"), aircraftNames);
     setupSelection(document.getElementById("waypoint-group"), groupNames);
