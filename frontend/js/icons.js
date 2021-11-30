@@ -4,7 +4,11 @@ const iconhtml = `<table><tr><td class="icon-text">$waypoint-type$<td></tr>
 
 const grouphtml = `<table><tr><td class="icon-text">$waypoint-type$<td></tr>
                   <tr><td class="spawn-symbol">$icon$<td></tr>
-                  <tr><td class="icon-text">$aircraft$<td></tr></table>`;
+                  <tr><td class="icon-text">$aircraft$<td></tr></table></div>`;
+
+const groupSelectedHtml = `<table><tr><td class="icon-text">$waypoint-type$<td></tr>
+                  <tr><td class="spawn-symbol">$icon$<td></tr>
+                  <tr><td class="icon-text">$aircraft$<td></tr></table><div class="spinner-group"></div>`;
 
 const iconHtmls = {
     "none":             '<div class="icon-background icon-symbol"><i class="fas fa-play"                style="padding-left: 4px; padding-top: 2px; font-size: 20px; color: $color$;"></i><div>',

@@ -317,13 +317,24 @@ input[type=number] {
     animation: spin 2s linear infinite;
   }
 
+  .spinner-group {
+    content: " ";
+    position: absolute;
+    z-index: -1;
+    margin-left: 17px;
+    margin-top: -106px;
+    height: 54px;
+    width: 54px;
+    border-radius: 50%;
+    border-top: 4px solid #212d3c;
+    border-bottom: 4px solid #212d3c;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    animation: spin 2s linear infinite;
+  }
 
 @keyframes spin {
     100% {transform: rotate(360deg);}
-}
-
-@keyframes spin-reverse {
-    100% {transform: rotate(-360deg);}
 }
 
 /* Kneeboard */

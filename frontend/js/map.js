@@ -94,6 +94,7 @@ var groups = [];
 var markers = [];
 var lines = [];
 var selectedWaypoint = null;
+var selectedGroup = null;
 var mymap;
 var tileLayer = null;
 var visibility;
@@ -183,21 +184,26 @@ function onMapClick(e)
         /* If no waypoint is currently selected, add a new waypoint */
         if (selectedWaypoint === null)
         {
-            //var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
-            //var waypoint = new Waypoint(attributes);
-            //waypoints.push(waypoint);
-//
-            //autoIncreaseWaypoint();
+            if (selectedGroup !== null && findWaypointsByGroup(selectedGroup).length == 0) 
+            {
+                var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
+                var waypoint = new Waypoint(attributes);
+                waypoints.push(waypoint);
+                selectedWaypoint = waypoint;
+                autoIncreaseWaypoint();
+            } 
         }
         /* If a waypoint is selected, update its properties */
         else 
         {
-            if (!e.originalEvent.ctrlKey) {
+            if (!e.originalEvent.ctrlKey) 
+            {
                 var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
                 var waypoint = new Waypoint(attributes);
                 index = waypoints.findIndex(element => element == selectedWaypoint);
                 waypoints.splice(index+1, 0, waypoint);
                 selectedWaypoint = waypoint;
+                autoIncreaseWaypoint();
             }
             else
             {
@@ -315,6 +321,20 @@ function getGroupByName(groupName)
     return null
 }
 
+function findWaypointsByGroup(group)
+{
+    var foundWaypoints = [];
+    for (let i = 0; i < waypoints.length; i++)
+    {
+        if (waypoints[i].group === group.name || waypoints[i].group === "Everyone")
+        {
+            foundWaypoints.push(waypoints[i]);
+        }
+    }
+    
+    return foundWaypoints;
+}
+
 /* Draws the map adding markers, lines and polygons */
 function drawMap()
 {
@@ -326,6 +346,10 @@ function drawMap()
         flyable = false;
         /* Draw the marker and add the selected/unselected icon */
         var html = grouphtml;
+        if (selectedGroup !== null && groups[i].name == selectedGroup.name && findWaypointsByGroup(groups[i]).length == 0)
+        {
+            html = groupSelectedHtml;
+        }
 
         for (var key in isoCountries)
         {
@@ -515,6 +539,7 @@ function onMapRightClick(e)
 {
     /* Unselect the selected waypoint */
     selectedWaypoint = null;
+    selectedGroup = null;
     cleanMap();
     drawMap();
 }
@@ -522,8 +547,10 @@ function onMapRightClick(e)
 /* Marker click callback */
 function markerClickWaypoint(waypoint)
 {
+    
     if (radios_tab_open)
     {
+        selectedGroup = getGroupByName(waypoint.group)
         document.getElementById("radio-group").value = waypoint.group;
         document.getElementById("radio-group-div-selected").innerHTML = waypoint.group;
     }
@@ -534,7 +561,8 @@ function markerClickWaypoint(waypoint)
     }
     if (waypoint_tab_open)
     {
-        selectedWaypoint = waypoint
+        selectedWaypoint = waypoint;
+        selectedGroup = getGroupByName(waypoint.group)
         document.getElementById("waypoint-name").value = selectedWaypoint.name;
         document.getElementById("waypoint-altitude").value = selectedWaypoint.altitude;
         document.getElementById("waypoint-type").value = selectedWaypoint.type;
@@ -579,6 +607,7 @@ function mapUndo()
     { 
         /* Unselect the selected waypoint */
         selectedWaypoint = null;
+        selectedGroup = null;
         activeWaypointHistory--;
         waypoints = [...waypointsHistory[activeWaypointHistory]];
         cleanMap();
@@ -592,6 +621,7 @@ function mapRedo()
     { 
         /* Unselect the selected waypoint */
         selectedWaypoint = null;
+        selectedGroup = null;
         activeWaypointHistory++;
         waypoints = [...waypointsHistory[activeWaypointHistory]];
         cleanMap();
