@@ -1,8 +1,13 @@
+import backend.theatres as theatres
+from backend.theatres.transverse_mercator import TransverseMercator
+
+from pyproj import CRS, Transformer
+from threading import Thread
 from functools import lru_cache
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from slpp import slpp as lua
-import re
 import zipfile
+import re
 import keras
 
 
@@ -11,10 +16,25 @@ class MissionEditor:
         print(path)
         self.path = path
         self.buffer_dict = self._get_buffer()
+
+        mission_p = Thread(target=self._get_data, args=('mission', path))
+        mission_p.start()
+        dictionary_p = Thread(target=self._get_data, args=('l10n/DEFAULT/dictionary', path))
+        dictionary_p.start()
+
+        mission_p.join()
+        dictionary_p.join()
+
         self.mission = self._get_data('mission', path)
         self.dictionary = self._get_data('l10n/DEFAULT/dictionary', path)
-        self.ll2xy_model, self.xy2ll_model = self.get_models()
-        self.map_center = {'lat': 35.021298, 'lon': 35.899957}
+
+        projection_parameters = self.get_params(self.mission['theatre'])
+        self.ll2xy = Transformer.from_crs(
+            CRS("WGS84"), projection_parameters.to_crs()
+        )
+        self.xy2ll = Transformer.from_crs(
+            projection_parameters.to_crs(), CRS("WGS84")
+        )
 
     def _get_buffer(self) -> dict:
         with zipfile.ZipFile(self.path, mode='r') as archive:
@@ -26,7 +46,7 @@ class MissionEditor:
     def _save_lua_data(self, data: dict):
         save_data = {}
         for data_file in data:
-            raw_data = data_file.split("/")[-1] + " =" + lua.encode(data[data_file])
+            raw_data = data_file.split("/")[-1] + " =\n" + lua.encode(data[data_file])
             save_data.update({data_file: raw_data})
         with zipfile.ZipFile(self.path, mode='w', compression=zipfile.ZIP_DEFLATED) as archive_w:
             for filename, buffer in self.buffer_dict.items():
@@ -53,8 +73,19 @@ class MissionEditor:
         self.buffer_dict = self._get_buffer()
 
     @staticmethod
+    def get_params(theatre: str) -> TransverseMercator:
+        if theatre == "Syria":
+            return theatres.SYRIA_PARAMS
+        if theatre == "Nevada":
+            return theatres.NEVADA_PARAMS
+        if theatre == "Caucasus":
+            return theatres.CAUCASUS_PARAMS
+        if theatre == "PersianGulf":
+            return theatres.PERSIAN_GULF_PARAMS
+
+    @staticmethod
     @lru_cache()
-    def _get_data(local_path: str, path: str) -> dict:
+    def _get_data(local_path: str, path: str):
         with zipfile.ZipFile(path, mode='r') as archive:
             with archive.open(local_path) as msnfile:
                 raw_data = msnfile.read().decode('utf-8')

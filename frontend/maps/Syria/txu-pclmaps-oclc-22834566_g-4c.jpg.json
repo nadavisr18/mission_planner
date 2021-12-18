@@ -1,0 +1,10 @@
+{
+	"top_left": [36, 39, 828, 388],
+	"top_right": [36, 46, 8732, 337],
+	"bottom_right": [32, 46, 8914, 5923],
+	"bottom_left": [32, 39, 626, 5964],
+	"standard_parallel_1": 33.333333,
+	"standard_parallel_2": 38.666666,
+	"reference_latitude": 36,
+	"reference_longitude": 39
+}

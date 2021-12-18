@@ -54,6 +54,7 @@ function setupPage(){
     deactivateInputs('waypoint-input');
     deactivateInputs('kneeboard-input');
     deactivateInputs('mission-download-input');
+    deactivateInputs('weather-input');
 
     /* Create and setup the radios */
     setupRadio(1);
@@ -65,7 +66,7 @@ function setupPage(){
     collapseSection("radios-section");
     collapseSection("weather-section");
     collapseSection("kneeboard-section");
-
+    collapseSection("select-section");
 }
 
 /* Resize the table to vertically fill the page */
@@ -165,6 +166,9 @@ function flashSuccess(el)
 
 function expandSection(section)
 {
+    if (section == "waypoints-section") waypoint_tab_open = true;
+    if (section == "radios-section") radios_tab_open = true;
+
     var els = document.getElementsByClassName(section)
     for (i = 0; i < els.length; i++) 
     {
@@ -181,8 +185,24 @@ function expandSection(section)
 
 function collapseSection(section)
 {
+    if (section == "waypoints-section") 
+    {
+        waypoint_tab_open = false;
+        selectedWaypoint = null;
+        document.getElementById("waypoint-group").value = "...";
+        document.getElementById("waypoint-group-div-selected").innerHTML = "...";
+        applyMapChanges();
+    }
+
+    if (section == "radios-section") 
+    {
+        radios_tab_open = false;
+        document.getElementById("radio-group").value = "...";
+        document.getElementById("radio-group-div-selected").innerHTML = "...";
+    }
+
     var els = document.getElementsByClassName(section)
-    for (i = 0; i < els.length; i++) 
+    for (var i = 0; i < els.length; i++) 
     {
         els[i].style.display = 'none';
         var x = els[i].getElementsByClassName("error");

@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Mission planner</title>
-        <link rel="icon" href="patch.png">
+        <title>Mission Planner</title>
+        <link rel="icon" href="img\patch.png">
         <!------------------- CSS --------------------->
-        <link rel="stylesheet" href="styles.css">
-        <link rel="stylesheet" href="select.css">
-        <link rel="stylesheet" href="switch.css">
-        <link rel="stylesheet" href="modifier.css">
+        <link rel="stylesheet" href="css\styles.css">
+        <link rel="stylesheet" href="css\tab.css">
+        <link rel="stylesheet" href="css\select.css">
+        <link rel="stylesheet" href="css\switch.css">
+        <link rel="stylesheet" href="css\modifier.css">
         <!------------------- Leaflet --------------------->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
         <!------------------- Font Awesome --------------------->
         <script src="https://kit.fontawesome.com/3899ccc5e3.js" crossorigin="anonymous"></script>
         <!------------------- Javascript --------------------->
-        <script src="jquery.js" type="text/javascript"></script>
-        <script src="config.js" type="text/javascript"></script>
-        <script src="countries.js" type="text/javascript"></script>
-        <script src="icons.js" type="text/javascript"></script>
-        <script src="map.js" type="text/javascript"></script>
-        <script src="radio.js" type="text/javascript"></script>
-        <script src="kneeboard.js" type="text/javascript"></script>
-        <script src="switch.js" type="text/javascript"></script>
-        <script src="select.js" type="text/javascript"></script>
-        <script src="REST.js" type="text/javascript"></script>
-        <script src="index.js" type="text/javascript"></script>
-        
+        <script src="js\jquery.js" type="text/javascript"></script>
+        <script src="js\config.js" type="text/javascript"></script>
+        <script src="js\countries.js" type="text/javascript"></script>
+        <script src="js\icons.js" type="text/javascript"></script>
+        <script src="js\map.js" type="text/javascript"></script>
+        <script src="js\radio.js" type="text/javascript"></script>
+        <script src="js\kneeboard.js" type="text/javascript"></script>
+        <script src="js\switch.js" type="text/javascript"></script>
+        <script src="js\select.js" type="text/javascript"></script>
+        <script src="js\REST.js" type="text/javascript"></script>
+        <script src="js\index.js" type="text/javascript"></script>        
     </head>
     <body>
         <!-- Root table -->
@@ -45,14 +45,13 @@
                             <td>
                                 <table>
                                     <tr>
-                                        <td><a href="https://discord.gg/q38YbxsDav" target="_blank" ><img src="banner.png" id="banner"></a></td>
+                                        <td><a href="https://discord.gg/q38YbxsDav" target="_blank" ><img src="img\banner.png" id="banner"></a></td>
                                     </tr>
                                 </table>
                             </td>
-                        </tr>
 
                          <!------------------- Map section --------------------->
-                         <tr class="section-title-tr">
+                        <tr class="section-title-tr">
                              <td>
                              <table>
                                  <tr class="section-title-td section-title">
@@ -92,7 +91,7 @@
                                             <label for="mission-file" id="mission-file-label" class="button mission-upload-input" style="width: 100%;">
                                                 Upload mission file
                                             </label>
-                                            <input type="file" id="mission-file" class="mission-upload-input" oninput="uploadMissionFile()" hidden>
+                                            <input type="file" id="mission-file" accept=".miz" class="mission-upload-input" oninput="uploadMissionFile()" hidden>
                                         </td>
                                         <td>
                                             <label id="mission-file-download-label" class="button mission-download-input" onclick="processMissionFile()" style="width: 100%;">
@@ -171,7 +170,47 @@
                                                     <td><span class="button waypoint-input" style="width: 100%;" onClick="applyWaypointChange()">Apply</span></td>
                                                     <td><span class="button waypoint-input" style="width: 100%;" onClick="deleteWaypoint()">Delete</span></td>
                                                 </tr>
+                                                <tr>
+                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="exportCSV()">Export CSV</span></td>
+                                                </tr>
                                             </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!------------------- Flights section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td >Flights</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='select-section-arrow' onclick="collapseSection('select-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="section-content-td">
+                            <td class="section-content-td select-section section">
+                                <!-- Selection table -->
+                                <table class="content-table">
+                                    <tr class="content-tr">
+                                        <td class="content-td">
+                                            <div>
+                                                <table id='flight-select-fieldset' class="selection-label">
+                                                    <tr>
+                                                        <td>
+                                                            <table>
+                                                                <tr>
+                                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="setGroupsVisibility(true)">Select all</span></td>
+                                                                    <td><span class="button waypoint-input" style="width: 100%;" onClick="setGroupsVisibility(false)">Deselect all</span></td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
                                         </td>
                                     </tr>
                                 </table>
@@ -261,7 +300,56 @@
                                 </table>
                             </td>
                         </tr>
-
+                        <tr class="section-content-td">
+                            <td class="section-content-td radios-section">
+                                <table>
+                                    <tr>
+                                        <td><span class="button waypoint-input" style="width: 100%;" onClick="requestRadioChange()">Apply</span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <!------------------- Kneeboard section --------------------->
+                        <tr class="section-title-tr">
+                            <td>
+                                <table>
+                                    <tr class="section-title-td section-title">
+                                    <td>Kneeboard</td> 
+                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='kneeboard-section-arrow' onclick="collapseSection('kneeboard-section')"></i></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="section-content-td">
+                            <td class="section-content-td kneeboard-section section">
+                                <!-- Kneeboard files select -->
+                                <table id="kneeboard-table" style="padding:5px;">
+                                    <!-- Radio group -->
+                                    <tr class="kneeboard-not-row">
+                                        <td colspan="2">
+                                            <table>
+                                                <tr class="content-tr">
+                                                    <td class="content-td"><div class="selection-label">Aircraft</div></td>
+                                                    <td>
+                                                        <div class="selection-div waypoint-input" id="kneeboard-group-div">
+                                                        <select class="selection" id="kneeboard-group"></select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr class="section-content-td kneeboard-not-row">
+                                        <td class="section-content-td" colspan="2">
+                                            <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
+                                                Upload kneeboard files
+                                            </label>
+                                            <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" accept="image/png, image/jpeg" hidden multiple>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
                         <!------------------- Weather section --------------------->
                         <tr class="section-title-tr">
                             <td>
@@ -293,54 +381,12 @@
                                         <td>
                                             <table>
                                                 <tr>
-                                                    <td><span class="button wwather-input" style="width: 100%;" onClick="applyWeatherChange()">Apply</span></td>
+                                                    <td><span class="button weather-input" style="width: 100%;" onClick="applyWeatherChange()">Apply</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><span class="button wwather-input" style="width: 100%;" onClick="randomizeWeather()">Randomize</span></td>
+                                                    <td><span class="button weather-input" style="width: 100%;" onClick="randomizeWeather()">Randomize</span></td>
                                                 </tr>
                                             </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-
-                        <!------------------- Kneeboard section --------------------->
-                        <tr class="section-title-tr">
-                            <td>
-                                <table>
-                                    <tr class="section-title-td section-title">
-                                    <td>Kneeboard</td> 
-                                    <td><i class="fas fa-arrow-circle-up right-align section-arrow" id='kneeboard-section-arrow' onclick="collapseSection('kneeboard-section')"></i></td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr class="section-content-td">
-                            <td class="section-content-td kneeboard-section section">
-                                <!-- Kneeboard files select -->
-                                <table id="kneeboard-table" style="padding:5px;">
-                                    <!-- Radio group -->
-                                    <tr class="kneeboard-not-row">
-                                        <td colspan="2">
-                                            <table>
-                                                <tr class="content-tr">
-                                                    <td class="content-td"><div class="selection-label">Group</div></td>
-                                                    <td>
-                                                        <div class="selection-div waypoint-input" id="kneeboard-group-div">
-                                                        <select class="selection" id="kneeboard-group"></select>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr class="section-content-td kneeboard-not-row">
-                                        <td class="section-content-td" colspan="2">
-                                            <label for="kneeboard-files" id="kneeboard-files-label" class="button kneeboard-input" style="width: 100%;">
-                                                Upload kneeboard files
-                                            </label>
-                                            <input type="file" id="kneeboard-files" oninput="processKneeboardFiles()" accept="image/png, image/jpeg" hidden multiple>
                                         </td>
                                     </tr>
                                 </table>
@@ -358,13 +404,13 @@
                             <td class="toolbar-td"><span class="button toolbar-button" onclick="mapRedo()" title="Redo"><i class="fas fa-redo"></i></span></td>
                             <td class="toolbar-td"><span class="button toolbar-button" onclick="mapClear()" title="Clear all"><i class="fas fa-eraser"></i></span></td>
                             <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-user" onclick="toggleVisibility('user')" title="Toggle client aircraft visibility"><i class="fas fa-plane"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-non-user" onclick="toggleVisibility('non-user')" title="Toggle non-client aircraft visibility"><i class="fas fa-plane-slash"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-SAM" onclick="toggleVisibility('SAM')" title="Toggle SAM threat circle visibility"><i class="fas fa-exclamation-triangle"></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-static" onclick="toggleVisibility('static')" title="Toggle static objects visibility"><i class="fas fa-warehouse" ></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-vehicle" onclick="toggleVisibility('vehicle')" title="Toggle vehicles visibility"><i class="fas fa-truck-pickup" ></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-ship" onclick="toggleVisibility('ship')" title="Toggle ships visibility"><i class="fas fa-ship" ></i></span></td>
-                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-flag" onclick="toggleVisibility('flag')" title="Toggle flags visibility"><i class="fas fa-flag"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-user" onclick="toggleVisibility('user')" title="Toggle client aircraft"><i class="fas fa-user"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-non-user" onclick="toggleVisibility('non-user')" title="Toggle non-client aircraft"><i class="fas fa-desktop"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-SAM" onclick="toggleVisibility('SAM')" title="Toggle SAM threat circle"><i class="fas fa-exclamation-triangle"></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-static" onclick="toggleVisibility('static')" title="Toggle static objects"><i class="fas fa-warehouse" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-vehicle" onclick="toggleVisibility('vehicle')" title="Toggle vehicles"><i class="fas fa-truck-pickup" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-ship" onclick="toggleVisibility('ship')" title="Toggle ships"><i class="fas fa-ship" ></i></span></td>
+                            <td class="toolbar-td"><span class="button toolbar-button selected" id="visibility-flag" onclick="toggleVisibility('flag')" title="Toggle flags"><i class="fas fa-flag"></i></span></td>
                             <td class="toolbar-td"> <div class="toolbar-spacer"></div></td>
                             <td class="horizontal-fill"></td>
                         </tr>
@@ -375,7 +421,7 @@
                 <!------------------- Leaflet map --------------------->
                 <td id="root-table-right">
                     <div id="mapid">
-                        <div id='wind-map-box'><img id="wind-direction" class="wind-direction" src="arrow.png" height="100px"></div>
+                        <div id='wind-map-box'><img id="wind-direction" class="wind-direction" src="img\arrow.png" height="100px"></div>
                         <div id='weather-map-box'><img id="weather-logo" class="weather-logo" src="http:\\//cdn.weatherapi.com/weather/64x64/day/113.png" height="100px"></div>
                     </div>
                 </td>

@@ -1,14 +1,15 @@
 from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor, WeatherEditor
-from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets, Group
+from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets, Group, WeatherOutput
 from backend.utils import *
 
 from typing import Union, List, Tuple
 from fastapi import FastAPI, HTTPException
 import cProfile
 import uvicorn
-import json
-import os
 import base64
+import json
+import yaml
+import os
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -47,6 +48,14 @@ def new_mission(mission: Mission) -> List[Group]:
     path = f"backend\\temp_files\\missions\\{mission.session_id}.miz"
     with open(path, 'wb') as file:
         file.write(base64.decodebytes(mission.data))
+
+    while len(os.listdir("backend\\temp_files\\missions")) > 50:
+        list_of_files = os.listdir('backend\\temp_files\\missions')
+        full_path = ["backend\\temp_files\\missions\\{0}".format(x) for x in list_of_files]
+
+        oldest_file = min(full_path, key=os.path.getctime)
+        os.remove(oldest_file)
+
     # save metadata about the mission
     data = get_dictionary()
     with open(f"backend\\temp_files\\dictionary.json", 'w') as file:
@@ -56,11 +65,8 @@ def new_mission(mission: Mission) -> List[Group]:
         json.dump(data, file)
     mp = MissionParser(path)
     groups_info, theatre = mp.get_mission_info()
-    if theatre != "Syria":
+    if theatre not in ("Syria", "PersianGulf", "Nevada", "Caucasus"):
         raise HTTPException(status_code=400, detail="Theatre Not Allowed")
-    # for group in groups_info:
-    #     if group.group_type == 'plane':
-    #         print(group)
     global PROGRESS
     PROGRESS = 0
     return groups_info
@@ -149,7 +155,7 @@ def process_mission(session_id: str):
 @app.post("/radios/{session_id}", responses={404: {"description": "Session Not Found"}})
 def set_radio_presets(presets: RadioPresets, session_id: str):
     """
-    A route to set radio presets in the mission, per aircraft type.
+    A route to set radio presets in the mission, per aircraft group.
     """
     data = get_dictionary()
     if session_id in data.keys():
@@ -188,8 +194,16 @@ def delete_kneeboard_page(page_data: KneeboardPage, session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
 
+@app.get('/current_weather/{session_id}')
+def get_weather(session_id: str) -> WeatherOutput:
+    path = f"backend\\temp_files\\missions\\{session_id}.miz"
+    we = WeatherEditor(path)
+    weather_data = we.get_mission_weather()
+    return weather_data
+
+
 @app.post('/weather/{session_id}', responses={404: {"description": "Session Not Found"}, 400: {"description": "City Not Found"}})
-def change_weather(weather_data: WeatherData):
+def change_weather(weather_data: WeatherData) -> WeatherOutput:
     """
     change the weather in the mission, based on real time data.
     """
@@ -197,12 +211,13 @@ def change_weather(weather_data: WeatherData):
     if weather_data.session_id in data.keys():
         path = f"backend\\temp_files\\missions\\{weather_data.session_id}.miz"
         we = WeatherEditor(path)
-        for i in range(100):
+        for i in range(10):
             try:
                 weather_data.city = get_random_city()[0] if weather_data.city.lower() == "random" else weather_data.city
-                condition, wind_dir, wind_speed, icon = we.change_weather(weather_data.city, weather_data.time)
-                return {"condition": condition, "wind_dir": wind_dir,
-                        "wind_speed": wind_speed, "city": weather_data.city, "icon": icon}
+                weather_output = we.change_weather(weather_data.city, weather_data.time)
+                weather_output.icon = we.daytime_icon(weather_data.time, weather_output.icon)
+
+                return weather_output
             except BaseException as e:
                 weather_data.city = 'random'
         else:

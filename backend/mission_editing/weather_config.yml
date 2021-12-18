@@ -109,3 +109,14 @@ presets:
     - RainyPreset3
   fog:
     - Preset0
+
+icons:
+  "clear": "//cdn.weatherapi.com/weather/64x64/night/113.png"
+  "partly_cloudy": "//cdn.weatherapi.com/weather/64x64/night/116.png"
+  "overcast": "//cdn.weatherapi.com/weather/64x64/day/122.png"
+  "fog": "//cdn.weatherapi.com/weather/64x64/day/143.png"
+  "light_shower": "//cdn.weatherapi.com/weather/64x64/day/317.png"
+  "patchy_rain": "//cdn.weatherapi.com/weather/64x64/day/176.png"
+  "moderate_shower": "//cdn.weatherapi.com/weather/64x64/day/356.png"
+  "cloudy": "//cdn.weatherapi.com/weather/64x64/day/119.png"
+  "patchy_rain_thunder": "//cdn.weatherapi.com/weather/64x64/day/386.png"

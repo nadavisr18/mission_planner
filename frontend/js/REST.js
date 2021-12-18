@@ -29,33 +29,59 @@ function successMissionFile(data, textStatus, jqXHR)
     document.getElementById("bar").style.width = "0%";
 
     var groupNames = [];
+    var aircraftNames = [];
     for (var i = 0; i < data.length; i++)
     {
         group = data[i];
         if ((group.group_type == 'plane' || group.group_type == 'helicopter') && group.client == true)
+        {
             groupNames.push(group.name);
+            if (!aircraftNames.includes(group.unit_type))
+                aircraftNames.push(group.unit_type)
+        }
         latlng = {lat: group.lat, lng: group.lon}
         var attributes = {latlng: latlng, type: group.group_type, name: group.name, unit: group.unit_type, country: group.country, coalition: group.coalition, range: group.range, client: group.client}
         groups.push(new Group(attributes));
 
         for (var j = 0; j < group.waypoints.length; j++)
         {
-            waypoints.push(new Waypoint({latlng: {lat: group.waypoints[j].lat, lng: group.waypoints[j].lon}, type: 'route', group: group.waypoints[j].group, name: group.waypoints[j].name, altitude: group.waypoints[j].altitude, baroRadio: group.waypoints[j] == 'RADIO', id: group.waypoints[j].wp_id}))
+            waypoints.push(new Waypoint({latlng: {lat: group.waypoints[j].lat, lng: group.waypoints[j].lon}, type: 'route', group: group.waypoints[j].group, name: group.waypoints[j].name, altitude: Math.round(group.waypoints[j].altitude), baroRadio: group.waypoints[j] == 'RADIO', id: group.waypoints[j].wp_id}))
         }
     }
     applyMapChanges();
+
+    var fieldset = document.getElementById("flight-select-fieldset")
+    for (var i = 0; i < groupNames.length; i++)
+    {
+        var row = fieldset.insertRow(0);
+        var cell = row.insertCell(0)
+        var newFieldSet = document.createElement('input');
+        newFieldSet.type = "checkbox";
+        newFieldSet.id = "select-flight-"+groupNames[i]
+        newFieldSet.onclick = updateGroupVisibility
+        newFieldSet.checked = true
+        cell.appendChild(newFieldSet);
+
+        var newlabel = document.createElement('label');
+        newlabel.innerHTML = '<label for="select-flight-'+groupNames[i]+'">'+truncateToLen(groupNames[i], 50)+'</label>';
+        cell.appendChild(newlabel);
+    }
+
     document.getElementById("mission-file-label").innerHTML = "Upload mission file";
     deactivateInputs("mission-upload-input");
     activateInputs('waypoint-input');
-    groupNames.push("Everyone");
+    groupNames.unshift("Everyone");
     setupSelection(document.getElementById("radio-group"), groupNames);
-    setupSelection(document.getElementById("kneeboard-group"), groupNames);
+    setupSelection(document.getElementById("kneeboard-group"), aircraftNames);
     setupSelection(document.getElementById("waypoint-group"), groupNames);
     unstyleSelections();
     styleSelections();
 
     fileUploaded = true;
     activateInputs('mission-download-input');
+    activateInputs('weather-input');
+
+    requestCurrentWeather();
 }
 
 function uploadMissionFile()
@@ -127,16 +153,7 @@ function processMissionFile(){
     }
 }
 
-function requestAircraftList()
-{
-    $.ajax({
-        url: serverAddress+"/mission_details/client_aircraft/"+sessionId,
-        type: 'GET',
-        processData: false,
-        success: readAircraftList,
-        error: RESTerror
-    });
-}
+
 
 function requestProgress()
 {
@@ -188,22 +205,7 @@ function downloadMissionFile()
     });
 }
 
-function readAircraftList(data, textStatus, jqXHR)
-{
-    data = data[0]; // Get the aircraft list
-    document.getElementById("mission-file-label").innerHTML = "Upload mission file";
-    deactivateInputs("mission-upload-input");
-    activateInputs('waypoint-input');
-    data.push("Everyone");
-    setupSelection(document.getElementById("radio-group"), data);
-    setupSelection(document.getElementById("kneeboard-group"), data);
-    setupSelection(document.getElementById("waypoint-group"), data);
-    unstyleSelections();
-    styleSelections();
 
-    fileUploaded = true;
-    activateInputs('mission-download-input');
-}
 
 function readProcessedMission(data, textStatus, jqXHR)
 {
@@ -238,7 +240,7 @@ function uploadKneeboardFiles()
 
         var form = new FormData();
         form.append("data", base64EncodedStr);
-        form.append("group", kneeboard_group);
+        form.append("aircraft", kneeboard_group);
         form.append("name", file.name);
 
         $.ajax({
@@ -262,7 +264,7 @@ function uploadKneeboardFiles()
 function deleteKneeboardFile(group, filename){
     var form = new FormData();
     form.append("data", "");
-    form.append("group", group);
+    form.append("aircraft", group);
     form.append("name", filename);
     document.getElementById("kneeboard-files-label").innerHTML = "Processing file...";
     $.ajax({
@@ -299,17 +301,41 @@ function successDeleteFile(group, name){
 function randomizeWeather()
 {
     document.getElementById("weather-location").value = "Random";
+    var H = Math.floor(Math.random() * 24).toString()
+    if (H.length == 1) H = "0"+H
+    var M = Math.floor(Math.random() * 60).toString()
+    if (M.length == 1) M = "0"+M
+    var template = H + ":" + M 
+    document.getElementById("weather-time").value = template;
     applyWeatherChange();
+}
+
+function requestCurrentWeather()
+{
+    var form = new FormData();
+    form.append("session_id", sessionId);
+
+    $.ajax({
+        url: serverAddress+"/current_weather/"+sessionId,
+        type: 'GET',
+        data: JSON.stringify(Object.fromEntries(form)),
+        processData: false,
+        success: successWeatherChange,
+        error: RESTerror,
+        contentType: 'application/json'
+    });
 }
 
 function applyWeatherChange()
 {
     var obj = document.getElementById("weather-location");
     var location = obj.value;
+    obj = document.getElementById("weather-time")
+    var time = obj.value.replace(":", "")
 
     var form = new FormData();
     form.append("city", location);
-    form.append("time", "0000");
+    form.append("time", time);
     form.append("session_id", sessionId);
 
     $.ajax({
@@ -321,6 +347,67 @@ function applyWeatherChange()
         error: RESTerror,
         contentType: 'application/json'
     });
+}
+
+
+function requestRadioChange()
+{
+    var obj = document.getElementById("radio-group");
+    var group = obj.value;
+
+    var list = [];
+    var radioString = ''
+    for (var i = 0; i <= 1; i++)
+    {
+        var channels = radioVector[i][group];
+        for (var j = 0; j < channels.length; j++)
+        {
+            var radioPreset = new RadioPreset(channels[j]);
+            list.push(radioPreset);
+        }
+    }
+
+    for (var i = 0; i < list.length; i++) {
+        radioString += list[i].getJSON();
+        if (i < list.length - 1) radioString += ', ';
+    }
+    radioString = '['+radioString+']';
+
+    var form = new FormData();
+    form.append("group", group);
+    form.append("radio_presets", radioString);
+
+    var reqString = '{"group": "' + group + '", "channels_presets": ' + radioString + '}';
+
+    $.ajax({
+        url: serverAddress+"/radios/"+sessionId,
+        type: 'POST',
+        data: reqString,
+        processData: false,
+        success: successRadioChange,
+        error: RESTerror,
+        contentType: 'application/json'
+    });
+
+}
+
+function successRadioChange(data)
+{
+    var obj = document.getElementById("radio-group");
+    var group = obj.value;
+
+    for (var i = 0; i <= 1; i++)
+    {
+        var channels = radioVector[i][group];
+        for (var j = 0; j < channels.length; j++)
+        {
+            channels[j].saved = true;
+        }
+    }
+    deactivateRadio(1);
+    activateRadio(1);
+    deactivateRadio(2);
+    activateRadio(2);
 }
 
 function successWeatherChange(data)

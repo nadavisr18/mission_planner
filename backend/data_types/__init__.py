@@ -4,3 +4,4 @@ from .kneeboard_page import KneeboardPage
 from .weather import WeatherData
 from .radio_presets import RadioPresets
 from .group import Group
+from .weather_output import WeatherOutput
