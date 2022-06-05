@@ -8,7 +8,6 @@ from typing import List, Tuple, Dict
 from slpp import slpp as lua
 import zipfile
 import re
-import keras
 
 
 class MissionEditor:
