@@ -94,9 +94,3 @@ class MissionEditor:
                 data = lua.decode(data_dict)
         return data
 
-    @staticmethod
-    @lru_cache()
-    def get_models():
-        ll2xy_model = keras.models.load_model("backend/models/latlon_to_xy.h5")
-        xy2ll_model = keras.models.load_model("backend/models/xy_to_latlon.h5")
-        return ll2xy_model, xy2ll_model
