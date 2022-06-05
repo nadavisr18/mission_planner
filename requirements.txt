@@ -3,7 +3,7 @@ folium==0.12.1
 global_land_mask==1.0.0
 Jinja2==2.11.3
 numpy==1.19.5
-pydantic==1.8.1
+pydantic==1.6.2
 pyproj==3.0.1
 PyYAML==6.0
 requests==2.25.1
