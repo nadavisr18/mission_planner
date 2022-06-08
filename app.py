@@ -45,11 +45,14 @@ def new_mission(mission: Mission) -> List[Group]:
         "session id": {current user session id}\n
     """
     # create mission file to later manipulate
+    if not os.path.isdir("backend\\temp_files\\missions"):
+        os.mkdir("backend\\temp_files\\missions")
+
     path = f"backend\\temp_files\\missions\\{mission.session_id}.miz"
     with open(path, 'wb') as file:
         file.write(base64.decodebytes(mission.data))
 
-    while len(os.listdir("backend\\temp_files\\missions")) > 50:
+    while len(os.listdir("backend\\temp_files\\missions")) > 15:
         list_of_files = os.listdir('backend\\temp_files\\missions')
         full_path = ["backend\\temp_files\\missions\\{0}".format(x) for x in list_of_files]
 
