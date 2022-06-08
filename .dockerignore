@@ -1,0 +1,6 @@
+venv/
+test.json
+.idea/
+*.miz
+*.pyc
+backend/temp_files/dictionary.json
