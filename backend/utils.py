@@ -4,9 +4,14 @@ from backend.data_types import WayPoint
 from typing import List
 import numpy as np
 import json
+import os
 
 
 def get_dictionary():
+    if not os.path.isfile("backend\\temp_files\\dictionary.json"):
+        with open("backend\\temp_files\\dictionary.json", 'w') as file:
+            file.write("{}")
+
     with open(f"backend\\temp_files\\dictionary.json", 'r') as file:
         data = json.load(file)
     return data
