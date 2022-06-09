@@ -9,6 +9,6 @@
 # -------------------FRONTEND-------------------
 # -------------------V1-------------------
 # TODO: add icons for: P-47, MiG-27K
-# TODO: slow down progress requests
+# TODO: hide randomly generated (hash) static unit names
 # -------------------V2-------------------
 # TODO: create a tab for package management
