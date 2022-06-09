@@ -1,11 +1,11 @@
-from .edit_mission import MissionEditor
-from backend.data_types import WeatherOutput
-
 from datetime import datetime
-from typing import Tuple
+
 import numpy as np
 import requests
 import yaml
+
+from backend.data_types import WeatherOutput
+from .edit_mission import MissionEditor
 
 
 class WeatherEditor(MissionEditor):

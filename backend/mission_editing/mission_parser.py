@@ -1,18 +1,19 @@
-from .edit_mission import MissionEditor
-from backend.data_types import Group, WayPoint
-
-from typing import List, Tuple, Dict, Any
-from global_land_mask import globe
-import numpy as np
-import yaml
-import uuid
 import os
 import re
+import uuid
+from typing import List, Tuple, Dict, Any
+
+import numpy as np
+import yaml
+from global_land_mask import globe
+
+from backend.data_types import Group, WayPoint
+from .edit_mission import MissionEditor
 
 
 class MissionParser(MissionEditor):
     def __init__(self, path: str):
-        with open("backend/interface/config.yml") as file:
+        with open("backend/config.yml") as file:
             self.config = yaml.load(file, Loader=yaml.FullLoader)
         super().__init__(path)
 

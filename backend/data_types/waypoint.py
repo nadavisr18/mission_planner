@@ -1,7 +1,6 @@
-from dataclasses import dataclass
-from pydantic import BaseModel
 from enum import Enum
-from .aircraft_types import PlanesEnum
+
+from pydantic import BaseModel
 
 
 class AltTypeEnum(str, Enum):

@@ -1,6 +1,5 @@
 from backend.data_types import RadioPresets
 from .edit_mission import MissionEditor
-from typing import List
 
 
 class RadiosEditor(MissionEditor):
