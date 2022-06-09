@@ -90,6 +90,7 @@ class MissionEditor:
                 raw_data = msnfile.read().decode('utf-8')
                 match = re.search(rf'{local_path.split("/")[-1]}\s?=', raw_data)
                 data_dict = raw_data[match.end()+1:]
+                data_dict = re.sub(r"--.+\n", "\n", data_dict)
                 data = lua.decode(data_dict)
         return data
 
