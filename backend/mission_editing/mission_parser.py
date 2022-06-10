@@ -110,7 +110,7 @@ class MissionParser(MissionEditor):
                 if globe.is_land(lat, lon):
                     group = Group(group_type='static',
                                   unit_type=clump['type'],
-                                  name=f"Static Group {len(groups)+1}",
+                                  name=f"{country_name} Static {len(groups)+1}",
                                   country=country_name,
                                   coalition=coalition,
                                   lat=lat,
