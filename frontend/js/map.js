@@ -725,7 +725,7 @@ function exportCSV()
             {
                 if (waypoints[j].group === groups[i].name)
                 {
-                    if (waypoints[j].baroRadio) baroRadio = 'ASL';
+                    if (!waypoints[j].baroRadio) baroRadio = 'ASL';
                     else baroRadio = 'AGL'
                     groupWaypoints.push([waypoints[j].name, '', waypoints[j].altitude + baroRadio, ConvertDDtoDMS(waypoints[j].latlng.lat, 2), ConvertDDtoDMS(waypoints[j].latlng.lng, 3)])
                 }

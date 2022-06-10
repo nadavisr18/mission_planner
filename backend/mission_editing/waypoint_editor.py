@@ -1,9 +1,7 @@
+from typing import List
+
 from backend.data_types import WayPoint
 from .edit_mission import MissionEditor
-
-from typing import List, Tuple
-import hashlib
-import math
 
 
 class WayPointEditor(MissionEditor):

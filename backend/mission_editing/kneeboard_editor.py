@@ -1,6 +1,6 @@
-from .edit_mission import MissionEditor
-
 import base64
+
+from .edit_mission import MissionEditor
 
 
 class KneeboardEditor(MissionEditor):

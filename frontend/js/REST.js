@@ -118,7 +118,7 @@ function uploadMissionFile()
 
         progressInterval = setInterval(function() {
             requestProgress()
-        }, 100);
+        }, 333);
         
         animationInterval = setInterval(function() {
             if (progressBar < progressBarTarget)
@@ -126,7 +126,7 @@ function uploadMissionFile()
                 progressBar += (progressBarTarget - progressBar) / 10.0;
                 document.getElementById("bar").style.width = progressBar + "%";
             }  
-        }, 10);
+        }, 33);
 
         $.ajax({
             url: serverAddress+"/mission",

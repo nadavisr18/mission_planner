@@ -1,18 +1,19 @@
-from .edit_mission import MissionEditor
-from backend.data_types import Group, WayPoint
-
-from typing import List, Tuple, Dict, Any
-from global_land_mask import globe
-import numpy as np
-import yaml
-import uuid
 import os
 import re
+import uuid
+from typing import List, Tuple, Dict, Any
+
+import numpy as np
+import yaml
+from global_land_mask import globe
+
+from backend.data_types import Group, WayPoint
+from .edit_mission import MissionEditor
 
 
 class MissionParser(MissionEditor):
     def __init__(self, path: str):
-        with open("backend/interface/config.yml") as file:
+        with open("backend/config.yml") as file:
             self.config = yaml.load(file, Loader=yaml.FullLoader)
         super().__init__(path)
 
@@ -26,8 +27,8 @@ class MissionParser(MissionEditor):
             if coalition == "neutrals": continue
             for country in self.mission['coalition'][coalition]['country']:
                 country_dict = self.mission['coalition'][coalition]['country'][country]
-                country_name = self.mission['coalition'][coalition]['country'][country]['name']
-                country_name = self.config['CountryAliases'].get(country_name, country_name)
+                raw_country_name = self.mission['coalition'][coalition]['country'][country]['name']
+                country_name = self.config['CountryAliases'].get(raw_country_name, raw_country_name)
                 for group_type in group_types:
                     if group_type in country_dict.keys():
                         if group_type == 'static':
@@ -47,7 +48,7 @@ class MissionParser(MissionEditor):
                                     radius, unit_type = self.check_SAM(group_dict)
                                 unit_type = group_dict['units'][1]['type'] if len(unit_type) == 0 else unit_type
                                 unit_type = self.config['BackendToDisplayName'].get(unit_type, unit_type)
-                                client = group_dict['units'][1].get('skill') == 'Client'
+                                client = group_dict['units'][1].get('skill') in ('Client', 'Player')
                                 lat, lon = self.xy2ll.transform(group_dict['x'], group_dict['y'])
                                 if not group_type == 'static':
                                     waypoints = self.get_waypoints(group_dict)
@@ -109,7 +110,7 @@ class MissionParser(MissionEditor):
                 if globe.is_land(lat, lon):
                     group = Group(group_type='static',
                                   unit_type=clump['type'],
-                                  name=uuid.uuid4().hex,
+                                  name=f"Static Group {len(groups)+1}",
                                   country=country_name,
                                   coalition=coalition,
                                   lat=lat,

@@ -1,18 +1,17 @@
-import backend.theatres as theatres
-from backend.theatres.transverse_mercator import TransverseMercator
+import re
+import zipfile
+from functools import lru_cache
+from threading import Thread
 
 from pyproj import CRS, Transformer
-from threading import Thread
-from functools import lru_cache
-from typing import List, Tuple, Dict
 from slpp import slpp as lua
-import zipfile
-import re
+
+import backend.theatres as theatres
+from backend.theatres.transverse_mercator import TransverseMercator
 
 
 class MissionEditor:
     def __init__(self, path: str):
-        print(path)
         self.path = path
         self.buffer_dict = self._get_buffer()
 
@@ -36,6 +35,9 @@ class MissionEditor:
         )
 
     def _get_buffer(self) -> dict:
+        """
+        get the current state of the miz file
+        """
         with zipfile.ZipFile(self.path, mode='r') as archive:
             buffer_dict = {}
             for item in archive.infolist():
@@ -90,6 +92,7 @@ class MissionEditor:
                 raw_data = msnfile.read().decode('utf-8')
                 match = re.search(rf'{local_path.split("/")[-1]}\s?=', raw_data)
                 data_dict = raw_data[match.end()+1:]
+                data_dict = re.sub(r"--.+\n", "\n", data_dict)
                 data = lua.decode(data_dict)
         return data
 

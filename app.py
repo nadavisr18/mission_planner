@@ -1,17 +1,13 @@
-from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor, WeatherEditor
-from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets, Group, WeatherOutput
-from backend.utils import *
-
-from typing import Union, List, Tuple
-from fastapi import FastAPI, HTTPException
-import cProfile
-import uvicorn
 import base64
-import json
-import yaml
-import os
+import cProfile
 
+import uvicorn
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+
+from backend.data_types import Mission, KneeboardPage, WeatherData, RadioPresets, Group, WeatherOutput
+from backend.mission_editing import MissionParser, RadiosEditor, KneeboardEditor, WeatherEditor
+from backend.utils import *
 
 profiler = cProfile.Profile()
 

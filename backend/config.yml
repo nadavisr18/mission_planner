@@ -49,26 +49,3 @@ CountryAliases:
   USAF Aggressors: USA
   Combined Joint Task Forces Blue: USA
   Combined Joint Task Forces Red: Russia
-  
-
-PlaneToColor:
-  Everyone: black
-  Hornet: blue
-  Viper: green
-  Tomcat: red
-  Harrier: orange
-  Mirage: purple
-
-# get icons for waypoints in https://getbootstrap.com/docs/3.3/components/
-WayPointOptionToIcon:
-  Anchor: anchor
-  Route: play
-  IP: sign-in
-  Target: crosshairs
-  FAC: eye
-  SAM: exclamation-circle
-  Home Base: home
-  Tanker: battery-quarter
-  Contested Area: fort-awesome
-  Bullseye: bullseye
-  Airport: fighter-jet

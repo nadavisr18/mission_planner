@@ -1,7 +1,8 @@
-from .waypoint import WayPoint
-
 from typing import List
+
 from pydantic import BaseModel
+
+from .waypoint import WayPoint
 
 
 class Group(BaseModel):
