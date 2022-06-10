@@ -16,5 +16,6 @@
 # TODO: add icons for: P-47, MiG-27K
 # TODO: when selecting a waypoint the altimeter toggle switch position will change
 #  but the text inside (AGL/ASL) does not change to the selected waypoint's setting
+# TODO: exclamation mark doesn't appear when editing an existing frequency
 # -------------------V2-------------------
 # TODO: create a tab for package management
