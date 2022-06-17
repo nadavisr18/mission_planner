@@ -101,13 +101,14 @@ var visibility;
 var waypoint_tab_open = false;
 var radios_tab_open = false;
 
-if (getCookie('visibility') == null)
-{
-    visibility = ['user', 'non-user', 'SAM', 'vehicle', 'static', 'ship', 'flag']
-} else 
-{
-    visibility = getCookie('visibility');
-}
+//if (getCookie('visibility') == null)
+//{
+// TODO fixing, needs more testing. Not reproducible on local machine because cookies don't work locally (by design)
+visibility = ['user', 'non-user', 'SAM', 'vehicle', 'static', 'ship', 'flag']
+//} else 
+//{
+//    visibility = getCookie('visibility');
+//}
 
 /* Changle the tiles layer provider */
 function setMapProvider(mapProvider)
@@ -184,7 +185,7 @@ function onMapClick(e)
         /* If no waypoint is currently selected, add a new waypoint */
         if (selectedWaypoint === null)
         {
-            if (selectedGroup !== null && findWaypointsByGroup(selectedGroup).length == 0) 
+            if (waypoint_group === "Everyone" || (selectedGroup !== null && findWaypointsByGroup(selectedGroup).length == 0)) 
             {
                 var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
                 var waypoint = new Waypoint(attributes);
@@ -201,7 +202,14 @@ function onMapClick(e)
                 var attributes = {latlng: e.latlng, type: waypoint_type, group: waypoint_group, name: waypoint_name, altitude: waypoint_altitude, baroRadio: waypoint_baroRadio}
                 var waypoint = new Waypoint(attributes);
                 index = waypoints.findIndex(element => element == selectedWaypoint);
-                waypoints.splice(index+1, 0, waypoint);
+                if (waypoint_group === "Everyone")
+                {
+                    waypoints.push(waypoint);
+                }
+                else 
+                {
+                    waypoints.splice(index+1, 0, waypoint);
+                }
                 selectedWaypoint = waypoint;
                 autoIncreaseWaypoint();
             }
@@ -318,6 +326,10 @@ function getGroupByName(groupName)
         if (groups[i].name == groupName) 
             return groups[i] 
     }
+    if (groupName === "Everyone")
+    {
+        return new Group( {latlng: [0, 0], type: null, name: null, unit: null, country: null, coalition: "blue", range: null, client: true})
+    }
     return null
 }
 
@@ -426,10 +438,7 @@ function drawMap()
             groups[i].visible = true;
 
             /* Add the marker */
-            if (flyable)
-                marker = L.marker(groups[i].latlng, {icon: icon, group: groups[i]}).on('click', function(e) {markerClickGroup(e.sourceTarget.options.group)}).addTo(mymap);
-            else
-                marker = L.marker(groups[i].latlng, {icon: icon}).addTo(mymap);
+            marker = L.marker(groups[i].latlng, {icon: icon, group: groups[i]}).on('click', function(e) {markerClickGroup(e.sourceTarget.options.group)}).addTo(mymap);
             marker.bindTooltip(groups[i].name + " " + groups[i].unit);
             markers.push(marker);
         } else 
@@ -514,10 +523,10 @@ function drawMap()
                     break;
                 }
 
-                /* Check if we should draw an group specifc line */
+                /* Check if we should draw a group specifc line */
                 var check1 = tempWaypoints[i].group == activeGroup[k] && tempWaypoints[j].group == activeGroup[k];
-                var check2 = tempWaypoints[i].group == activeGroup[k] && tempWaypoints[j].group == "Everyone";
-                var check3 = tempWaypoints[i].group == "Everyone" && tempWaypoints[j].group == activeGroup[k];
+                var check2 = tempWaypoints[i].group == activeGroup[k] && tempWaypoints[j].group === "Everyone" && getGroupByName(activeGroup[k]).client;
+                var check3 = tempWaypoints[i].group === "Everyone" && tempWaypoints[j].group == activeGroup[k] && getGroupByName(activeGroup[k]).client;
                 /* Draw the line */
                 if (check1 || check2 || check3)
                 {
@@ -547,7 +556,6 @@ function onMapRightClick(e)
 /* Marker click callback */
 function markerClickWaypoint(waypoint)
 {
-    
     if (radios_tab_open)
     {
         selectedGroup = getGroupByName(waypoint.group)
@@ -570,6 +578,7 @@ function markerClickWaypoint(waypoint)
         document.getElementById("waypoint-group").value = selectedWaypoint.group;
         document.getElementById("waypoint-group-div-selected").innerHTML = selectedWaypoint.group;
         document.getElementById("waypoint-baro-radio").checked = selectedWaypoint.baroRadio;
+        toggleSwitchText('waypoint-baro-radio', 'AGL', 'ASL')
 
         cleanMap();
         drawMap();
@@ -578,26 +587,26 @@ function markerClickWaypoint(waypoint)
 
 function markerClickGroup(group)
 {
-    if (radios_tab_open)
+    if (selectedWaypoint !== null && selectedGroup !== null && selectedGroup.client == true && group.client == false)
     {
-        document.getElementById("radio-group").value = group.name;
-        document.getElementById("radio-group-div-selected").innerHTML = group.name;
+        var e = {latlng: group.latlng, originalEvent: {ctrlKey: false}};
+        onMapClick(e);
     }
 
-    if (waypoint_tab_open)
+    if (group.client)
     {
-        selectedGroup = group
-        /* Select the waypoint and update the inputs with its properties */
-        document.getElementById("waypoint-name").value = "";
-        document.getElementById("waypoint-altitude").value = 0;
-        document.getElementById("waypoint-type").value = "anchor";
-        document.getElementById("waypoint-type-div-selected").innerHTML = "anchor";
-        document.getElementById("waypoint-group").value = selectedGroup.name;
-        document.getElementById("waypoint-group-div-selected").innerHTML = selectedGroup.name;
-        document.getElementById("waypoint-baro-radio").checked = false;
-
-        cleanMap();
-        drawMap();
+        lastWaypoint = null;
+        for (i = 0; i < waypoints.length; i++)
+        {
+            if (waypoints[i].group === group.name || waypoints[i].group == "Everyone")
+            {
+                lastWaypoint = waypoints[i]
+            }
+        }
+        if (lastWaypoint != null)
+        {
+            markerClickWaypoint(lastWaypoint)
+        }
     }
 }
 
@@ -661,7 +670,7 @@ function applyWaypointChange()
     applyMapChanges();
 }
 
-function applyMapChanges()
+function applyMapChanges(setPosition = false)
 {
     /* Make a deep copy of the waypoints */
     var newWaypoints = [];
@@ -678,6 +687,20 @@ function applyMapChanges()
     waypointsHistory.push(newWaypoints);
     activeWaypointHistory++;
 
+    lat = 0
+    lng = 0
+    for (i = 0; i < waypoints.length; i++)
+    {
+        lat += waypoints[i].latlng.lat
+        lng += waypoints[i].latlng.lng
+    }
+
+    /* Center the map on the average position */
+    if (setPosition && waypoints.length > 0)
+    {
+        mymap.setView([lat / waypoints.length, lng / waypoints.length], 7);
+    }
+    
     /* Clean and redraw the map */
     cleanMap();
     drawMap();

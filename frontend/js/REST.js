@@ -48,7 +48,7 @@ function successMissionFile(data, textStatus, jqXHR)
             waypoints.push(new Waypoint({latlng: {lat: group.waypoints[j].lat, lng: group.waypoints[j].lon}, type: 'route', group: group.waypoints[j].group, name: group.waypoints[j].name, altitude: Math.round(group.waypoints[j].altitude), baroRadio: group.waypoints[j] == 'RADIO', id: group.waypoints[j].wp_id}))
         }
     }
-    applyMapChanges();
+    applyMapChanges(true);
 
     var fieldset = document.getElementById("flight-select-fieldset")
     for (var i = 0; i < groupNames.length; i++)

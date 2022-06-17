@@ -75,6 +75,7 @@ function checkChannelRanges(rowIndex, radioNumber){
     obj = cells[0].getElementsByTagName("input")[0];
     if (obj.value > 20) {obj.value = 20; flashError(obj);}
     else if (obj.value < 0) {obj.value = 0; flashError(obj);}
+    setExclamationMark(rowIndex, radioNumber)
 }
 
 function checkFrequencyRanges(rowIndex, radioNumber){
@@ -83,6 +84,19 @@ function checkFrequencyRanges(rowIndex, radioNumber){
     var obj = cells[1].getElementsByTagName("input")[0];
     if (obj.value > 999) {obj.value = 999; flashError(obj);}
     else if (obj.value < 0) {obj.value = 0; flashError(obj);}
+    setExclamationMark(rowIndex, radioNumber)
+}
+
+function setExclamationMark(rowIndex, radioNumber){
+    var radioRows = radioTables[radioNumber-1].getElementsByClassName('radio-row');
+    var cells = radioRows[rowIndex].cells;
+    var obj = document.getElementById("radio-group");
+    var radio_group =  obj.options[obj.selectedIndex].text;
+    radioVector[radioNumber-1][radio_group][rowIndex]["saved"] = false;
+    if (radioVector[radioNumber-1][radio_group][rowIndex]["saved"])
+        cells[3].innerHTML = '<div class="radio-saved-check"></div>';
+    else
+        cells[3].innerHTML = '<div class="radio-saved-check"><i class="fas fa-exclamation"></i></div>';
 }
 
 /* Show the correct number of rows and set them to the value saved in the vector */
@@ -166,7 +180,7 @@ function addNewRow(radioNumber){
 
     cell1.innerHTML = '<div class="tooltip"><input class="input" type="number" value='+(radiorowsLength+1)+' oninput="checkChannelRanges('+radiorowsLength+', '+radioNumber+')" onblur="applyRadioChange('+radioNumber+'); checkChannelFree('+radioNumber+', '+radiorowsLength+');"><span class="tooltiptext">Tooltip text</span></div>';
     cell2.innerHTML = '<input class="input" type="number" value="123.45" oninput="checkFrequencyRanges('+radiorowsLength+', '+radioNumber+')" onblur="applyRadioChange('+radioNumber+')">';
-    cell3.innerHTML = '<input class="input" type="text" value="No label" onfocus="removePlacehoder('+radiorowsLength+', '+radioNumber+')" onblur="setPlacehoder('+radiorowsLength+', '+radioNumber+'); applyRadioChange('+radioNumber+')">'
+    cell3.innerHTML = '<input class="input" type="text" value="No label" oninput="setExclamationMark('+radiorowsLength+', '+radioNumber+')" onfocus="removePlacehoder('+radiorowsLength+', '+radioNumber+')" onblur="setPlacehoder('+radiorowsLength+', '+radioNumber+'); applyRadioChange('+radioNumber+')">'
     cell4.innerHTML = '<div class="radio-saved-check"></div>'
 }
 
